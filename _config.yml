@@ -1,4 +1,4 @@
-	name: Tupelo Documentation
-	markdown: kramdown
+name: Tupelo Documentation
+markdown: kramdown
 
 theme: just-the-docs
