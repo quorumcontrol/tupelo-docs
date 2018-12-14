@@ -1,2 +1,4 @@
 	name: Tupelo Documentation
 	markdown: kramdown
+
+theme: jekyll-theme-cayman
