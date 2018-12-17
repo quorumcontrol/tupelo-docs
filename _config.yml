@@ -1,4 +1,9 @@
 name: Tupelo Documentation
-markdown: kramdown
+title: Tupelo Documentation
+author: icarusz
+email: andrew@quorumcontrol.com
+description: Basic generated Jekyll site to enable a good developer onboarding experience
+github_username: icarusz
 
-theme: pmarsceill/just-the-docs
+markdown: kramdown
+theme: just-the-docs
