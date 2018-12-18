@@ -26,11 +26,7 @@ github_username:  icarusz
 
 # Build settings
 markdown: kramdown
-<<<<<<< HEAD
-remote_theme: "just-the-docs"
-=======
-theme: jekyll-theme-cayman
->>>>>>> 417cdf082090d3cc79e998259996554e16ca5ac3
+remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-feed
 
