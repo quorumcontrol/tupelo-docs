@@ -27,7 +27,7 @@ github_username:  icarusz
 # Build settings
 search_enabled: true
 markdown: kramdown
-theme: pmarsceill/just-the-docs
+remote_theme: pmarsceill/just-the-docs 
 plugins:
   - jekyll-feed
 
