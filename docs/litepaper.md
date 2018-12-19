@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Overview
-parent: Supporting Documents
+title: Tupelo Platform Overview
+parent: Platform Documentation
 nav_order: 2
 ---
 

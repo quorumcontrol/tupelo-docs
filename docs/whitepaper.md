@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Whitepaper v0.10
-parent: Supporting Documents
+parent: Platform Documentation
 nav_order: 3
 
 ---
