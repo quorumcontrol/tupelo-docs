@@ -23,11 +23,15 @@ You can have your first signed and immutable transaction in just a few minutes.
 
 # How Is Tupelo Different?
 {: .fs-8 }
-<img style="float: right;" src="https://static1.squarespace.com/static/5b2bb0b9f8370a1e48fe3fac/t/5b51a6960e2e7239c2cc3f5e/1540953865755/Tupelo_Working3.png?format=150w">
+<img style="float: right; width:400;height:235px;" src="../assets/images/litepaper-illustration4.png">
 
-The biggest difference between Tupelo and other solutions is in the underlying datastructure.
+**Tupelo is ideal for modeling real world things** be they physical or digital.
 {: .fs-5 .fw-300 }
-Rather than one central chain each "object" being modeled has its own structure which we call a ChainTree.  Read more about it and the power it brings to the system in any of these resources:
+The reason is Tupelo has a very different underlying datastructure.
+{: .fs-5 .fw-300 }
+Rather than one central chain each "object" being modeled has its own structure called a ChainTree.  
+{: .fs-5 .fw-300 }
+ChainTrees are flexible, transferrable and highly efficient.
 {: .fs-5 .fw-300 }
 [Tupelo Overview](docs/litepaper){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [Whitepaper v0.10](docs/whitepaper){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
