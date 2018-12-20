@@ -29,13 +29,13 @@ To further illustrate the key concepts behind Tupelo we will consider how a car 
 
 Alice is buying a new car from Volkswagen (VW). VW generates a new Chain Tree on Tupelo (described in more detail later) to represent this new car. The Chain Tree includes basic information to identify the car like the VIN# as well as relevant information about which features it has (i.e. color, interior, etc.) Because of the flexibility of Chain Trees, a wide range of different types of data can be included such as a scan of relevant paperwork or the path it took during transport. In fact, if VW was using Tupelo for their supply chain, this starting point could have included even earlier history such as the manufacturer and sustainability of sub-components.
 
-<img style="float: right;" src="/assets/images/LitePaper-Illustration1.png">
+<img style="float: right;" src="../assets/images/litepaper-illustration1.png">
 
 At the time of sale, VW transfers this Chain Tree and all its relevant data to Alice. All of the details and history come under her control within her “wallet” through which she manages her assets. VW can no longer make changes to that information without Alice’s permission. It is her car and she owns the digital as well as the physical representation of it. Even though Alice is the owner that does not mean she can alter the earlier history of the car. The VIN# has been set at its creation by VW. All of the information set during its creation and all modifications since are irrevocably recorded as part of the Chain Tree. It has been “signed” via the Tupelo network and will always be a part of its history. Alice can provide this information to anyone she wishes as proof and still retain control of it. Tupelo’s underlying structure provides a flexible base for limited read or write capabilities which can be critical to many applications.
 
 As Alice drives her car and gets it serviced, she has the service provider attest to the services performed and that is appended to the vehicles history. This could be as simple as scanning and attaching the paperwork from the oil change, or as sophisticated as the service provider digitally signing and submitting a change to Alice's Chain Tree for inclusion in the vehicle's history.
 
-<img style="float: left;" src="/assets/images/LitePaper-Illustration2.png">
+<img style="float: left;" src="../assets/images/litepaper-illustration2.png">
 
 When Alice eventually decides to sell her VW she has the accumulated history of the car from its manufacture through its service, to help assure a buyer of its original paint color and that it has been well maintained. When Alice transfers the car to Bob, Bob then takes the associated Chain Tree into his wallet. The history and provenance of the vehicle becomes his to take forward. This digital representation can enhance the value of the car by providing unalterable evidence of its origin and history.
 
@@ -61,13 +61,13 @@ With Tupelo, a group of signers is called a Notary Group. The Notary Group keeps
 
 A client who wants to make a change to a Chain Tree they own starts by submitting a request to any valid signer in the current Epoch. Each Epoch is approximately one hour and is used to manage the active signer list. It is important to note that the TCP (Tupelo Consensus Protocol) does not require the synchronization of clocks across signers or clients. The protocol is largely asynchronous to maintain simplicity as well as resilience. Request the Tupelo Whitepaper for more details on how this works.
 
-<img style="float: left;" src="/assets/images/LitePaper-Illustration3.png">
+<img style="float: left;" src="../assets/images/litePaper-illustration3.png">
 
 When a client requests a change to their Chain Tree they include the previous valid tip (a cryptographic hash that encapsulates the current state and history of the Chain Tree), the new altered state, and the resulting new tip including those changes. Essentially this is a before and after of the update they are proposing to their Chain Tree.
 
 The signer in the notary group that receives the request then uses the Tupelo signer p2p network to coordinate with the other signers. They rapidly reach a ⅔ majority agreement (consensus) on the validity of the transaction. Once the network reaches a 2/3rds majority on the validity of the transaction, the client receives confirmation that their transaction/update has been confirmed and the new tip is the valid state of that Chain Tree. Any subsequent changes to that Chain Tree need to built on the new signed tip.
 
-<img style="float: right;" src="/assets/images/LitePaper-Illustration4.png">
+<img style="float: right;" src="../assets/images/litepaper-illustration4.png">
 
 Unlike Proof of Work consensus algorithms, this does not require significant energy for the signers which keeps the process fast and energy efficient. The Notary Group quickly comes to agreement as all of the information needed to sign is immediately available and streamlined. Signers have all of what they need and nothing outside this transaction complicates the process of confirmation.
 
