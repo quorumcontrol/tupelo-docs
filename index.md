@@ -6,7 +6,7 @@ permalink: /
 ---
 # Tupelo is a different kind of Distributed Ledger
 {: .fs-8 }
-<img style="float: right; width:415px;height:231px;" src="/assets/images/CodeSample.png">
+<img style="float: right; width:415px;height:231px;" src="/assets/images/code_sample.png">
 
 Most Blockchain and Distributed Ledger Technology projects are hard to use.
 **Tupelo is easy**.  
