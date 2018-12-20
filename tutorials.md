@@ -9,7 +9,9 @@ nav_order: 2
 
 In support of helping Developers get started we have created a series of tutorials.
 We start with the most simple and get progressively more sophisticated.
----
+
+***
+
 ## Hello Decentralized World
 
 The obligatory first tutorial is the "Hello World" app.

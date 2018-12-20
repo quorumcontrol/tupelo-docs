@@ -3,10 +3,11 @@ layout: default
 title: Whitepaper v0.10
 parent: Platform Documentation
 nav_order: 3
-
 ---
 
 # Tupelo Whitepaper
+{: .fs-9 }
+{: .no_toc .text-delta }
 
 A better way forward for digital asset ownership: <br>
 Chain Trees & Notary Groups: Tupelo Working Draft - October 2018 - v0.10
@@ -17,7 +18,7 @@ Chain Trees & Notary Groups: Tupelo Working Draft - October 2018 - v0.10
 1. TOC
 {:toc}
 
-Abstract
+## Abstract
 
 Digital asset ownership systems can achieve faster processing time, more decentralization, and less overhead by adopting a client-lead consensus algorithm and removing global transaction ordering. Introducing an individual append-only log (blockchain) combined with a notarized merkle-DAG (directed acyclic graph) per actor allows for a variety of protocols to be built on top of a byzantine fault tolerant global layer of trust while scaling to hundreds of thousands of transactions per second. We call this combination of blockchain and merkle-DAG a Chain Tree. The combination of a Chain Tree and a public Notary Group is a system we are calling Tupelo.
 
