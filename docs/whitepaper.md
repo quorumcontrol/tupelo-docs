@@ -215,34 +215,100 @@ The consensus process can deadlock when the remaining unsigned stake weight is n
 
 Formally, deadlock is detected by signer *i* if, for some Chain Tree Tip *T*, candidate blocks B_{0}..B_{n} extending *T*, corresponding signature stake weights seen in the latest PREPARE(*B_{i},T,C,V,S*) messages w0..wn, and total stake weight of all signers W, the following condition holds for all Bi
 
-```
-$$wi+(W -j=0nwj) ⅔W$$
-```
 
-If a Signer detects a deadlock condition in view V it applies the fork choice rule to select the best block B and gossips a new PREPARE(B,T,C,V+1,S) message.This PREPARE message also includes the minimal set of PREPARE messages that prove deadlock in V and justify the view change. If a Signer is currently in the prepared or proposed states for view V (or lower) and receives such a PREPARE message then it can use the view justification to transition to the deadlocked state for view V and start ignoring any messages for T with V < V+1.  The Signer then applies the fork choice rule to select the best block for view V+1 and if it matches the one in the received PREPARE just appends its signature and gossips the PREPARE. Otherwise it creates, signs, and gossips a new PREPARE message with the chosen block.
+$$
+w_i + (W - \sum_{j=0}^n w_j) \le ⅔W
+$$
+
+
+If a Signer detects a deadlock condition in view V it applies the fork choice rule to select the best block B and gossips a new PREPARE(*B,T,C,V+1,S*) message.This PREPARE message also includes the minimal set of PREPARE messages that prove deadlock in *V* and justify the view change. If a Signer is currently in the prepared or proposed states for view *V* (or lower) and receives such a PREPARE message then it can use the view justification to transition to the deadlocked state for view *V* and start ignoring any messages for *T* with *V* < *V+1*.  The Signer then applies the fork choice rule to select the best block for view *V+1* and if it matches the one in the received PREPARE just appends its signature and gossips the PREPARE. Otherwise it creates, signs, and gossips a new PREPARE message with the chosen block.
+
 The fork choice rule is:
-Given the set of all known proposals for extending tip T (i.e. all PREPARE(B,T,C,V,S) messages received), choose the one where hash(B) has the lowest value.
+> *Given the set of all known proposals for extending tip T (i.e. all PREPARE(B,T,C,V,S) messages received), choose the one where hash(B) has the lowest value.*
+
 The fork choice rule is only applied for views > 0, i.e. when the view changes due to a deadlock condition. For view = 0, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
 
-$$C_n \= \sum{n^2}$$
+### Protocol Violations
+This section defines some protocol rules that can have economic penalties when violated. Since all messages are digitally signed with the sender’s private key, the signed message is proof that the Signer who sent it violated the rule.
 
-test 1
+#### Equivocation
+The protocol forbids sending the following conflicting messages:
+  * PREPARE(*B,T,C,V,S*) and PREPARE(*B′,T,C,V,S*) where *B ≠ B′*
+  * COMMIT(*P,S*) and COMMIT(*P′,S*) where *P* ≠ *P′*
 
-$$
-\begin{align*}
-  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
-  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
-  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
-      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
-      \vdots & \ddots & \vdots \\
-      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
-    \end{array} \right)
-  \left( \begin{array}{c}
-      y_1 \\
-      \vdots \\
-      y_n
-    \end{array} \right)
-\end{align*}
-$$
+However, signers may send the following messages, which are not considered conflicting:
+  * PREPARE(*B,T,C,V,S*) and PREPARE(*B′,T,C,V′,S*) where *B ≠ B′ if V ≠ V′*
+  * P=PREPARE(*B,T,C,V,S*) and COMMIT(*P′,S*) where *P ≠ P′*
+The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent *P*=PREPARE(*B,T,C,V,S*), but then saw *P′*=PREPARE(*B′,T,C,V,S*) with weight of *S* >⅔ stake, to send COMMIT(*P′,S*) as dictated by the protocol.
 
-test 2
+#### Unjustified View Change
+The protocol forbids sending a PREPARE(*B,T,C,V+1,S*) message without a view change justification or with a justification that does not sufficiently prove deadlock in view *V*.
+
+#### Unjustified Commit
+The protocol forbids sending a COMMIT(*P,S*) message where *P’s* signature weight is not > ⅔ Signer deposits.
+
+#### Invalid New Tip
+The protocol forbids sending PREPARE(*B,T,C,V,S*) or COMMIT(*P,S*) where the block *B* being proposed contains invalid transactions, or the transactions are valid but the resulting state does not match *T*.
+
+#### Reward Fraud
+The protocol forbids transactions updating a Signer’s balance on the Notary Group Chain Tree (see Incentives below) without justification (e.g. COMMIT message) or with justification that does not match the balance update. Failure to report rewards is also a protocol violation.
+
+### Incentives
+Financial incentives are essential to secure the network. To incentivize Signers to participate, rewards are paid to Signers that actively participate in consensus. To prevent Sybil attacks and incentivize Signers to follow the protocol Signers are required to deposit bonds, which allow them to be penalized for violating protocol rules.
+
+A node wishing to register as a Signer and become eligible to receive rewards for participating in consensus must first deposit its bond by appending to its Chain Tree a DEPOSIT_STAKE transaction, including the amount it wishes to stake, the public key to be used for authenticating protocol messages it signs, and the network address that other Signers and Chain Tree owners should use to send protocol messages to it.
+
+```
+DEPOSIT_STAKE
+message DepositStakeTransaction {
+   uint64 amount = 1;
+   bytes key = 2;
+   bytes address = 3;
+}
+```
+
+This special transaction functions like a SEND_COIN with a fixed destination of the Notary Group Chain Tree. Once the DEPOSIT_STAKE transaction has been notarized an active Signer appends a corresponding ACTIVATE_SIGNER transaction on the Notary Group Chain Tree.
+
+```
+ACTIVATE_SIGNER
+message ActivateSignerTransaction {
+   uint64 amount = 1;
+   bytes key = 2;
+   bytes address = 3;
+   string deposit_stake_transaction_id = 4;
+   bytes tip = 5;
+   signature signature = 6;
+   map<string>ChainTreeNode leaves = 7;
+}
+```
+
+The ACTIVATE_SIGNER transaction creates a balance for the public key of the Chain Tree that issued the DEPOSIT_STAKE and queues the candidate Signer to join the active Signer set in a future epoch (see Signer Rotation below). When that epoch arrives the candidate Signer will become active and start signing messages that support the consensus process. The messages it signs and doesn’t sign while a registered and active Signer will be used to determine whether it should be rewarded for contributing to the success of the protocol or penalized for hindering it.
+When a node wishes to no longer participate in consensus it can issue a RESIGN_STAKE transaction on its own Chain Tree.
+
+```
+RESIGN_STAKE
+message ResignStakeTransaction {
+   bytes key = 1;
+   bytes address = 2;
+}
+```
+
+This transaction signals the Signer’s intent to leave and triggers an active Signer to append a DEACTIVATE_SIGNER message to the Notary Group Chain Tree.
+
+```
+DEACTIVATE_SIGNER
+message DeactivateSignerTransaction {
+   bytes key = 1;
+   bytes address = 2;
+}
+```
+
+#### Cycles
+
+A cycle defines the period of time (about 1 minute) in which all Signer signature weights remain constant. This is necessary for all Signers to transition among protocol states in a consistent fashion and to agree on justifications such as proof of deadlock.
+
+Every Signer’s signature weight is based on their current balance (their initial deposit plus rewards minus penalties) at the beginning of the cycle. Rewards for signed messages about blocks proposed in cycle *C* are calculated and assessed in cycle *C+6*.
+
+Cycle boundaries are determined by local clocks, which are not synchronized. Thus every conflict set to be resolved needs to be associated with a single cycle. This is done by specifying a cycle in the PROPOSE message. The cycle for a conflict set is the lowest cycle among all conflicting proposals, taking into account that all Signers in cycle *C* will discard any messages corresponding to proposals specifying cycle < *C-4*.
+
+The cycle associated with a conflict set is used as a timeout on conflict set resolution process. Specifically, if a block extending some tip *T* is proposed in cycle *C* has not been locally committed by the end of cycle *C+4*, then the Signer discards the associated conflict set and ignores any subsequent messages regarding *T* except for a COMMIT signed by ⅔ Signers, which informs the Signer that the Chain Tree has an updated tip. Signers who are assigned to the Rewards Committees for *T* (described below) retain their conflict sets until the end of *C+6*.  The timeout ensures that after 4 cycles consensus will either be reached or abandoned, allowing 2 full cycles for the Rewards Committees for *T* to reach a steady state from which they can calculate and assess rewards and penalties.
