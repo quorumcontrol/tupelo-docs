@@ -176,16 +176,16 @@ In the common case there are no conflicting proposals and consensus is reached q
 
 The protocol operates efficiently by employing a Gosig-like gossip protocol in which a Signer, upon receiving a protocol message, performs some validations and signature aggregation, updates its state, and (in most cases) gossips a message to a randomly selected subset of other active Signers in the Notary Group during cycle *C*.
 
-An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle *C* implies the epoch *E* (e.g. if there are 60 cycles in an epoch, *E = C // 60*), and thus defines the set and signing weights of all active Signers for *C*.
+An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given $$cycle C$$ implies the epoch *E* (e.g. if there are 60 cycles in an epoch, $$E = C // 60$$), and thus defines the set and signing weights of all active Signers for *C*.
 
 ### Conflict Set Resolution
-The consensus process begins when a Chain Tree owner proposes a block by sending a signed PROPOSE(*B,T,C*) message to one or more active Signers for the given cycle *C* (see Signer Rotation below). The PROPOSE message components are:
+The consensus process begins when a Chain Tree owner proposes a block by sending a signed $$PROPOSE(B,T,C)$$ message to one or more active Signers for the given $$cycle C$$ (see Signer Rotation below). The PROPOSE message components are:
 
- *B* - the block of transactions, new tip, any state required for validation
- *T* - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
- *C* - the current cycle, which determines both the set of active signers and their stake weights
+ $$B$$ - the block of transactions, new tip, any state required for validation
+ $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
+ $$C$$ - the current cycle, which determines both the set of active signers and their stake weights
 
-Upon receiving a PROPOSE(*B,T,C*) message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip *T* is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range *C*-1 … *C*+4. The owner’s signature over (*B,T,C*) is also validated against the public key stored in the chain tree.
+Upon receiving a $$PROPOSE(B,T,C)$$ message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip *T* is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range *C*-1 … *C*+4. The owner’s signature over (*B,T,C*) is also validated against the public key stored in the chain tree.
 
 If the block is valid the Signer places it into a conflict set for *T*, transitions to the proposed state, and gossips a PREPARE(*B′,T,C,V,S*) message, where the components of the PREPARE message are:
  *B′* - the block the Signer is voting for in view *V*
