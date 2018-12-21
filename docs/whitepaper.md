@@ -196,10 +196,53 @@ If the block is valid the Signer places it into a conflict set for *T*, transiti
 
 If this is the first (and thus only) block proposal the Signer has seen for *T* then *B′* is set to *B* and Signer appends its signature over (*B′,T,C,V*) to *S* and gossips the PREPARE. Otherwise, the Signer just gossips the PREPARE(*B′,T,C,V,S*) it previously signed.
 
-Signers should discard all PROPOSE(*B,T,C*) and PREPARE(*B,T,C,V,S*) messages where *C* < the current cycle as determined by the Signer’s clock - 4. This accounts for clock drift and allows PREPARES at least one full epoch to accumulate signatures. 
-When a Signer adds its signature over (B′,T,C,V) to S it is effectively casting a vote for B′ as the canonical block extending previous tip T in view V. The vote is weighted by the size of the Signer’s deposit. The weight of S is the sum of the weights of the aggregated signatures.
-A Signer receiving a PREPARE(B,T,C,V,S) message will perform the actions described for PROPOSE above and also aggregate into S any signatures from other PREPARE messages for the same block B. The Signer then checks if the aggregated weight of S is greater than ⅔ the sum of all deposits of active Signers in cycle C. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a COMMIT(P,S) message, where the components are:
-P - the PREPARE(B,T,C,V,S) message where the weight of S > ⅔ Signer deposits
-S - the aggregated signatures of Signers commiting to B in view V
-For any PREPARE P with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a COMMIT(P,S) message, even if the Signer previously sent a PREPARE voting for a different block or the block proposed in P is not the Signer’s fork choice.
-A Signer receiving a COMMIT(P,S) message will validate P and aggregate signatures as described above. If the aggregated weight of S > ⅔ Signer deposits, the Signer transitions to the committed state in which the block B specified in P becomes canonical for T. The Signer can immediately discard the entire conflict set for T (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in B.
+Signers should discard all PROPOSE(*B,T,C*) and PREPARE(*B,T,C,V,S*) messages where *C* < the current cycle as determined by the Signer’s clock - 4. This accounts for clock drift and allows PREPARES at least one full epoch to accumulate signatures.
+
+When a Signer adds its signature over (*B′,T,C,V*) to *S* it is effectively casting a vote for *B′* as the canonical block extending previous tip *T* in view *V*. The vote is weighted by the size of the Signer’s deposit. The weight of *S* is the sum of the weights of the aggregated signatures.
+
+A Signer receiving a PREPARE(*B,T,C,V,S*) message will perform the actions described for PROPOSE above and also aggregate into *S* any signatures from other PREPARE messages for the same block *B*. The Signer then checks if the aggregated weight of *S* is greater than ⅔ the sum of all deposits of active Signers in cycle *C*. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a COMMIT(*P,S*) message, where the components are:
+
+  *P* - the PREPARE(*B,T,C,V,S*) message where the weight of *S* > ⅔ Signer deposits
+  *S* - the aggregated signatures of Signers commiting to *B* in view *V*
+
+For any PREPARE *P* with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a COMMIT(*P,S*) message, even if the Signer previously sent a PREPARE voting for a different block or the block proposed in *P* is not the Signer’s fork choice.
+
+A Signer receiving a COMMIT(*P,S*) message will validate *P* and aggregate signatures as described above. If the aggregated weight of *S* > ⅔ Signer deposits, the Signer transitions to the committed state in which the block *B* specified in P becomes canonical for *T*. The Signer can immediately discard the entire conflict set for *T* (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in *B*.
+
+### Deadlock Detection and Fork Choice Rule
+
+The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to (*T,V*).
+
+Formally, deadlock is detected by signer *i* if, for some Chain Tree Tip *T*, candidate blocks B_{0}..B_{n} extending *T*, corresponding signature stake weights seen in the latest PREPARE(*B_{i},T,C,V,S*) messages w0..wn, and total stake weight of all signers W, the following condition holds for all Bi
+
+```
+$$wi+(W -j=0nwj) ⅔W$$
+```
+
+If a Signer detects a deadlock condition in view V it applies the fork choice rule to select the best block B and gossips a new PREPARE(B,T,C,V+1,S) message.This PREPARE message also includes the minimal set of PREPARE messages that prove deadlock in V and justify the view change. If a Signer is currently in the prepared or proposed states for view V (or lower) and receives such a PREPARE message then it can use the view justification to transition to the deadlocked state for view V and start ignoring any messages for T with V < V+1.  The Signer then applies the fork choice rule to select the best block for view V+1 and if it matches the one in the received PREPARE just appends its signature and gossips the PREPARE. Otherwise it creates, signs, and gossips a new PREPARE message with the chosen block.
+The fork choice rule is:
+Given the set of all known proposals for extending tip T (i.e. all PREPARE(B,T,C,V,S) messages received), choose the one where hash(B) has the lowest value.
+The fork choice rule is only applied for views > 0, i.e. when the view changes due to a deadlock condition. For view = 0, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
+
+$$C_n \= \sum{n^2}$$
+
+test 1
+
+$$
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+$$
+
+test 2
