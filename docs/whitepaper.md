@@ -9,9 +9,9 @@ nav_order: 2
 {: .fs-9 }
 {: .no_toc .text-delta }
 
-### A better way forward for digital asset ownership:
+## A better way forward for digital asset ownership:
 {: .no_toc .text-delta }
-### Chain Trees & Notary Groups: Tupelo Working Draft - October 2018 - v0.10
+## Chain Trees & Notary Groups: Tupelo Working Draft - October 2018 - v0.10
 {: .no_toc .text-delta }
 
 
