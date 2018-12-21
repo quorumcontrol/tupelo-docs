@@ -167,8 +167,8 @@ Figure 1 below shows the states, messages and transitions for the consensus prot
 #### Figure 1. State transitions of Tupelo Consensus Protocol
 
 A block B extending Chain Tree tip T in view V, during cycle C is considered:
-  * *proposed* by Signer *i* if Signer i has at least one PROPOSE(*B,T,C*) or PREPARE(*B,T,C,V,S*) but no PREPAREs where the weight of S > ⅔ Signer deposits
-  * *prepared* by Signer *i* if Signer *i* has a PREPARE(*B,T,C,V,S*) where the weight of *S* > ⅔ Signer deposits
+  * *proposed* by Signer *i* if Signer i has at least one $$PROPOSE(B,T,C)$$ or $$PREPARE(B,T,C,V,S)$$ but no PREPAREs where the weight of S > ⅔ Signer deposits
+  * *prepared* by Signer *i* if Signer *i* has a $$PREPARE(B,T,C,V,S)$$ where the weight of *S* > ⅔ Signer deposits
   * *committed* by Signer *i* if Signer *i* has a COMMIT(*B,T,C,V,S*) where the weight of *S* > ⅔ Signer deposits
   * *deadlocked* by Signer *i* if Signer *i* has a set of messages demonstrating that no proposed block can achieve > ⅔ Signer deposits in view *V*
 
