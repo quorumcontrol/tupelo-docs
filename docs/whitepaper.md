@@ -319,7 +319,93 @@ Three types of calculations are performed: 1) Reward calculations are based on w
 
 ##### 1. Reward Calculations
 
-For every notarized tip extension that was proposed in cycle $$C-6$$, the active Signers who signature was aggregated into the $$COMMIT$$ for that tip have their balance on the Notary Group Chain Tree increased by $$<REWARD_RATE>$$ percent.
+For every notarized tip extension that was proposed in cycle $$C-6$$, the active Signers who signature was aggregated into the $$COMMIT$$ for that tip have their balance on the Notary Group Chain Tree increased by $$<REWARD\_RATE>$$ percent.
 
 ##### 2. Penalty Calculations
-For every cycle $$C$$, the active Signers in $$C-1$$ who did not post a Rewards Report (see Rewards Report below) shall have their balance decreased by $$<FAILURE_TO_REPORT_RATE>$$. For each Active Signer $$S$$ who posted a Rewards Report for $$C$$ that omits signatures for conflict sets for which the Signer was a member of the Rewards Committee, the Signer shall have their balance decreased by $$<SIGNATURE_OMISSION_RATE>$$ for each omission.
+For every cycle $$C$$, the active Signers in $$C-1$$ who did not post a Rewards Report (see Rewards Report below) shall have their balance decreased by $$<FAILURE\_TO\_REPORT\_RATE>$$. For each Active Signer $$S$$ who posted a Rewards Report for $$C$$ that omits signatures for conflict sets for which the Signer was a member of the Rewards Committee, the Signer shall have their balance decreased by $$<SIGNATURE\_OMISSION\_RATE>$$ for each omission.
+
+##### 3. Slashing Calculations
+For every conflict set of some tip $$T$$ that was proposed in cycle $$C-6$$, all messages or message pairs demonstrating that some Signer committed Equivocation, Unjustified View Change, Unjustified Commit, Invalid New Tip, or Reward Fraud protocol violation, will result in the Signer’s balance being reduced to $$0$$, effectively removing their voting stake and ability to participate in future consensus processes.
+
+#### Rewards Committee
+Calculating and assessing rewards and penalties is done in a distributed fashion by randomly assigning a subset of active Signers, a Rewards Committee, to each conflict set resolution process.
+
+For each conflict set of proposals extending some tip Told to a new tip $$T$$, a random subset of all Signers for the epoch, $$RT$$, is selected to be responsible for reporting rewards on $$T$$. Anyone can compute $$RT$$ as a function of $$T$$. For example, given an array of $$N$$ signers for the epoch, the signer at index $$T mod N$$ is primary, $$T+1 mod N$$ secondary and so on. Formally,
+
+$$
+R_T[i] = Signers[(T+i) mod N]
+$$
+
+Once the conflict set for $$T$$ has been resolved, all signers not in $$RT$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$RT$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
+
+Once each member of $$RT$$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
+
+  1. It incentivizes Signers to commit and broadcast their signatures to committee members as quickly as possible
+  2. Consensus is reached more quickly since the Rewards Committee has the most up to date information about who has signed. The  Rewards Committee effectively creates an ephemeral hub and spoke network architecture that changes for each conflict set.
+
+It does mean that Signers who do not get their signatures aggregated into at least one Rewards Committee member’s $$COMMIT$$, will not get their share of rewards for that conflict set.
+
+#### Rewards Report
+
+At the end of every cycle all rational signers, who are incentivized to receive rewards and avoid penalties, send a $$REWARDS\_REPORT$$ transaction to the Notary Group Chain Tree.
+
+```
+REWARDS_REPORT
+message RewardsReportTransaction {
+   uint64 cycle = 1;
+   map<ChainTreeTip>AggregatedSignature signatures = 2;
+}
+```
+
+At the end of cycle $$C$$, rewards for cycle $$C-6$$ are calculated from the retained conflict sets for which the Signer participated as a Rewards Committee member. The signatures map has one entry for each of the Signer’s retained conflict sets, identified by the tip it extends.
+Whereas each Signer’s reported signatures for any given tip may differ, the union of their signature sets is used for the purpose of assessing rewards. This prevents a byzantine subset of $$RT$$ from excluding any honest signer from getting their reward. As long as the honest signer’s signature has been aggregated into at least one $$REWARDS\_REPORT$$ transaction, they will receive their reward.
+
+#### Slashing
+
+Any Signer can post a Slash transaction to the Notary Group Chain Tree at any time if they have received a set of signed messages violating one of the slashable conditions described above.
+
+```
+SLASH
+message SlashTransaction {
+   uint64 cycle = 1;
+   bytes key = 2;
+   uint64 violation = 3;
+   array<SignedMessage> proof = 4;
+}
+```
+
+The cycle specifies the cycle associated with the conflict set (lowest cycle proposed). The key identifies the Signer that committed the slashable offense and the violation defines which protocol rule was violated. The proof contains set of signed messages showing the violation to enable other Signers to validate the transaction. Once a $$SLASH$$ transaction has been notarized, the offending Signer’s balance is set to $$0$$, effectively removing them from future consensus processes. The protocol requires that Signers do not gossip to nor aggregate signatures from Signers whose stake weight is $$0$$.
+
+#### Inactivity Leak
+
+In the event that ⅓ of voting stake goes offline (e.g. due to crash, network partition, DDoS attack) it will be impossible for the remaining Signers to reach consensus on any block proposal.
+
+This situation can be addressed in most cases using a Casper-like “inactivity leak” that slowly drains the deposits of Signers that do not sign valid $$COMMITS$$. This results in the deposits of online honest Signers gaining a larger relative share of voting power so that they are able to continue to notarize transactions.
+
+We implement this by subtracting a fixed percentage (i.e. $$PENALTY\_RATE$$) of their total deposit for each offense. A higher $$PENALTY\_RATE$$ provides a greater capability to recover from crashes etc. but with the downside of disincentivizing would-be Signers who do not wish to incur these penalties.
+
+#### Agreement on Signer Balances
+
+Each active Signer’s balance, and thus its voting power, changes every cycle as the result of multiple reward and penalty transactions being written to the Notary Group Chain Tree by multiple Rewards Committees. The rewards for reaching consensus on proposals in cycle $$C$$ aren’t known until at least cycle $$C+4$$, when the consensus process times out. However, since Signers clocks are not necessarily in sync Signers must wait to see $$CYCLE\_END$$ transaction for $$C+4$$ posted to Notary Group Chain Tree, which defines the “official” set of all transactions from $$C$$ that were notarized and will be rewarded.
+
+```
+CYCLE_END
+message CycleEnd {
+   uint64 closingCycle = C+4;
+   uint64 rewardsCycle = C;
+   bytes rewardsTransactions = 1;
+}
+```
+
+Once Signers see this transaction they can, if they haven’t already, advance to $$C+5$$ and post their rewards reports for the transactions proposed in $$C$$.
+
+All Signers reporting on cycle $$C$$ must write their Rewards Report to the Notary Group Chain Tree before a $$CYCLE\_END$$ transaction closing $$C+5$$ is posted (or they are penalized for failing to report).
+
+To agree on active Signer balances with respect to any block proposal, Signers must compute the balances in a deterministic manner based on a complete, unchanging set of reward and penalty assessment transactions for cycle $$C-6$$. To do this they must assume that
+
+1. all rewards and penalties regarding proposals specifying cycle C have been written to the Notary Group Chain Tree before beginning consensus on any proposals specifying C+6,
+2. and All Signers’ clocks are no more than 1 cycle apart. If the lowest cycle among all Signers is C, then all other Signers are in either C or C+1
+
+When receiving a proposal specifying cycle $$C$$, the Signer uses the balances from the Notary Group Chain Tree resulting from Reward Reports from cycle $$C-6$$ and penalties assessed at $$C-5$$. As stated above, the rewards must have been posted by the $$CYCLE\_END$$ transaction closing $$C-2$$ and the penalties by the end of $$C-1$$. The balances computed at the transition from $$C-1$$ to $$C$$ are used by all Signers notarizing transactions specifying $$C$$. If the $$CYCLE\_END$$ transaction closing $$C-1$$ has not been posted then the proposal specifying $$C$$ is invalid ($$C$$ is too far in the future).
+
+Using a historical balance like this implies that a slashable offense occurring on a block proposed in cycle $$C$$ will result in the offending Signer’s voting rights being revoked within 6 cycles of the offense. Future versions of the protocol will enable a more immediate enforcement of slashing independent of the rewards/penalties cycle.
