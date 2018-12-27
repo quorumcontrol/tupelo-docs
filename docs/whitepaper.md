@@ -409,3 +409,89 @@ To agree on active Signer balances with respect to any block proposal, Signers m
 When receiving a proposal specifying cycle $$C$$, the Signer uses the balances from the Notary Group Chain Tree resulting from Reward Reports from cycle $$C-6$$ and penalties assessed at $$C-5$$. As stated above, the rewards must have been posted by the $$CYCLE\_END$$ transaction closing $$C-2$$ and the penalties by the end of $$C-1$$. The balances computed at the transition from $$C-1$$ to $$C$$ are used by all Signers notarizing transactions specifying $$C$$. If the $$CYCLE\_END$$ transaction closing $$C-1$$ has not been posted then the proposal specifying $$C$$ is invalid ($$C$$ is too far in the future).
 
 Using a historical balance like this implies that a slashable offense occurring on a block proposed in cycle $$C$$ will result in the offending Signer’s voting rights being revoked within 6 cycles of the offense. Future versions of the protocol will enable a more immediate enforcement of slashing independent of the rewards/penalties cycle.
+
+#### Choosing $$R_T$$
+
+The size of $$R_T$$ relative to the total number of signers for the epoch represents a tradeoff between safety and efficiency. A smaller $$R_T$$ improves efficiency by reducing the number of messages that need to be sent when signers commit and conflict sets that need to be retained until rewards are calculated. A larger $$R_T$$ improves safety by minimizing the probability that all members of $$R_T$$ are byzantine. Below are probabilities of $$R_T$$ being completely byzantine for different $$R_T$$ sizes in a signer set of 100 nodes with 33 byzantine (assuming $$T$$ is random, the order of signers is random, and using a Hypergeometric distribution calculation)
+
+| $$R_T$$ size        | $$P[all byzantine]$$  |
+| ---------- | ---------- |
+| 1 | 0.33000000 |
+| 5 | 0.00315239 |
+| 10 | 0.000005347 |
+| 15 | 4.093963 e-09 |
+| 20 | 1.069374 e-12 |
+
+Thus with an $$R_T$$ size of 10, a cartel of 33 byzantine nodes will get to corrupt the rewards process about 5 times out of a million.
+
+### Signer Rotation
+
+The set of active Signers in the Notary Group will change over time as new Signers join and existing ones leave. Tupelo defines a secure rotation mechanism that allows Signers to deposit their bonds, participate in Notary Groups, exit and withdraw their deposits without subjecting the Notary Group to long range attacks that exist in stake-based systems. The rotation mechanism provides a definitive answer to the question of which Signers are active for a given conflict set (needed for gossiping Signers) and a practically consistent answer to the question of which Signers are currently active (needed for block proposing Chain Tree owners).
+
+Our mechanism is loosely based on Casper FFG, but without a singleton chain whose block heights precisely define the validator sets that apply to any transaction. It does leverage the singleton Notary Group Chain Tree but all participants measure time by their own local clocks.
+
+#### Epochs
+
+Epochs are periods of time (on the order of 1 hour) during which Notary Group membership does not change. All Notary Group membership changes take effect at the beginning of an epoch.
+Epoch boundaries are determined by local clocks, which are not synchronized. Thus, the set of active signers at any given point in time is subjective. In particular, the notion of the current epoch is not deterministic in Tupelo. Signers and Chain Tree owners must decide this based on their local clocks. The epoch duration is set long enough such that all Signers in practice will agree most of the time on what the current epoch is, though they are expected to become inconsistent around epoch boundaries.
+
+Fortunately, Signers do not require a globally consistent view of the currently active Signer set; they only need to agree on the set of active Signers with respect to a single conflict set, because each conflict set is resolved by a separate, independent consensus process. The next sections describe how the set of active signers for a given epoch and for a given conflict set can be calculated deterministically.
+
+#### Determining the Active Signer Set for Epoch E
+
+The fixed set of active signers for epoch E is defined as an ordered set of registered (K,A) pairs, where K is the public key used to authenticate the Signers protocol messages and A is the Signer’s network address. For a set of n Signers, the active set for epoch E is:
+
+$$
+AS(E) = (K,A)_0, … (K,A)_i, … (K,A)_{n-1},
+$$
+
+The fixed set of active Signers in any given epoch can be deterministically calculated from the notarized history of $$ACTIVATE\_SIGNER$$ and $$DEACTIVATE\_SIGNER$$ transactions on the on the Notary Group Chain Tree.
+
+Since such a calculation would be time consuming and error prone, the computed set of active Signers for several recent and upcoming epochs is maintained in the state of the Notary Group Chain Tree. That way anyone with a notarized tip can read the active Signer Set for any past epoch directly from the state.
+
+At the end of epoch $$E$$, the active Signer set for $$E$$ notarizes a $$EPOCH\_END$$ transaction that summarizes all of the $$ACTIVATE\_SIGNER$$ and $$DEACTIVATE\_SIGNER$$ transactions that occurred during $$E$$ (see Updating Membership below) and updates.
+
+```
+EPOCH_END
+message EpochEnd {
+   uint64 closingEpoch = E;
+   array<(bytes, bytes)> signersJoining = 2;
+   array<(bytes, bytes)> signersLeaving = 3;
+   array<(bytes, bytes)> signersRefunded = 3;
+}
+```
+
+This causes a recalculation of the active signer sets for epoch $$E+1$$ and $$E+2$$.
+$$
+AS(E+1) = AS(E)-signersLeaving \\
+AS(E+2) = AS(E)+signersJoining \\
+$$
+
+This transaction also finalizes and shuffles the active signer set for $$E+1$$ just in time for epoch $$E+1$$ to begin. The transaction also serves as a demarcation point between epochs $$E$$ and $$E+1$$.
+This allows any actor in the system to quickly, reliably, and trustlessly get the list of active signers for the current epoch (and some number of previous epochs). The actor only needs to check that the $$EPOCH\_END$$ transaction closing $$E$$ has been included in the latest notarized tip of the Notary Group Chain Tree to know the state is correct and contains the final active Signer set for epoch $$E+1$$.
+
+Once a Signer leaves the Notary Group, that Signer’s public key is forever forbidden from rejoining the Notary Group. The Signer can rejoin using the same network address with a different signing key, thus creating a unique $$(K,A)$$ pair.
+
+The signersRefunded member is used to refund the set of deactivated signers whose waiting period elapsed, allowing them to receive and spend their balance.
+
+#### Updating Membership
+
+At the end of epoch $$E$$, the active Signers collectively construct and notarize a $$EPOCH\_END transaction with $$closingEpoch\ =\ E$$. They determine the $$signersJoining$$ and $$signersLeaving$$ arrays based on staking transactions that occurred during epoch $$E$$.
+
+Recall that nodes wishing to register as Signers deposit their bonds by appending to their own Chain Trees a $$DEPOSIT\_STAKE$$ transaction that triggers a corresponding $$ACTIVATE\_SIGNER$$ transaction on the Notary Group Chain Tree. Since every notarized transaction is associated with a specific epoch, the set of $$ACTIVATE\_SIGNER$$ transactions on the Notary Group Chain Tree for epoch $$E$$ can be mapped to $$(K,A)$$ pairs to create the $$signersJoining$$ for epoch $$E+2$$. Similarly, the signersLeaving array for epoch $$E+1$$ can be computed by mapping the set of $$DEACTIVATE\_SIGNER transactions notarized in epoch $$E$$.
+
+#### Determining the Active Signer Set For a Conflict Set
+
+The set of active Signers assigned to resolve a conflict set for tip $$T$$ is determined by the epoch implied by cycle $$C$$ specified in the $$PROPOSE(B,T,C)$$ message(s) sent by the Chain Tree owner(s). There is no disagreement in the common cases when only a single proposal is sent, when multiple proposals for extending $$T$$ specify the same cycle, or multiple proposals specifying different cycles in the same epoch. The uncommon case around epoch boundaries where multiple proposals specify different $$C$$ implying different $$E$$, and are consequently gossipped to different active Signer sets requires a more complex solution (described in Edge Cases below).
+
+#### Max Churn
+
+In order to preserve the state of the Notary Group Chain Tree and ensure safety across epoch boundaries, the protocol defines a $$MaxChurn$$ parameter that limits the amount of Signer turnover in any epoch. The $$MaxChurn$$ for any epoch $$E$$ is enforced by limiting the number of $$ACTIVATE\_SIGNER$$ and $$DEACTIVATE\_SIGNER$$ transactions that are posted to the Notary Group Chain Tree in epoch $$E$$. This limit is defined as a the integer floor of ⅓ active stake in epoch $$E-1$$. This means that at least ⅔ of active Signers from epoch $$E$$ will be active in epoch $$E+1$$. We call this ⅔ Signers the forward Signer set for epoch $$E$$, and the rear Signer set for epoch $$E+1$$. These sets will be useful for resolving conflict sets that span epoch boundaries (see Edge Cases below).
+
+#### Processing Withdrawals
+
+Signer deposits remain locked for a period of time ($$t$$ epochs, on the order of 4 months) after the Signer is inactivated by a $$DEACTIVATE\_SIGNER$$ transaction. If the $$DEACTIVATE\_SIGNER$$ was posted in epoch $$E$$ then an when an $$EPOCH\_END$$ is written at epoch $$E+t$$ its $$signersRefunded$$ member functions like a $$SEND\_COIN$$ that effectively refunds the balance of all Signers listed. Once that transaction appears on the Notary Group Chain Tree, the Signer can issue a $$RECEIVE\_COIN$$ on their own Chain Tree to transfer their balance and allow them to spend it.
+
+#### Sending Proposals
+
+Chain Tree owners sending $$PROPOSE$$ messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The $$CurrentCycle$$, $$CurrentEpoch$$, and $$CurrentActiveSigners$$ properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4\ …\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
