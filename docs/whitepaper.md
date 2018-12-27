@@ -14,16 +14,15 @@ nav_order: 2
 ## Chain Trees & Notary Groups: Tupelo Working Draft - October 2018 - v0.10
 {: .no_toc .text-delta }
 
+## Abstract
+
+Digital asset ownership systems can achieve faster processing time, more decentralization, and less overhead by adopting a client-lead consensus algorithm and removing global transaction ordering. Introducing an individual append-only log (blockchain) combined with a notarized merkle-DAG (directed acyclic graph) per actor allows for a variety of protocols to be built on top of a byzantine fault tolerant global layer of trust while scaling to hundreds of thousands of transactions per second. We call this combination of blockchain and merkle-DAG a Chain Tree. The combination of a Chain Tree and a public Notary Group is a system we are calling Tupelo.
 
 ## Table of contents
 {: .no_toc .text-delta }
 
 1. TOC
 {:toc}
-
-## Abstract
-
-Digital asset ownership systems can achieve faster processing time, more decentralization, and less overhead by adopting a client-lead consensus algorithm and removing global transaction ordering. Introducing an individual append-only log (blockchain) combined with a notarized merkle-DAG (directed acyclic graph) per actor allows for a variety of protocols to be built on top of a byzantine fault tolerant global layer of trust while scaling to hundreds of thousands of transactions per second. We call this combination of blockchain and merkle-DAG a Chain Tree. The combination of a Chain Tree and a public Notary Group is a system we are calling Tupelo.
 
 ## Background
 The current state of the art in cryptocurrency systems is referred to as “distributed ledger technology (DLT).” Most DLT systems model asset ownership/transfer as quantities sent between accounts within atomic transactions. If Alice wants to send Bob 5 tokens, she creates a transaction on the ledger which debits her account 5 tokens and increases Bob’s account 5 tokens. In order to prevent Alice from double spending, Bob has to wait until the ledger has come to a consensus that Alice’s transaction is valid. The distributed ledger needs to keep a global ordered transaction log to make sure that Alice has the 5 tokens to spend. Global ordering is one of the reasons many distributed ledgers can only process tens of transactions per second globally.
@@ -495,3 +494,107 @@ Signer deposits remain locked for a period of time ($$t$$ epochs, on the order o
 #### Sending Proposals
 
 Chain Tree owners sending $$PROPOSE$$ messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The $$CurrentCycle$$, $$CurrentEpoch$$, and $$CurrentActiveSigners$$ properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4\ …\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
+
+#### Edge Cases
+One edge case that occurs around epoch boundaries is when multiple proposals extending the same tip specify different cycles that imply different epochs, for example $$E$$ and $$E+1$$. Since the proposal’s cycle defines active Signer sets, these proposals may be gossipped to different Notary Groups. The $$CurrentCycle$$, $$CurrentEpoch$$, and $$CurrentActiveSigners$$ properties stored in the Notary Group Chain Tree state can reduce the likelihood of this situation. However, Chain Tree owners can specify arbitrary cycles in their proposals so the protocol must be designed to prevent two transactions extending the same tip from being notarized.
+
+Recall from the discussion of cycles that
+1. there are 60 cycles per epoch
+2. each $$PROPOSE$$ message must specify a cycle which implies the epoch
+3. $$PROPOSE$$ messages specifying $$C$$ are only valid to Signers in cycles $$C-1\ ...\ C+4$$
+4. we assume Signers’ clocks are no more than 1 cycle apart
+
+Thus, in order for two valid proposals with different epochs to conflict they must be within 6 cycles of each other, and thus reside in adjacent epochs, e.g. $$E$$ and $$E+1$$.
+
+Recall that $$MaxChurn$$ limits the number of Signers that can join/leave the active Signer in the transition from epoch $$E$$ to $$E+1$$, and that the the forward Signer set for $$E$$ is the rear Signer set for $$E+1$$.
+
+To maintain safety across epoch boundaries, specifically to prevent two extensions of tip $$T$$ being notarized by two different active Signer sets, notarization requires, in addition to ⅔ signature weight from the entire active Signer set, ⅔ signature weight from each of the forward and rear Signer sets. Thus for a conflict set with proposals $$P1$$ specifying $$E$$ and $$P2$$ specifying $$E+1$$, in order to notarize both $$P1$$ and $$P2$$ it must be the case that at least ⅔ of the forward Signer set for $$E$$ committed to $$P1$$ and ⅔ of the rear Signer set for $$E+1$$ committed to $$P2$$. Since these sets are equivalent, at least ⅓ of Signers in those sets must have committed to both and will be slashed.
+
+#### Long Range Attacks
+
+In proof of stake blockchains an attacker purchasing enough retired validator keys can rewrite the entire chain's history including FFG checkpoints creating all kinds of double spend opportunities. A user who has been offline for a long period of time can't tell which history is correct. Such users need a trust point, such as a public website containing a list of recent checkpoints, or something hardcoded in the latest version of the software.
+
+In Tupelo such an attacker having purchased 2/3 retired signer keys could create a fork of one or more chain trees if they also had each chain tree owner's signing key. Double spending is not much of concern because a previous spend ($$SEND\_COIN$$) is likely to be referenced in a $$RECEIVE\_COIN$$ in some other chain tree that the attacker doesn't have the key to (because they're trying to cheat that chain tree's owner). However, it is possible for an attacker who owns an asset to transfer ownership of that asset multiple times (creating a fork in the asset’s Chain Tree), once with real notarization and once with fake notarization of a past transfer of ownership using acquired keys. For this attack to succeed, the asset Chain Tree must not have been extended recently enough for any Signers to hold a copy of the new notarized tip.
+
+Such attacks can be thwarted by requiring each Chain Tree tip to be extended once every period $$T$$, where $$T$$ < the waiting period between $$DEACTIVATE\_SIGNER$$ and $$SEND\_COIN$$.
+
+#### Grinding Attacks
+
+It is possible for an attacker to try to game the rewards process by repeatedly trying out new transactions on its own chain tree to see what tip they would produce, and thus what Rewards Committee would be assigned, and then submitting a transaction that enables them to control the Rewards Committee.
+
+Since rewards are on the order of transaction fees, such grinding attacks are unlikely to be profitable. The attacking cartel essentially makes back their transaction fees.
+
+#### Safety and Liveness
+
+Like Casper, TCA provides accountable safety and plausible liveness under some majority honest and network synchrony assumptions. Accountable safety means that two conflicting blocks cannot both be finalized without at least ⅓ of all Signer deposits being forfeited. This property holds without any synchrony assumptions in the underlying network if more than ⅔ Signers are follow the protocol. Plausible liveness means that a Chain Tree with at least one pending block will eventually be updated if more than ⅔ Signers are follow the protocol and the network is partially synchronous.
+
+#### Notary Group Chain Tree Implementation
+
+The Notary Group Chain Tree is a special Chain Tree whose owners change implicitly at the end of each epoch. Specifically, the CurrentActiveSigners property stored in the Notary Group Chain Tree state defines the owners who have permission to write transactions to it.
+At the end of epoch $$E$$, i.e. the end of cycle $$C$$ where $$C mod 60 == 0$$ an active Signer writes a transaction to the Notary Group Chain Tree that officially starts a new cycle $$C+1$$ and epoch $$E+1$$, and activates the new active Signer set for $$E+1$$.
+
+The $$MaxChurn$$ limit ensures that some minimum subset of active Signers from epoch $$E$$ remain active in epoch $$E+1$$. New Signers arriving in epoch $$E+1$$ can get the latest state and tip of the Notary Group Chain Tree from any Signers who were active during epoch $$E$$. Notarization is required for all updates to the Notary Group Chain Tree. This ensures that all active Signers always have the same latest tip.
+
+## Additional Protocols and Future Work
+
+Many additional protocols can be built on top of the global layer of trust described above. Some protocols will be built into the initial deployment of the Tupelo network.
+
+### Smart Contracts
+
+Chain Trees and a notary system lends itself really well to a new take on Smart Contracts. You can think of these as Smart Mutators. These would be user-defined code that is hashed into the Chain Tree that can handle arbitrary transactions. This would allow a user to assert that both their data is trusted and the method for modifying the data was executed correctly.
+
+### Transitioning Between Networks
+
+Because Chain Trees are independant and not part of a globally ordered history, it is possible to provide tools to move between private, semi-private, and fully public signer groups.
+
+### Anonymity and Transaction Blinding
+
+Because the Chain Trees are already pseudonymous and there is no global state, the system lends itself to private transactions. Additionally the use of the P2P broadcast network can protect IP addresses, etc from transaction origin. Zero-knowledge proofs could be employed in the $$RECEIVE\_COIN$$ and $$SEND\_COIN$$ transactions to make for a truly anonymous system.
+
+### Sharding
+
+In some ways, Tupelo takes sharding to its logical conclusion (a separate shard per actor). However, the system as designed above still has all transactions go through a single Notary Group processing all transactions. Even though a single notary group scales to hundreds or thousands of transactions per second, sharding the notary group is necessary to reach hundreds of thousands of transactions per second. Tupelo is purposely setup to allow for easy sharding by using the DID of a Chain Tree to assign that Chain Tree to a certain shard. The shards would still use a singleton Notary Group Chain Tree, but individual transactions would be approved by a subset of all global signers (determined by DID). Since there are never any cross Chain Tree transactions, Tupelo does not suffer from the complexity of cross-shard messaging.
+
+## Appendix A - Alice buys a car from Volkswagen (VW)
+Take the scenario of Alice buying a car from VW. The protocol operates as such:
+
+VW creates a public/private key pair for a new Chain Tree. The Chain Tree will be named: ```did:qc:<hex-encoded-genesis-public-key>```. VW publishes a custom genesis block:
+
+```
+ChainId: did:qc:<hex-encoded-genesis-public-key>
+Transactions: [
+	{Type: ADD_DATA
+	 Payload: <hash_of_VIN_number>}
+]
+Signatures: [<secp256k1 by generated key>]
+```
+
+The transaction is opaque to the protocol, but VW could use that payload internally to associate the Chain Tree with an individual vehicle.
+VW publishes this to the p2p broadcast network and listens for responses.
+VW waits for the $$COMMIT$$ message from the Notary Group
+Alice buys the car and requests ownership from VW. Off-chain Alice gives VW a public key (or many). VW publishes a new block to the p2p network:
+
+```
+ChainId: did:qc:<hex-encoded-genesis-public-key>
+Transactions: [
+	{Type: SET_OWNERSHIP
+	 Payload: {Authentication: [<alice public key>]}}
+]
+Signatures: [<secp256k1 by generated key>]
+```
+
+VW repeats the broadcast/wait above and then (off-chain) gives Alice a copy of the Chain Tree.
+
+```
+ChainId: did:qc:<hex-encoded-genesis-public-key>
+Sequence: 1
+Transactions: [
+	{Type: UPDATE_OWNERSHIP
+	 Payload: {Authentication: [<alice public key>]}}
+]
+PreviousHash: <hash of last block>
+Signature: [<secp256k1 by generated key>
+		 <BLS multisig by notary group>]
+```
+
+Alice now owns that Chain Tree (and hence the vehicle). She does not need to be online to verify that ownership as she will have an off-line list of the Notary Group public keys.
