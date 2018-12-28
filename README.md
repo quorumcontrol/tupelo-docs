@@ -1,4 +1,16 @@
-## Welcome to GitHub Pages
+## Tupelo Document Repo
+
+This repo represents the collected technical documentation for the Tupelo DLT.  It includes the whitepaper, get started examples and API documentation.
+
+It is built with Jeckyl employing the just-the-docs theme.  
+
+Details on the just-the-docs template can be found [here](https://pmarsceill.github.io/just-the-docs/).
+
+The documents are generally [kramdown](https://kramdown.gettalong.org/syntax.html) and make use of [mathjax](http://docs.mathjax.org/en/latest/start.html). 
+
+They are being served by Github pages.
+
+## GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/icarusz/tupelo-docs.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
