@@ -180,9 +180,9 @@ An epoch is the period during which the set of active Signers remains constant (
 ### Conflict Set Resolution
 The consensus process begins when a Chain Tree owner proposes a block by sending a signed $$PROPOSE(B,T,C)$$ message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The PROPOSE message components are:
 
- $$B$$ - the block of transactions, new tip, any state required for validation
- $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
- $$C$$ - the current cycle, which determines both the set of active signers and their stake weights
+- $$B$$ - the block of transactions, new tip, any state required for validation
+- $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
+- $$C$$ - the current cycle, which determines both the set of active signers and their stake weights
 
 Upon receiving a $$PROPOSE(B,T,C)$$ message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 … C+4$$. The owner’s signature over $$(B,T,C)$$ is also validated against the public key stored in the chain tree.
 
@@ -255,7 +255,7 @@ The protocol forbids transactions updating a Signer’s balance on the Notary Gr
 ### Incentives
 Financial incentives are essential to secure the network. To incentivize Signers to participate, rewards are paid to Signers that actively participate in consensus. To prevent Sybil attacks and incentivize Signers to follow the protocol Signers are required to deposit bonds, which allow them to be penalized for violating protocol rules.
 
-A node wishing to register as a Signer and become eligible to receive rewards for participating in consensus must first deposit its bond by appending to its Chain Tree a $$DEPOSIT_STAKE$$ transaction, including the amount it wishes to stake, the public key to be used for authenticating protocol messages it signs, and the network address that other Signers and Chain Tree owners should use to send protocol messages to it.
+A node wishing to register as a Signer and become eligible to receive rewards for participating in consensus must first deposit its bond by appending to its Chain Tree a $$DEPOSIT\_STAKE$$ transaction, including the amount it wishes to stake, the public key to be used for authenticating protocol messages it signs, and the network address that other Signers and Chain Tree owners should use to send protocol messages to it.
 
 ```
 DEPOSIT_STAKE
@@ -266,7 +266,7 @@ message DepositStakeTransaction {
 }
 ```
 
-This special transaction functions like a $$SEND_COIN$$ with a fixed destination of the Notary Group Chain Tree. Once the $$DEPOSIT_STAKE$$ transaction has been notarized an active Signer appends a corresponding $$ACTIVATE_SIGNER$$ transaction on the Notary Group Chain Tree.
+This special transaction functions like a $$SEND_COIN$$ with a fixed destination of the Notary Group Chain Tree. Once the $$DEPOSIT\_STAKE$$ transaction has been notarized an active Signer appends a corresponding $$ACTIVATE\_SIGNER$$ transaction on the Notary Group Chain Tree.
 
 ```
 ACTIVATE_SIGNER
@@ -281,8 +281,9 @@ message ActivateSignerTransaction {
 }
 ```
 
-The $$ACTIVATE_SIGNER$$ transaction creates a balance for the public key of the Chain Tree that issued the $$DEPOSIT_STAKE$$ and queues the candidate Signer to join the active Signer set in a future epoch (see Signer Rotation below). When that epoch arrives the candidate Signer will become active and start signing messages that support the consensus process. The messages it signs and doesn’t sign while a registered and active Signer will be used to determine whether it should be rewarded for contributing to the success of the protocol or penalized for hindering it.
-When a node wishes to no longer participate in consensus it can issue a $$RESIGN_STAKE$$ transaction on its own Chain Tree.
+The $$ACTIVATE\_SIGNER$$ transaction creates a balance for the public key of the Chain Tree that issued the $$DEPOSIT\_STAKE$$ and queues the candidate Signer to join the active Signer set in a future epoch (see Signer Rotation below). When that epoch arrives the candidate Signer will become active and start signing messages that support the consensus process. The messages it signs and doesn’t sign while a registered and active Signer will be used to determine whether it should be rewarded for contributing to the success of the protocol or penalized for hindering it.
+
+When a node wishes to no longer participate in consensus it can issue a $$RESIGN\_STAKE$$ transaction on its own Chain Tree.
 
 ```
 RESIGN_STAKE
@@ -292,7 +293,7 @@ message ResignStakeTransaction {
 }
 ```
 
-This transaction signals the Signer’s intent to leave and triggers an active Signer to append a $$DEACTIVATE_SIGNER$$ message to the Notary Group Chain Tree.
+This transaction signals the Signer’s intent to leave and triggers an active Signer to append a $$DEACTIVATE\_SIGNER$$ message to the Notary Group Chain Tree.
 
 ```
 DEACTIVATE_SIGNER
