@@ -25,6 +25,7 @@ Digital asset ownership systems can achieve faster processing time, more decentr
 {:toc}
 
 ## Background
+
 The current state of the art in cryptocurrency systems is referred to as “distributed ledger technology (DLT).” Most DLT systems model asset ownership/transfer as quantities sent between accounts within atomic transactions. If Alice wants to send Bob 5 tokens, she creates a transaction on the ledger which debits her account 5 tokens and increases Bob’s account 5 tokens. In order to prevent Alice from double spending, Bob has to wait until the ledger has come to a consensus that Alice’s transaction is valid. The distributed ledger needs to keep a global ordered transaction log to make sure that Alice has the 5 tokens to spend. Global ordering is one of the reasons many distributed ledgers can only process tens of transactions per second globally.
 
 Additionally, these systems are not suited for real-world asset ownership. Distributed ledgers were designed to model currency and similar concepts such as stocks and bonds, but there are few systems where transferring ownership of items like real estate or cars (or door locks, routers, etc) is ideal. Developers have used existing systems as timestamp generators, but the systems themselves aren’t designed for individual objects.
@@ -58,29 +59,29 @@ This whitepaper won’t go into the details of IPLD, but, at a high level, IPLD 
 To illustrate this data structure, we will take a look at a couple of transactions, starting very simply, then moving to slightly more complex.
 
 
-#### Figure 1 - A simple transition ####
+##### Figure 1 - A simple transition ####
 
-In Figure 1, We can see that there was an empty tree, we played the SET_DATA transaction on the tree and ended up with a new tip for the tree and a new entry in our chain. This is the simplest possible scenario, where the “tree” is actually just a single node and we are just setting data on the root node. The result is a data structure of the combination of a 1 node chain and a 1 node tree.
+In Figure 1, We can see that there was an empty tree, we played the $$SET\_DATA$$ transaction on the tree and ended up with a new tip for the tree and a new entry in our chain. This is the simplest possible scenario, where the “tree” is actually just a single node and we are just setting data on the root node. The result is a data structure of the combination of a 1 node chain and a 1 node tree.
 
-#### Figure 2 - Two new transaction types ####
+##### Figure 2 - Two new transaction types ####
 
-In Figure 2, there are two separate transactions taking place on the Chain Tree created in Figure 1. The State Machine acting on this Chain Tree knows how to handle an ADD_AUTHENTICATION and it does so by adding a link to the Authentications on the root node to a list of authentications and appending this entry to that list (in this case: an empty set). Next, we play a RM_AUTHENTICATION transaction on the Chain Tree which removes the node created by the ADD_AUTHENTICATION. Playing the chain on the right will always result in the same tree created on the left. The tip of the Chain Tree is created by hashing the root node. This allows for a content-addressable tree of unlimited size to be signed by a single hash value.
+In Figure 2, there are two separate transactions taking place on the Chain Tree created in Figure 1. The State Machine acting on this Chain Tree knows how to handle an $$ADD\_AUTHENTICATION$$ and it does so by adding a link to the Authentications on the root node to a list of authentications and appending this entry to that list (in this case: an empty set). Next, we play a $$RM\_AUTHENTICATION$$ transaction on the Chain Tree which removes the node created by the $$ADD\_AUTHENTICATION$$. Playing the chain on the right will always result in the same tree created on the left. The tip of the Chain Tree is created by hashing the root node. This allows for a content-addressable tree of unlimited size to be signed by a single hash value.
 
 ## Actors
 
-Every actor in the system (both identities and assets) may have one or many Chain Tree(s). Actors create a new, global, Chain Tree by creating a new public/private secp256k1 key-pair. The Chain Tree’s ID is a DID derived from the ethereum-style address of the public key (created the same way that Ethereum creates addresses based on public keys). An example Chain Tree DID is: did:tupelo:0xDD4f79D433FC132dc22e662F25B5D46fADFfa16. Before any transactions have been played on the Chain Tree, the Chain Tree is in the genesis state. The owner of a genesis Chain Tree is the holder of the private key that corresponds to the address in the Chain Id.
+Every actor in the system (both identities and assets) may have one or many Chain Tree(s). Actors create a new, global, Chain Tree by creating a new public/private secp256k1 key-pair. The Chain Tree’s ID is a DID derived from the ethereum-style address of the public key (created the same way that Ethereum creates addresses based on public keys). An example Chain Tree DID is: `did:tupelo:0xDD4f79D433FC132dc22e662F25B5D46fADFfa16`. Before any transactions have been played on the Chain Tree, the Chain Tree is in the genesis state. The owner of a genesis Chain Tree is the holder of the private key that corresponds to the address in the Chain Id.
 
 Ownership of a Chain Tree may be changed by adding public keys to a system-defined path in the tree. In the case of this system the path /\_tupelo/authorizations should contain a set of links to public keys. If /\_tupelo/authorizations is defined on the Chain Tree then this ownership overrides the keypair used to create the Chain Tree.
 
 Only the owner(s) of a Chain Tree may create new transactions on a Chain Tree. The tip of a Chain Tree refers to the hash of the root node of the current state of a Chain Tree (a Chain Tree with all transactions applied).
 
 Transactions are arbitrary mutations of state. The client and Notary Group must agree on the process of mutating state through named transactions. The initial release will include the following transactions:
-  * SET_DATA
-  * SET_OWNERSHIP
-  * ESTABLISH_COIN
-  * MINT_COIN
-  * SEND_COIN
-  * RECEIVE_COIN
+  * $$SET\_DATA$$
+  * $$SET\_OWNERSHIP$$
+  * $$ESTABLISH\_COIN$$
+  * $$MINT\_COIN$$
+  * $$SEND\_COIN$$
+  * $$RECEIVE\_COIN$$
 
 Later, we will discuss how user-defined transactions can be used to expand the system in a manner similar to smart-contracts on other DLT systems.
 
@@ -88,9 +89,9 @@ Later, we will discuss how user-defined transactions can be used to expand the s
 
 Initial implementations include a protocol to transfer quantities of a token. Conceptually this is the same as any other cryptocurrency token such as Ethereum or Bitcoin. Chain Trees and Notary Groups accomplish double-spend protection on top of the existing layer of trust described above and do not need a global ledger. This system allows for unlimited currencies on the same notarized system without the need for smart contracts.
 
-Currency exchange introduces 4 transaction types: ESTABLISH_COIN, MINT_COIN, SEND_COIN, RECEIVE_COIN. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
+Currency exchange introduces 4 transaction types: $$ESTABLISH\_COIN$$, $$MINT\_COIN$$, $$SEND\_COIN$$, $$RECEIVE\_COIN$$. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
 
-#### Figure 4 - Cryptocurrency branch of a Chain Tree
+##### Figure 4 - Cryptocurrency branch of a Chain Tree
 
 ```
 ESTABLISH_COIN
@@ -110,7 +111,7 @@ message MintCoinTransaction {
 }
 ```
 
-Any actor may mint their own coins once they have been established within that chaintree via an ESTABLISH_COIN transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a MINT_COIN transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_coin` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and `cat_coin` is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the coin was established.
+Any actor may mint their own coins once they have been established within that chaintree via an $$ESTABLISH\_COIN$$ transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a $$MINT\_COIN$$ transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_coin` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and `cat_coin` is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the coin was established.
 
 ```
 SEND_COIN
@@ -122,7 +123,7 @@ message SendCoinTransaction {
 }
 ```
 
-A SEND_COIN transaction is valid if in the state of the Chain Tree there is enough of a balance of “name” coin. The balance is calculated by adding all mints and receives in the Chain Tree and subtracting the Sends. The Chain Tree owner sends the signed tip (and the path through the Chain Tree) that includes the sendcoin. The “balance” is immediately deducted from their Chain Tree in the sense that they cannot add another SEND_COIN transaction for more than their balance which includes this transaction. The destination should be the DID of the receiving ChainTree. A SEND_COIN transaction is similar to a cashiers check in that the amount is deducted from the senders ChainTree at the time of the SEND_COIN transaction. This allows a RECEIVE_COIN transaction (see next section) to not depend on any future state of the sender’s ChainTree. The senders’ and receivers’ chain trees are updated independently and therefore there is no multiple Chain Tree transaction needed at the signer level.
+A $$SEND\_COIN$$ transaction is valid if in the state of the Chain Tree there is enough of a balance of “name” coin. The balance is calculated by adding all mints and receives in the Chain Tree and subtracting the Sends. The Chain Tree owner sends the signed tip (and the path through the Chain Tree) that includes the sendcoin. The “balance” is immediately deducted from their Chain Tree in the sense that they cannot add another $$SEND\_COIN$$ transaction for more than their balance which includes this transaction. The destination should be the DID of the receiving ChainTree. A $$SEND\_COIN$$ transaction is similar to a cashiers check in that the amount is deducted from the senders ChainTree at the time of the $$SEND\_COIN$$ transaction. This allows a $$RECEIVE\_COIN$$ transaction (see next section) to not depend on any future state of the sender’s ChainTree. The senders’ and receivers’ chain trees are updated independently and therefore there is no multiple Chain Tree transaction needed at the signer level.
 
 ```
 RECEIVE_COIN
@@ -134,13 +135,13 @@ message ReceiveCoinTransaction {
 }
 ```
 
-A RECEIVE_COIN transaction is valid if the Tip including the SEND_COIN transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a send_coin_transaction_id that does not appear in the Chain Tree previously (preventing “double receive”).
+A $$RECEIVE\_COIN$$ transaction is valid if the Tip including the $$SEND\_COIN$$ transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a $$send\_coin\_transaction\_id that does not appear in the Chain Tree previously (preventing “double receive”).
 
 ### Cryptocurrency Discussion
 
-A Chain Tree owner can never double spend because the SEND_COIN transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends. A receiver cannot add more RECEIVE_COIN blocks without having valid (and unique) transaction ids (which are signed by ⅔ of the Notary Group).
+A Chain Tree owner can never double spend because the $$SEND\_COIN$$ transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends. A receiver cannot add more $$RECEIVE\_COIN$$ blocks without having valid (and unique) transaction ids (which are signed by ⅔ of the Notary Group).
 
-SEND_COIN can be included in every block as payment to the Signer if an incentification system is necessary for the Notary Group.
+$$SEND\_COIN$$ can be included in every block as payment to the Signer if an incentification system is necessary for the Notary Group.
 
 ## Notary Groups (consensus algorithm)
 A Notary Group is a registered, bonded set of validator nodes, called Signers, that collectively notarize the tip of every Chain Tree. When an actor adds a block of transactions to their Chain Tree, it sends the block and the new tip hash it creates to the Notary Group along with any state necessary to validate all the transactions in the block. Signers validate these blocks and, if valid, append their digital signatures and forward them to other Signers for more signatures. Once a block receives a supermajority of signatures, the new state, specifically the Merkleized tip of the actor’s Chain Tree, is effectively notarized and will be used as the canonical latest tip for validating the next block on that Chain Tree.
@@ -151,7 +152,7 @@ Conflict set resolution is accomplished using a deterministic and instantly fina
 
 ### Tupelo Consensus Algorithm
 
-The Tupelo Consensus Algorithm (TCA) is a leaderless Byzantine Fault Tolerant (BFT) consensus algorithm for resolving conflict sets. Chain Tree owners act as leaders proposing all new blocks on Chain Trees they own. TCA is based on an optimized version of the proposer-independent [Casper FFG protocol](https://github.com/ethereum/research/blob/master/papers/casper-basics/casper_basics.pdf) that uses [BLS signature aggregation](https://crypto.stanford.edu/~dabo/abstracts/aggreg.html) to realize O(NlogN) message complexity and achieve greater scalability. To prevent Sybil attacks and incentivize Signers to follow the protocol, Signers are required to deposit bonds, which they can lose for attributable misbehavior. TCA’s Proof of Stake (PoS) incentive structures and validator set management are inspired by Casper’s, whereas the signature aggregation mechanisms and gossip protocol used in TCA are heavily influenced by [Gosig](https://arxiv.org/abs/1802.01315).
+The Tupelo Consensus Algorithm (TCA) is a leaderless Byzantine Fault Tolerant (BFT) consensus algorithm for resolving conflict sets. Chain Tree owners act as leaders proposing all new blocks on Chain Trees they own. TCA is based on an optimized version of the proposer-independent [Casper FFG protocol](https://github.com/ethereum/research/blob/master/papers/casper-basics/casper_basics.pdf) that uses [BLS signature aggregation](https://crypto.stanford.edu/~dabo/abstracts/aggreg.html) to realize $$O(NlogN)$$ message complexity and achieve greater scalability. To prevent Sybil attacks and incentivize Signers to follow the protocol, Signers are required to deposit bonds, which they can lose for attributable misbehavior. TCA’s Proof of Stake (PoS) incentive structures and validator set management are inspired by Casper’s, whereas the signature aggregation mechanisms and gossip protocol used in TCA are heavily influenced by [Gosig](https://arxiv.org/abs/1802.01315).
 
 ### Tuples: The Notary Group’s currency
 
@@ -159,26 +160,26 @@ The main coin of the system is called a Tuple. Tuples are used for rewards, stak
 
 ### Overview
 
-Conflict set resolution is achieved by a two-phased, PREPARE, and COMMIT process in which Signers converge on the canonical block by voting (with their signature) using a simple fork choice rule. For the purposes of establishing quorum, signer votes are weighted by the size of their deposits. For simplicity the description of the protocol below presumes all Signers deposits are equal.
+Conflict set resolution is achieved by a two-phased, $$PREPARE$$, and $$COMMIT$$ process in which Signers converge on the canonical block by voting (with their signature) using a simple fork choice rule. For the purposes of establishing quorum, signer votes are weighted by the size of their deposits. For simplicity the description of the protocol below presumes all Signers deposits are equal.
 
 Figure 1 below shows the states, messages and transitions for the consensus protocol
 
 #### Figure 1. State transitions of Tupelo Consensus Protocol
 
 A block B extending Chain Tree tip T in view V, during cycle C is considered:
-  * *proposed* by Signer $$i$$ if Signer $$i$$ has at least one $$PROPOSE(B,T,C)$$ or $$PREPARE(B,T,C,V,S)$$ but no $$PREPARE$$s where the weight of $$S > ⅔$$ Signer deposits
-  * *prepared* by Signer $$i$$ if Signer $$i$$ has a $$PREPARE(B,T,C,V,S)$$ where the weight of $$S > ⅔$$ Signer deposits
-  * *committed* by Signer $$i$$ if Signer $$i$$ has a $$COMMIT(B,T,C,V,S)$$ where the weight of $$S > ⅔$$ Signer deposits
+  * *proposed* by Signer $$i$$ if Signer $$i$$ has at least one $$PROPOSE(B,T,C)$$ or $$PREPARE(B,T,C,V,S)$$ but no $$PREPARE$$s where the weight of $$S\ >\ ⅔$$ Signer deposits
+  * *prepared* by Signer $$i$$ if Signer $$i$$ has a $$PREPARE(B,T,C,V,S)$$ where the weight of $$S\ >\ ⅔$$ Signer deposits
+  * *committed* by Signer $$i$$ if Signer $$i$$ has a $$COMMIT(B,T,C,V,S)$$ where the weight of $$S\ >\ ⅔$$ Signer deposits
   * *deadlocked* by Signer $$i$$ if Signer $$i$$ has a set of messages demonstrating that no proposed block can achieve $$> ⅔$$ Signer deposits in view $$V$$
 
 In the common case there are no conflicting proposals and consensus is reached quickly. However, if the protocol becomes *deadlocked* each Signer will move to view to $$V+1$$ and apply the fork choice rule to select the best block $$B$$ to gossip. All Signers apply the same fork choice rule, which gravitates execution toward the happy path on the right.
 
 The protocol operates efficiently by employing a Gosig-like gossip protocol in which a Signer, upon receiving a protocol message, performs some validations and signature aggregation, updates its state, and (in most cases) gossips a message to a randomly selected subset of other active Signers in the Notary Group during cycle $$C$$.
 
-An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle $$C$$ implies the epoch $$E$$ (e.g. if there are 60 cycles in an epoch, $$E = C // 60$$), and thus defines the set and signing weights of all active Signers for $$C$$.
+An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle $$C$$ implies the epoch $$E$$ (e.g. if there are 60 cycles in an epoch, $$E\ =\ C\ //\ 60)$$, and thus defines the set and signing weights of all active Signers for $$C$$.
 
 ### Conflict Set Resolution
-The consensus process begins when a Chain Tree owner proposes a block by sending a signed $$PROPOSE(B,T,C)$$ message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The PROPOSE message components are:
+The consensus process begins when a Chain Tree owner proposes a block by sending a signed $$PROPOSE(B,T,C)$$ message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The $$PROPOSE$$ message components are:
 
 - $$B$$ - the block of transactions, new tip, any state required for validation
 - $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
@@ -187,22 +188,21 @@ The consensus process begins when a Chain Tree owner proposes a block by sending
 Upon receiving a $$PROPOSE(B,T,C)$$ message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 … C+4$$. The owner’s signature over $$(B,T,C)$$ is also validated against the public key stored in the chain tree.
 
 If the block is valid the Signer places it into a conflict set for $$T$$, transitions to the proposed state, and gossips a $$PREPARE(B′,T,C,V,S)$$ message, where the components of the $$PREPARE$$ message are:
- $$B′$$ - the block the Signer is voting for in view $$V$$
- $$T$$ - previous tip as $$T$$ specified in the PROPOSE message
- $$C$$ - the target cycle, always equal to $$C$$ specified in the $$PROPOSE$$ message
- $$V$$ - the current view in which the Signer is voting for $$B′$$, initially set to $$0$$
- $$S$$ - the aggregated signatures of Signers voting for $$B′$$ in view $$V$$
+- $$B′$$ - the block the Signer is voting for in view $$V$$
+- $$T$$ - previous tip as $$T$$ specified in the PROPOSE message
+- $$C$$ - the target cycle, always equal to $$C$$ specified in the $$PROPOSE$$ message
+- $$V$$ - the current view in which the Signer is voting for $$B′$$, initially set to $$0$$
+- $$S$$ - the aggregated signatures of Signers voting for $$B′$$ in view $$V$$
 
 If this is the first (and thus only) block proposal the Signer has seen for $$T$$ then $$B′$$ is set to $$B$$ and Signer appends its signature over $$(B′,T,C,V)$$ to $$S$$ and gossips the $$PREPARE$$. Otherwise, the Signer just gossips the $$PREPARE(B′,T,C,V,S)$$ it previously signed.
 
-Signers should discard all $$PROPOSE(B,T,C)$$ and $$PREPARE(B,T,C,V,S)$$ messages where $$C <$$ the current cycle as determined by the Signer’s clock - 4. This accounts for clock drift and allows PREPARES at least one full epoch to accumulate signatures.
+Signers should discard all $$PROPOSE(B,T,C)$$ and $$PREPARE(B,T,C,V,S)$$ messages where $$C <$$ the current cycle as determined by the Signer’s $$clock\ -\ 4$$. This accounts for clock drift and allows $$PREPARES$$ at least one full epoch to accumulate signatures.
 
 When a Signer adds its signature over $$(B′,T,C,V)$$ to $$S$$ it is effectively casting a vote for $$B′$$ as the canonical block extending previous tip $$T$$ in view $$V$$. The vote is weighted by the size of the Signer’s deposit. The weight of $$S$$ is the sum of the weights of the aggregated signatures.
 
 A Signer receiving a $$PREPARE(B,T,C,V,S)$$ message will perform the actions described for $$PROPOSE$$ above and also aggregate into $$S$$ any signatures from other $$PREPARE$$ messages for the same block $$B$$. The Signer then checks if the aggregated weight of $$S$$ is greater than ⅔ the sum of all deposits of active Signers in cycle $$C$$. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a $$COMMIT(P,S)$$ message, where the components are:
-
-  $$P$$ - the $$PREPARE(B,T,C,V,S)$$ message where the weight of $$S > ⅔$$ Signer deposits <br>
-  $$S$$ - the aggregated signatures of Signers commiting to $$B$$ in view $$V$$
+  - $$P$$ - the $$PREPARE(B,T,C,V,S)$$ message where the weight of $$S > ⅔$$ Signer deposits
+  - $$S$$ - the aggregated signatures of Signers commiting to $$B$$ in view $$V$$
 
 For any $$PREPARE\ P$$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a $$COMMIT(P,S)$$ message, even if the Signer previously sent a $$PREPARE$$ voting for a different block or the block proposed in $$P$$ is not the Signer’s fork choice.
 
@@ -220,12 +220,12 @@ w_i + (W - \sum_{j=0}^n w_j) \le ⅔W
 $$
 
 
-If a Signer detects a deadlock condition in view $$V$$ it applies the fork choice rule to select the best block $$B$$ and gossips a new $$PREPARE(B,T,C,V+1,S)$$ message.This PREPARE message also includes the minimal set of $$PREPARE$$ messages that prove deadlock in $$V$$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $$V$$ (or lower) and receives such a $$PREPARE$$ message then it can use the view justification to transition to the deadlocked state for view $$V$$ and start ignoring any messages for $$T$$ with $$V < V+1$$.  The Signer then applies the fork choice rule to select the best block for view $$V+1$$ and if it matches the one in the received $$PREPARE$$ just appends its signature and gossips the $$PREPARE$$. Otherwise it creates, signs, and gossips a new $$PREPARE$$ message with the chosen block.
+If a Signer detects a deadlock condition in view $$V$$ it applies the fork choice rule to select the best block $$B$$ and gossips a new $$PREPARE(B,T,C,V+1,S)$$ message. This $$PREPARE$$ message also includes the minimal set of $$PREPARE$$ messages that prove deadlock in $$V$$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $$V$$ (or lower) and receives such a $$PREPARE$$ message then it can use the view justification to transition to the deadlocked state for view $$V$$ and start ignoring any messages for $$T$$ with $$V\ <\ V+1$$.  The Signer then applies the fork choice rule to select the best block for view $$V\ +\ 1$$ and if it matches the one in the received $$PREPARE$$ just appends its signature and gossips the $$PREPARE$$. Otherwise it creates, signs, and gossips a new $$PREPARE$$ message with the chosen block.
 
 The fork choice rule is:
 > *Given the set of all known proposals for extending tip T (i.e. all $$PREPARE(B,T,C,V,S)$$ messages received), choose the one where hash(B) has the lowest value.*
 
-The fork choice rule is only applied for views > 0, i.e. when the view changes due to a deadlock condition. For view = 0, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
+The fork choice rule is only applied for views $$>\ 0$$, i.e. when the view changes due to a deadlock condition. For $$view\ =\ 0$$, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
 
 ### Protocol Violations
 This section defines some protocol rules that can have economic penalties when violated. Since all messages are digitally signed with the sender’s private key, the signed message is proof that the Signer who sent it violated the rule.
@@ -330,15 +330,15 @@ For every conflict set of some tip $$T$$ that was proposed in cycle $$C-6$$, all
 #### Rewards Committee
 Calculating and assessing rewards and penalties is done in a distributed fashion by randomly assigning a subset of active Signers, a Rewards Committee, to each conflict set resolution process.
 
-For each conflict set of proposals extending some tip Told to a new tip $$T$$, a random subset of all Signers for the epoch, $$RT$$, is selected to be responsible for reporting rewards on $$T$$. Anyone can compute $$RT$$ as a function of $$T$$. For example, given an array of $$N$$ signers for the epoch, the signer at index $$T mod N$$ is primary, $$T+1 mod N$$ secondary and so on. Formally,
+For each conflict set of proposals extending some tip $$T_{old}$$ to a new tip $$T$$, a random subset of all Signers for the epoch, $$R_T$$, is selected to be responsible for reporting rewards on $$T$$. Anyone can compute $$R_T$$ as a function of $$T$$. For example, given an array of $$N$$ signers for the epoch, the signer at index $$T\ mod\ N$$ is primary, $$T+1\ mod\ N$$ secondary and so on. Formally,
 
 $$
-R_T[i] = Signers[(T+i) mod N]
+R_T[i]\ =\ Signers[(T+i)\ mod\ N]
 $$
 
 Once the conflict set for $$T$$ has been resolved, all signers not in $$RT$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$RT$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
 
-Once each member of $$RT$$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
+Once each member of $$R_T$$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
 
   1. It incentivizes Signers to commit and broadcast their signatures to committee members as quickly as possible
   2. Consensus is reached more quickly since the Rewards Committee has the most up to date information about who has signed. The  Rewards Committee effectively creates an ephemeral hub and spoke network architecture that changes for each conflict set.
@@ -403,8 +403,8 @@ All Signers reporting on cycle $$C$$ must write their Rewards Report to the Nota
 
 To agree on active Signer balances with respect to any block proposal, Signers must compute the balances in a deterministic manner based on a complete, unchanging set of reward and penalty assessment transactions for cycle $$C-6$$. To do this they must assume that
 
-1. all rewards and penalties regarding proposals specifying cycle C have been written to the Notary Group Chain Tree before beginning consensus on any proposals specifying C+6,
-2. and All Signers’ clocks are no more than 1 cycle apart. If the lowest cycle among all Signers is C, then all other Signers are in either C or C+1
+1. all rewards and penalties regarding proposals specifying cycle $$C$$ have been written to the Notary Group Chain Tree before beginning consensus on any proposals specifying $$C+6$$,
+2. and All Signers’ clocks are no more than 1 cycle apart. If the lowest cycle among all Signers is $$C$$, then all other Signers are in either $$C$$ or $$C+1$$
 
 When receiving a proposal specifying cycle $$C$$, the Signer uses the balances from the Notary Group Chain Tree resulting from Reward Reports from cycle $$C-6$$ and penalties assessed at $$C-5$$. As stated above, the rewards must have been posted by the $$CYCLE\_END$$ transaction closing $$C-2$$ and the penalties by the end of $$C-1$$. The balances computed at the transition from $$C-1$$ to $$C$$ are used by all Signers notarizing transactions specifying $$C$$. If the $$CYCLE\_END$$ transaction closing $$C-1$$ has not been posted then the proposal specifying $$C$$ is invalid ($$C$$ is too far in the future).
 
@@ -437,9 +437,9 @@ Epoch boundaries are determined by local clocks, which are not synchronized. Thu
 
 Fortunately, Signers do not require a globally consistent view of the currently active Signer set; they only need to agree on the set of active Signers with respect to a single conflict set, because each conflict set is resolved by a separate, independent consensus process. The next sections describe how the set of active signers for a given epoch and for a given conflict set can be calculated deterministically.
 
-#### Determining the Active Signer Set for Epoch E
+#### Determining the Active Signer Set for Epoch $$E$$
 
-The fixed set of active signers for epoch E is defined as an ordered set of registered (K,A) pairs, where K is the public key used to authenticate the Signers protocol messages and A is the Signer’s network address. For a set of n Signers, the active set for epoch E is:
+The fixed set of active signers for epoch $$E is defined as an ordered set of registered (K,A) pairs, where $$K$$ is the public key used to authenticate the Signers protocol messages and $$A$$ is the Signer’s network address. For a set of n Signers, the active set for epoch $$E$$ is:
 
 $$
 AS(E) = (K,A)_0, … (K,A)_i, … (K,A)_{n-1},
@@ -532,6 +532,7 @@ Like Casper, TCA provides accountable safety and plausible liveness under some m
 #### Notary Group Chain Tree Implementation
 
 The Notary Group Chain Tree is a special Chain Tree whose owners change implicitly at the end of each epoch. Specifically, the CurrentActiveSigners property stored in the Notary Group Chain Tree state defines the owners who have permission to write transactions to it.
+
 At the end of epoch $$E$$, i.e. the end of cycle $$C$$ where $$C mod 60 == 0$$ an active Signer writes a transaction to the Notary Group Chain Tree that officially starts a new cycle $$C+1$$ and epoch $$E+1$$, and activates the new active Signer set for $$E+1$$.
 
 The $$MaxChurn$$ limit ensures that some minimum subset of active Signers from epoch $$E$$ remain active in epoch $$E+1$$. New Signers arriving in epoch $$E+1$$ can get the latest state and tip of the Notary Group Chain Tree from any Signers who were active during epoch $$E$$. Notarization is required for all updates to the Notary Group Chain Tree. This ensures that all active Signers always have the same latest tip.
@@ -546,7 +547,7 @@ Chain Trees and a notary system lends itself really well to a new take on Smart 
 
 ### Transitioning Between Networks
 
-Because Chain Trees are independant and not part of a globally ordered history, it is possible to provide tools to move between private, semi-private, and fully public signer groups.
+Because Chain Trees are independent and not part of a globally ordered history, it is possible to provide tools to move between private, semi-private, and fully public signer groups.
 
 ### Anonymity and Transaction Blinding
 
