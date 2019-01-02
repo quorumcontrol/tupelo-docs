@@ -23,7 +23,7 @@ You can have your first signed and immutable transaction in just a few minutes.
 
 # How Is Tupelo Different?
 {: .fs-8 }
-<img style="float: right; width:400;height:235px;" src="../assets/images/litepaper-illustration4.png">
+<img style="float: right; width:400;height:235px;" src="assets/images/litepaper-illustration4.png">
 
 **Tupelo is ideal for modeling real world things** be they physical or digital.
 {: .fs-5 .fw-300 }
