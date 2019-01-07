@@ -13,7 +13,7 @@ over time, and later display all the notes in order.
 
 ## Getting Started
 Our notebook will be a [Node.js](https://nodejs.org/en/ "Node.js") application.
-We'll manage it's dependencies with [NPM](https://www.npmjs.com/ "NPM"), so make
+We'll manage its dependencies with [NPM](https://www.npmjs.com/ "NPM"), so make
 sure you have already installed it before going further.
 
 Next, we'll create and enter the directory that will hold our notebook
@@ -56,9 +56,9 @@ To start the RPC server and notary group for local development, run:
 tupelo rpc-server --local-network 3
 ```
 
-This will start a 3 signer local, in-memory notary group after first
-generating three random keypairs for the group to use. Then it will start the
-RPC server and bind it to the local notary group.
+This will start a 3 signer local notary group after first generating three
+random keypairs for the group to use. Then it will start the RPC server and bind
+it to the local notary group.
 
 ## Installing the Tupelo Client API
 Before we build anything, we need to add the Tupelo client to our application's
@@ -111,7 +111,7 @@ In file `notebook/index.js`:
 ```javascript
 function connect(creds) {
   return tupelo.connect('localhost:50051', creds);
-};
+}
 ```
 
 Next, let's start building the `createNotebook()` function by establishing a
@@ -141,7 +141,7 @@ function createNotebook(creds) {
 
   client.register()
     .then(function(registerResult){
-      console.log("Success!")
+      console.log("Success!");
     }, function(err) {
       console.log("Error registering wallet.");
       console.log(err);
