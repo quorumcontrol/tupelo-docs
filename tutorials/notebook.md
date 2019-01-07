@@ -205,6 +205,7 @@ function createNotebook(creds) {
       console.log(err);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
+      return client.createChainTree(keyAddr);
     }, function(err) {
       console.log("Error generating key.");
       console.log(err);
