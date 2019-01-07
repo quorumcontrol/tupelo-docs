@@ -258,9 +258,10 @@ In file `notebook/index.js`:
 ```javascript
 const localIdentifierPath = './.timestamper-identifiers';
 
-function dataFileExists() {
-  return fs.existsSync(localIdentifierPath);
-}
+function writeIdentifierFile(configObj) {
+  let data = JSON.stringify(configObj);
+  fs.writeFileSync(localIdentifierPath, data);
+};
 ```
 
 Now that we have all the pieces in place to save the identifiers for the longer
