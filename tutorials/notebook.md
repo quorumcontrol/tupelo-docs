@@ -53,7 +53,7 @@ make working in development easier.
 ### Connecting the RPC Server to a Local Notary Group
 To start the RPC server and notary group for local development, run:
 ```bash
-tupelo rpc-server --local-network 3
+tupelo rpc-server
 ```
 
 This will start a 3 signer local notary group after first generating three
