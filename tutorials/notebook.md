@@ -56,9 +56,10 @@ To start the RPC server and notary group for local development, run:
 tupelo rpc-server
 ```
 
-This will start a 3 signer local notary group after first generating three
-random keypairs for the group to use. Then it will start the RPC server and bind
-it to the local notary group.
+This invocation will start a 3 signer local notary group after first generating
+random keypairs for the group to use. After that, it will start the RPC server,
+bind it to the local notary group, and the server will be listening on port
+50051.
 
 ## Installing the Tupelo Client API
 Before we build anything, we need to add the Tupelo client to our application's
@@ -68,11 +69,11 @@ a new dependency set containing only the `tupelo-client` library:
 In file `notebook/package.json`:
 ```json
 {
-    "name": "notebook",
-    ...
-    "dependencies": {
-        "tupelo-client": "^0.0.2-alpha1"
-    }
+  "name": "notebook",
+  ...
+  "dependencies": {
+      "tupelo-client": "^0.0.2-alpha1"
+  },
 }
 ```
 
@@ -139,6 +140,7 @@ In file `notebook/index.js`:
 function createNotebook(creds) {
   let client = connect(creds);
 
+  // ---- Add the code below ----
   client.register()
     .then(function(registerResult){
       console.log("Success!");
@@ -167,19 +169,20 @@ In file `notebook/index.js`:
 ```javascript
 function createNotebook(creds) {
   let client = connect(creds);
-  var keyAddr;
+  var keyAddr; // <--- add a variable for the key address
 
   client.register()
     .then(function(registerResult){
-      return client.generateKey()
+      return client.generateKey(); // <--- change previous log statement here to
+                                   //      a generateKey() call
     }, function(err) {
       console.log("Error registering wallet.");
       console.log(err);
     }).then(function(generateKeyResult) {
-      keyAddr = generateKeyResult.keyAddr;
+      keyAddr = generateKeyResult.keyAddr; // <--- save the key address here
     }, function(err) {
       console.log("Error generating key.");
-      console.log(err);
+      console.log(err); // <--- log any generateKey() errors here
     });
 }
 ```
@@ -195,25 +198,26 @@ In file `notebook/index.js`:
 ```javascript
 function createNotebook(creds) {
   let client = connect(creds);
-  var keyAddr, chainId;
+  var keyAddr, chainId; // <--- add a new variable for the chain tree id
 
   client.register()
     .then(function(registerResult){
-      return client.generateKey()
+      return client.generateKey();
     }, function(err) {
       console.log("Error registering wallet.");
       console.log(err);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
-      return client.createChainTree(keyAddr);
+      return client.createChainTree(keyAddr); // <--- add createChainTree()
+                                              //      request
     }, function(err) {
       console.log("Error generating key.");
       console.log(err);
     }).then(function(createChainResponse) {
-      chainId = createChainResponse.chainId;
+      chainId = createChainResponse.chainId; // <--- save the chain id here
     }, function(err) {
       console.log("Error creating chain tree.");
-      console.log(err);
+      console.log(err); // <--- log and createChainTree() errors here
     });
 }
 ```
@@ -237,7 +241,7 @@ function identifierObj(key, chain) {
     keyAddr: key,
     chainId: chain
   };
-};
+}
 ```
 
 Now that we have a way to create our identifier object, we'll need to write that
@@ -256,12 +260,12 @@ function to actually save it
 
 In file `notebook/index.js`:
 ```javascript
-const localIdentifierPath = './.timestamper-identifiers';
-
+const LOCAL_ID_PATH = './.timestamper-identifiers';
+...
 function writeIdentifierFile(configObj) {
   let data = JSON.stringify(configObj);
-  fs.writeFileSync(localIdentifierPath, data);
-};
+  fs.writeFileSync(LOCAL_ID_PATH, data);
+}
 ```
 
 Now that we have all the pieces in place to save the identifiers for the longer
@@ -287,9 +291,9 @@ function createNotebook(creds) {
       console.log(err);
     }).then(function(createChainResponse) {
       chainId = createChainResponse.chainId;
-      let obj = identifierObj(keyAddr, chainId);
-      console.log("Saving registration.");
-      return writeIdentifierFile(obj);
+      console.log("Saving registration.");       // <--- log a "save" message
+      let obj = identifierObj(keyAddr, chainId); // <--- build identifier object
+      return writeIdentifierFile(obj);           // <--- write identifier file
     }, function(err) {
       console.log("Error creating chain tree.");
       console.log(err);
@@ -310,9 +314,9 @@ write a small function to check if the identifier data file exists.
 
 In file `notebook/index.js`:
 ```javascript
-function dataFileExists() {
-  return fs.existsSync(localIdentifierPath);
-};
+function idFileExists() {
+  return fs.existsSync(LOCAL_ID_PATH);
+}
 ```
 
 Next, let's begin writing our `addNote()` function to check if the data file
@@ -321,12 +325,12 @@ exists and display an error if not.
 In file `notebook/index.js`:
 ```javascript
 function addNote(creds, note) {
-  if (!dataFileExists()) {
-    console.log("Error: you must register before you can record stamps.");
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can record notes.");
 
     return;
   }
-};
+}
 ```
 
 Now we're ready to load the identifiers from the file. Let's write another
@@ -335,9 +339,9 @@ function to read and parse the identifiers from the file.
 In file `notebook/index.js`:
 ```javascript
 function readIdentifierFile() {
-  let raw = fs.readFileSync(localIdentifierPath);
+  let raw = fs.readFileSync(LOCAL_ID_PATH);
   return JSON.parse(raw);
-};
+}
 ```
 
 Now, let's use that function to save the identifiers in a local variable within
@@ -346,14 +350,14 @@ our `addNote()` function
 In file `notebook/index.js`:
 ```javascript
 function addNote(creds, note) {
-  if (!dataFileExists()) {
-    console.log("Error: you must register before you can record stamps.");
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can record notes.");
 
     return;
   }
 
-  let identifiers = readIdentifierFile();
-};
+  let identifiers = readIdentifierFile(); // <--- read the identifiers here
+}
 ```
 
 ### Reading Previously Recorded Notes
@@ -366,7 +370,7 @@ notes.
 
 In file `notebook/index.js`:
 ```javascript
-const CHAIN_TREE_NOTE_PATH='notebook/notes'
+const CHAIN_TREE_NOTE_PATH='notebook/notes';
 ```
 
 Next, we'll load the data currently at that path using the `resolve()` Tupelo
@@ -375,22 +379,22 @@ API method.
 In file `notebook/index.js`:
 ```javascript
 function addNote(creds, note) {
-  if (!dataFileExists()) {
-    console.log("Error: you must register before you can record stamps.");
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can record notes.");
 
     return;
   }
 
-  let identifiers = readIdentifierFile();
-  let client = connect(creds);
+  let client = connect(creds), // <--- connect the client
+      identifiers = readIdentifierFile();
 
   client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
     // We'll fill this in later.
   }, function(err) {
       console.log('Error reading notes: ' + err);
-  })
-};
+  });
+}
 ```
 
 ### Adding New Notes
@@ -403,8 +407,8 @@ In file `notebook/index.js`:
 ```javascript
 function addTimestamp(note) {
   let ts = new Date().getTime().toString();
-  return ts + '::' + note
-};
+  return ts + '::' + note;
+}
 ```
 
 Now let's use this function to add to our `addNote()` function to append the new
@@ -415,12 +419,11 @@ can just discard it for now. We'd add more robust error handling for a
 production app though. Lastly, we'll add the newly appended note data back to
 the chain tree using the `setData()` Tupelo API method.
 
-
 In file `notebook/index.js`:
 ```javascript
 function addNote(creds, note) {
-  if (!dataFileExists()) {
-    console.log("Error: you must register before you can record stamps.");
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can record notes.");
 
     return;
   }
@@ -441,18 +444,17 @@ function addNote(creds, note) {
 
       return client.setData(identifiers.chainId,
                             identifiers.keyAddr,
-                            CHAIN_TREE_STAMP_PATH,
-                            stamps);
+                            CHAIN_TREE_NOTE_PATH,
+                            notes);
   }, function(err) {
       console.log('Error reading notes: ' + err);
   })
-};
+}
 ```
-
 
 ## Viewing the Stored Notes
 Since we can save and sign notes to our chain tree, let's print out all the
-notes we've recorded so far. We'll write a `printNotes()` function that fetches
+notes we've recorded so far. We'll write a `showNotes()` function that fetches
 the saved notes from the RPC server and prints each one to the console. Just
 like our function to save notes, we will also make sure that the user has
 already created a wallet and saved some notes.
@@ -460,20 +462,20 @@ already created a wallet and saved some notes.
 
 In file `notebook/index.js`:
 ```javascript
-function printNotes(creds) {
-  if (!dataFileExists()) {
-    console.log("Error: you must register before you can print stamp tallies.");
+function showNotes(creds) {
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can print notes.");
 
     return;
   }
 
   let identifiers = readIdentifierFile();
   let client = connect(creds);
-  let path = CHAIN_TREE_STAMP_PATH;
+  let path = CHAIN_TREE_NOTE_PATH;
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_STAMP_PATH)
+  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
-      let notes = resp.dataa
+      let notes = resp.data;
 
       if (notes instanceof Array) {
         console.log('----Notes----');
@@ -484,9 +486,9 @@ function printNotes(creds) {
         console.log('----No Notes-----');
       }
     }, function(err) {
-      console.log('Error fetching tally: '  + err);
+      console.log('Error fetching notes: '  + err);
     });
-};
+}
 ```
 
 ## Adding a Command Line Interface
@@ -522,22 +524,23 @@ Next we'll follow the `yargs` documentation to define 3 commands: `register`,
 
 In file `notebook/index.js`:
 ```javascript
-yargs.command('register [name passphrase]', 'Register a new notebook chain tree', (yargs) => {
+yargs.command('register [name] [passphrase]', 'Register a new notebook chain tree', (yargs) => {
   yargs.positional('name', {
-    describe: 'Name of the wallet to save the chain tree.'
+    describe: 'Name of the wallet to save the notes chain tree.'
   }).positional('passphrase', {
     describe: 'Wallet passphrase.'
   });
 }, (argv) => {
   let creds = {
     walletName: argv.name,
-    passPhrase: argv.passPhrase
+    passPhrase: argv.passphrase
   };
 
-  register(creds);
-}).command('add-note [name passphrase]', 'Save a notebook', (yargs) => {
+  createNotebook(creds);
+
+}).command('add-note [name] [passphrase]', 'Save a note', (yargs) => {
   yargs.positional('name', {
-    describe: 'Name of the wallet where  the chain tree is saved.'
+    describe: 'Name of the wallet where the notes chain tree is saved.'
   }).positional('passphrase', {
     describe: 'Wallet passphrase.'
   }).describe('n', 'Save a note')
@@ -546,26 +549,219 @@ yargs.command('register [name passphrase]', 'Register a new notebook chain tree'
 }, (argv) => {
   let creds = {
     walletName: argv.name,
-    passPhrase: argv.passPhrase
+    passPhrase: argv.passphrase
   };
 
   addNote(creds, argv.n);
-}).command('print-notes [name passphrase -n <notes>]', 'Print saved notebooks', (yargs) => {
+
+}).command('print-notes [name] [passphrase]', 'Print saved notes', (yargs) => {
   yargs.positional('name', {
-    describe: 'Name of the wallet where  the chain tree is saved.'
+    describe: 'Name of the wallet where the notes chain tree is saved.'
   }).positional('passphrase', {
     describe: 'Wallet passphrase.'
   });
 }, (argv) => {
   let creds = {
     walletName: argv.name,
-    passPhrase: argv.passPhrase
+    passPhrase: argv.passphrase
   };
 
-  printNotes(creds);
+  showNotes(creds);
 }).argv;
 ```
+
 ## Finishing Up
 Now we've built a command line notebook that, when invoked with `node`, can
 record timestamped notes into a chain tree, print them out later, while the
 development notary group validates each note as it's saved.
+
+Our `package.json` file should look like this:
+```javascript
+{
+  "name": "notebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "tupelo-client": "^0.0.2-alpha1",
+    "yargs": "^12.0.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+and our `index.js` file should look like this:
+```javascript
+const tupelo = require('tupelo-client');
+const fs = require('fs');
+const yargs = require('yargs');
+
+const LOCAL_ID_PATH = './.timestamper-identifiers';
+const CHAIN_TREE_NOTE_PATH='notebook/notes';
+
+function connect(creds) {
+  return tupelo.connect('localhost:50051', creds);
+}
+
+function identifierObj(key, chain) {
+  return {
+    keyAddr: key,
+    chainId: chain
+  };
+}
+
+function writeIdentifierFile(configObj) {
+  let data = JSON.stringify(configObj);
+  fs.writeFileSync(LOCAL_ID_PATH, data);
+}
+
+function readIdentifierFile() {
+  let raw = fs.readFileSync(LOCAL_ID_PATH);
+  return JSON.parse(raw);
+}
+
+function idFileExists() {
+  return fs.existsSync(LOCAL_ID_PATH);
+}
+
+function createNotebook(creds) {
+  let client = connect(creds);
+  var keyAddr, chainId;
+
+  client.register()
+    .then(function(registerResult){
+      return client.generateKey();
+    }, function(err) {
+      console.log("Error registering wallet.");
+      console.log(err);
+    }).then(function(generateKeyResult) {
+      keyAddr = generateKeyResult.keyAddr;
+      return client.createChainTree(keyAddr);
+    }, function(err) {
+      console.log("Error generating key.");
+      console.log(err);
+    }).then(function(createChainResponse) {
+      chainId = createChainResponse.chainId;
+      console.log("Saving registration.");
+      let obj = identifierObj(keyAddr, chainId);
+      return writeIdentifierFile(obj);
+    }, function(err) {
+      console.log("Error creating chain tree.");
+      console.log(err);
+    });
+}
+
+function addTimestamp(note) {
+  let ts = new Date().getTime().toString();
+  return ts + '::' + note;
+}
+
+function addNote(creds, note) {
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can record notes.");
+
+    return;
+  }
+
+  let client = connect(creds),
+      identifiers = readIdentifierFile();
+
+  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+    .then(function(resp) {
+          let notes = resp.data,
+        noteWithTs = addTimestamp(note);
+
+      if (notes instanceof Array) {
+        notes.push(noteWithTs);
+      } else {
+        notes = [noteWithTs];
+      }
+
+      return client.setData(identifiers.chainId,
+                            identifiers.keyAddr,
+                            CHAIN_TREE_NOTE_PATH,
+                            notes);
+  }, function(err) {
+      console.log('Error reading notes: ' + err);
+  });
+}
+
+function showNotes(creds) {
+  if (!idFileExists()) {
+    console.log("Error: you must register before you can print notes.");
+
+    return;
+  }
+
+  let identifiers = readIdentifierFile();
+  let client = connect(creds);
+  let path = CHAIN_TREE_NOTE_PATH;
+
+  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+    .then(function(resp) {
+      let notes = resp.data;
+
+      if (notes instanceof Array) {
+        console.log('----Notes----');
+        notes.forEach(function(note) {
+          console.log(note);
+        });
+      } else {
+        console.log('----No Notes-----');
+      }
+    }, function(err) {
+      console.log('Error fetching notes: '  + err);
+    });
+}
+
+
+yargs.command('register [name] [passphrase]', 'Register a new notebook chain tree', (yargs) => {
+  yargs.positional('name', {
+    describe: 'Name of the wallet to save the notes chain tree.'
+  }).positional('passphrase', {
+    describe: 'Wallet passphrase.'
+  });
+}, (argv) => {
+  let creds = {
+    walletName: argv.name,
+    passPhrase: argv.passphrase
+  };
+
+  createNotebook(creds);
+
+}).command('add-note [name] [passphrase]', 'Save a note', (yargs) => {
+  yargs.positional('name', {
+    describe: 'Name of the wallet where the notes chain tree is saved.'
+  }).positional('passphrase', {
+    describe: 'Wallet passphrase.'
+  }).describe('n', 'Save a note')
+    .alias('n', 'note')
+    .demand('n');
+}, (argv) => {
+  let creds = {
+    walletName: argv.name,
+    passPhrase: argv.passphrase
+  };
+
+  addNote(creds, argv.n);
+
+}).command('print-notes [name] [passphrase]', 'Print saved notes', (yargs) => {
+  yargs.positional('name', {
+    describe: 'Name of the wallet where the notes chain tree is saved.'
+  }).positional('passphrase', {
+    describe: 'Wallet passphrase.'
+  });
+}, (argv) => {
+  let creds = {
+    walletName: argv.name,
+    passPhrase: argv.passphrase
+  };
+
+  showNotes(creds);
+}).argv;
+```
