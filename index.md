@@ -44,7 +44,7 @@ ChainTrees are flexible, transferrable and highly efficient.
 
 Through our simple API and using tools you are already familiar with we will create a datastructure called a Chain Tree, add our "Hello World" message and get it signed.
 {: .fs-5 .fw-300 }
-Lorem Ibsum Dracula.
+Once you see how easy it is to get started applying the Tupelo layer of trust to your own application is straight foward and flexible.
 {: .fs-5 .fw-300 }
 
 [Get started now](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
