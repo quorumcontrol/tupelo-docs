@@ -225,7 +225,7 @@ The consensus process can deadlock when the remaining unsigned stake weight is n
 <<<<<<< HEAD
 Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0 \ldots B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE$(B_{i},T,C,V,S)$` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
 =======
-Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0, \ldots, B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
+Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0, \ldots, B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE$(B_{i},T,C,V,S)$` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
 >>>>>>> 9e6fbbebad7ac9eeb1c3a6a58019d9936a4415f7
 
 
