@@ -29,8 +29,8 @@ github_username:  icarusz
 search_enabled: true
 markdown: kramdown
 aux_links:
-"Main Tupelo Website":
-    - "h//www.quorumcontrol.com"
+  "Main Tupelo Website":
+    - "http://www.quorumcontrol.com"
 remote_theme: pmarsceill/just-the-docs
 theme: just-the-docs # this works locally but not when pushed
 plugins:
