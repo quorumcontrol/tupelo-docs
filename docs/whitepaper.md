@@ -176,11 +176,11 @@ Figure 4 below shows the states, messages and transitions for the consensus prot
 #### Figure 4. State transitions of Tupelo Consensus Protocol
 --
 
-A block B extending Chain Tree tip T in view V, during cycle C is considered:
-  * *proposed* by Signer $$i$$ if Signer $$i$$ has at least one `PROPOSE(B,T,C)` or `PREPARE(B,T,C,V,S)` but no `PREPARE`s where the weight of $$S\ >\ ⅔$$ Signer deposits
-  * *prepared* by Signer $$i$$ if Signer $$i$$ has a `PREPARE(B,T,C,V,S)` where the weight of $$S\ >\ ⅔$$ Signer deposits
-  * *committed* by Signer $$i$$ if Signer $$i$$ has a `COMMIT(B,T,C,V,S)` where the weight of $$S\ >\ ⅔$$ Signer deposits
-  * *deadlocked* by Signer $$i$$ if Signer $$i$$ has a set of messages demonstrating that no proposed block can achieve $$> ⅔$$ Signer deposits in view $$V$$
+A block $B$ extending Chain Tree tip $T$ in view $V$, during cycle $C$ is:
+  * *proposed* by Signer $i$ if Signer $i$ has at least one `PROPOSE(B,T,C)` or `PREPARE(B,T,C,V,S)` but no `PREPARE`s where the weight of $S \gt ⅔$ Signer deposits
+  * *prepared* by Signer $i$ if Signer $i$ has a `PREPARE(B,T,C,V,S)` where the weight of $$S \gt ⅔$$ Signer deposits
+  * *committed* by Signer $i$ if Signer $i$ has a `COMMIT(B,T,C,V,S)` where the weight of $$S \gt ⅔$$ Signer deposits
+  * *deadlocked* by Signer $i$ if Signer $i$ has a set of messages demonstrating that no proposed block can achieve $$> ⅔$$ Signer deposits in view $$V$$
 
 In the common case there are no conflicting proposals and consensus is reached quickly. However, if the protocol becomes *deadlocked* each Signer will move to view to $$V+1$$ and apply the fork choice rule to select the best block $$B$$ to gossip. All Signers apply the same fork choice rule, which gravitates execution toward the happy path on the right.
 
@@ -216,13 +216,13 @@ A Signer receiving a `PREPARE(B,T,C,V,S)` message will perform the actions descr
 
 For any PREPARE $$P$$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a `COMMIT(P,S)` message, even if the Signer previously sent a `PREPARE` voting for a different block or the block proposed in $$P$$ is not the Signer’s fork choice.
 
-A Signer receiving a `COMMIT(P,S)` message will validate $$P$$ and aggregate signatures as described above. If the aggregated weight of $$S\ >\ ⅔$$ Signer deposits, the Signer transitions to the committed state in which the block $$B$$ specified in $$P$$ becomes canonical for $$T$$. The Signer can immediately discard the entire conflict set for $$T$$ (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in $$B$$.
+A Signer receiving a `COMMIT(P,S)` message will validate $$P$$ and aggregate signatures as described above. If the aggregated weight of $$S \gt ⅔$$ Signer deposits, the Signer transitions to the committed state in which the block $$B$$ specified in $$P$$ becomes canonical for $$T$$. The Signer can immediately discard the entire conflict set for $$T$$ (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in $$B$$.
 
 ### Deadlock Detection and Fork Choice Rule
 
 The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to `(T,V)`.
 
-Formally, deadlock is detected by signer $$i$$ if, for some Chain Tree Tip $$T$$, candidate blocks $$B_{0}..B_{n}$$ extending $$T$$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $$w_0..w_n$$, and total stake weight of all signers $$W$$, the following condition holds for all $$B_i$$
+Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $$T$$, candidate blocks $$B_{0}..B_{n}$$ extending $$T$$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $$w_0..w_n$$, and total stake weight of all signers $$W$$, the following condition holds for all $$B_i$$
 
 
 $$
@@ -230,12 +230,12 @@ w_i + (W - \sum_{j=0}^n w_j) \le ⅔W
 $$
 
 
-If a Signer detects a deadlock condition in view $$V$$ it applies the fork choice rule to select the best block $$B$$ and gossips a new `PREPARE(B,T,C,V+1,S)` message. This `PREPARE` message also includes the minimal set of `PREPARE` messages that prove deadlock in $$V$$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $$V$$ (or lower) and receives such a `PREPARE` message then it can use the view justification to transition to the deadlocked state for view $$V$$ and start ignoring any messages for $$T$$ with $$V\ <\ V+1$$.  The Signer then applies the fork choice rule to select the best block for view $$V\ +\ 1$$ and if it matches the one in the received `PREPARE` just appends its signature and gossips the `PREPARE`. Otherwise it creates, signs, and gossips a new `PREPARE` message with the chosen block.
+If a Signer detects a deadlock condition in view $$V$$ it applies the fork choice rule to select the best block $$B$$ and gossips a new `PREPARE(B,T,C,V+1,S)` message. This `PREPARE` message also includes the minimal set of `PREPARE` messages that prove deadlock in $$V$$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $$V$$ (or lower) and receives such a `PREPARE` message then it can use the view justification to transition to the deadlocked state for view $$V$$ and start ignoring any messages for $$T$$ with $$V \lt V+1$$.  The Signer then applies the fork choice rule to select the best block for view $$V+1$$ and if it matches the one in the received `PREPARE` just appends its signature and gossips the `PREPARE`. Otherwise it creates, signs, and gossips a new `PREPARE` message with the chosen block.
 
 The fork choice rule is:
 > *Given the set of all known proposals for extending tip T (i.e. all `PREPARE(B,T,C,V,S)` messages received), choose the one where hash(B) has the lowest value.*
 
-The fork choice rule is only applied for views $$>\ 0$$, i.e. when the view changes due to a deadlock condition. For $$view\= 0$$, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
+The fork choice rule is only applied for views $$V \gt 0$$, i.e. when the view changes due to a deadlock condition. For $$view\= 0$$, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
 
 ### Protocol Violations
 This section defines some protocol rules that can have economic penalties when violated. Since all messages are digitally signed with the sender’s private key, the signed message is proof that the Signer who sent it violated the rule.
@@ -504,7 +504,7 @@ Signer deposits remain locked for a period of time ($t$ epochs, on the order of 
 
 #### Sending Proposals
 
-Chain Tree owners sending `PROPOSE` messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4\ \ldots\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
+Chain Tree owners sending `PROPOSE` messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4 \ldots\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
 
 #### Edge Cases
 One edge case that occurs around epoch boundaries is when multiple proposals extending the same tip specify different cycles that imply different epochs, for example $$E$$ and $$E+1$$. Since the proposal’s cycle defines active Signer sets, these proposals may be gossipped to different Notary Groups. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can reduce the likelihood of this situation. However, Chain Tree owners can specify arbitrary cycles in their proposals so the protocol must be designed to prevent two transactions extending the same tip from being notarized.
@@ -512,7 +512,7 @@ One edge case that occurs around epoch boundaries is when multiple proposals ext
 Recall from the discussion of cycles that
 1. there are 60 cycles per epoch
 2. each `PROPOSE` message must specify a cycle which implies the epoch
-3. `PROPOSE` messages specifying $$C$$ are only valid to Signers in cycles $$C-1\ ...\ C+4$$
+3. `PROPOSE` messages specifying $$C$$ are only valid to Signers in cycles $C-1 \ldots C+4$
 4. we assume Signers’ clocks are no more than 1 cycle apart
 
 Thus, in order for two valid proposals with different epochs to conflict they must be within 6 cycles of each other, and thus reside in adjacent epochs, e.g. $$E$$ and $$E+1$$.
