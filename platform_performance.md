@@ -18,13 +18,13 @@ We have been expanding the number of AWS regions to better model latency as our
 testing processes have been getting more robust.  The number of regions and
 instance type are noted with the results below.
 
-We will continue to share these exciting numbers as they become available.
+We will continue to share these numbers as they become available.
 
 ***
 
 ## January 6th - Latest update
-Refactoring workflow to use actor model [ProtoActor](http://proto.actor).
-Adding additional in-memory state.
+The workflow was refactored to use actor model [ProtoActor](http://proto.actor).
+More of the state was moved to be held in-memory.
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
@@ -38,8 +38,8 @@ AWS Instance Types: c5.xlarge (4cpu 8gb ram)
 
 ## December 11th Performance Test
 
-Moved ingress of messages on a signer to an in memory queue (instead of disk).
-Parallelized signature checking.
+Message ingress was moved to an in memory queue (from disk).
+Signature checking was parallelized.
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
@@ -53,8 +53,8 @@ AWS Instance Types: c5.xlarge (4cpu 8gb ram)
 
 ## December 4th Performance Test
 
-Shifted to IBF (Invertible Bloom Filter) for transaction/state syncing
-between signer nodes.
+Transaction/state syncing between nodes was changed to an IBF
+(Invertible Bloom Filter).
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
