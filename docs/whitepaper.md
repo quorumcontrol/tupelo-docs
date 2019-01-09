@@ -346,9 +346,9 @@ $$
 R_T[i]\= Signers[(T+i) \bmod N]
 $$
 
-Once the conflict set for $$T$$ has been resolved, all signers not in $$R_T$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$R_T$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
+Once the conflict set for $T$ has been resolved, all signers not in $R_T$ can immediately delete all conflict set data regarding $T$ and ignore any further messages referencing $$T$$. Signers who are members of $R_T$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $T$ are assessed (4 cycles).
 
-Once each member of $$R_T$$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
+Once each member of $R_T$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
 
   1. It incentivizes Signers to commit and broadcast their signatures to committee members as quickly as possible
   2. Consensus is reached more quickly since the Rewards Committee has the most up to date information about who has signed. The  Rewards Committee effectively creates an ephemeral hub and spoke network architecture that changes for each conflict set.
@@ -447,7 +447,7 @@ Epoch boundaries are determined by local clocks, which are not synchronized. Thu
 
 Fortunately, Signers do not require a globally consistent view of the currently active Signer set; they only need to agree on the set of active Signers with respect to a single conflict set, because each conflict set is resolved by a separate, independent consensus process. The next sections describe how the set of active signers for a given epoch and for a given conflict set can be calculated deterministically.
 
-#### Determining the Active Signer Set for Epoch $$E$$
+#### Determining the Active Signer Set for Epoch $E$
 
 The fixed set of active signers for epoch $E$ is an ordered set of registered $(K,A)$ pairs, where $K$ is the public key used to authenticate the Signers protocol messages and $A$ is the Signer’s network address. For a set of $n$ Signers, the active set for epoch $E$ is:
 
@@ -478,21 +478,21 @@ AS(E+2) = AS(E)+signersJoining \\
 $$
 
 This transaction also finalizes and shuffles the active signer set for $$E+1$$ just in time for epoch $$E+1$$ to begin. The transaction also serves as a demarcation point between epochs $$E$$ and $$E+1$$.
-This allows any actor in the system to quickly, reliably, and trustlessly get the list of active signers for the current epoch (and some number of previous epochs). The actor only needs to check that the `EPOCH_END` transaction closing $$E$$ has been included in the latest notarized tip of the Notary Group Chain Tree to know the state is correct and contains the final active Signer set for epoch $$E+1$$.
+This allows any actor in the system to quickly, reliably, and trustlessly get the list of active signers for the current epoch (and some number of previous epochs). The actor only needs to check that the `EPOCH_END` transaction closing $$E$$ has been included in the latest notarized tip of the Notary Group Chain Tree to know the state is correct and contains the final active Signer set for epoch $E+1$.
 
-Once a Signer leaves the Notary Group, that Signer’s public key is forever forbidden from rejoining the Notary Group. The Signer can rejoin using the same network address with a different signing key, thus creating a unique $$(K,A)$$ pair.
+Once a Signer leaves the Notary Group, that Signer’s public key is forever forbidden from rejoining the Notary Group. The Signer can rejoin using the same network address with a different signing key, thus creating a unique $(K,A)$ pair.
 
 The signersRefunded member is used to refund the set of deactivated signers whose waiting period elapsed, allowing them to receive and spend their balance.
 
 #### Updating Membership
 
-At the end of epoch $E$, the active Signers collectively construct and notarize a `EPOCH_END`` transaction with $closingEpoch \= E$. They determine the $$signersJoining$$ and $$signersLeaving$$ arrays based on staking transactions that occurred during epoch $$E$$.
+At the end of epoch $E$, the active Signers collectively construct and notarize a `EPOCH_END`` transaction with $closingEpoch \= E$. They determine the $$signersJoining$$ and $$signersLeaving$$ arrays based on staking transactions that occurred during epoch $E$.
 
-Recall that nodes wishing to register as Signers deposit their bonds by appending to their own Chain Trees a `DEPOSIT_STAKE` transaction that triggers a corresponding `ACTIVATE_SIGNER` transaction on the Notary Group Chain Tree. Since every notarized transaction is associated with a specific epoch, the set of `ACTIVATE_SIGNER` transactions on the Notary Group Chain Tree for epoch $$E$$ can be mapped to $$(K,A)$$ pairs to create the $$signersJoining$$ for epoch $$E+2$$. Similarly, the signersLeaving array for epoch $$E+1$$ can be computed by mapping the set of $$DEACTIVATE\_SIGNER transactions notarized in epoch $$E$$.
+Recall that nodes wishing to register as Signers deposit their bonds by appending to their own Chain Trees a `DEPOSIT_STAKE` transaction that triggers a corresponding `ACTIVATE_SIGNER` transaction on the Notary Group Chain Tree. Since every notarized transaction is associated with a specific epoch, the set of `ACTIVATE_SIGNER` transactions on the Notary Group Chain Tree for epoch $E$ can be mapped to $(K,A)$ pairs to create the $signersJoining$ for epoch $E+2$. Similarly, the signersLeaving array for epoch $$E+1$$ can be computed by mapping the set of $$DEACTIVATE\_SIGNER transactions notarized in epoch $E$.
 
 #### Determining the Active Signer Set For a Conflict Set
 
-The set of active Signers assigned to resolve a conflict set for tip $$T$$ is determined by the epoch implied by cycle $$C$$ specified in the $$PROPOSE(B,T,C)$$ message(s) sent by the Chain Tree owner(s). There is no disagreement in the common cases when only a single proposal is sent, when multiple proposals for extending $$T$$ specify the same cycle, or multiple proposals specifying different cycles in the same epoch. The uncommon case around epoch boundaries where multiple proposals specify different $$C$$ implying different $$E$$, and are consequently gossipped to different active Signer sets requires a more complex solution (described in Edge Cases below).
+The set of active Signers assigned to resolve a conflict set for tip $T$ is determined by the epoch implied by cycle $C$ specified in the $PROPOSE(B,T,C)$ message(s) sent by the Chain Tree owner(s). There is no disagreement in the common cases when only a single proposal is sent, when multiple proposals for extending $T$ specify the same cycle, or multiple proposals specifying different cycles in the same epoch. The uncommon case around epoch boundaries where multiple proposals specify different $C$ implying different $$E$$, and are consequently gossipped to different active Signer sets requires a more complex solution (described in Edge Cases below).
 
 #### Max Churn
 
