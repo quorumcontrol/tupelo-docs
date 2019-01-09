@@ -346,7 +346,7 @@ $$
 R_T[i]\ =\ Signers[(T+i) \bmod N]
 $$
 
-Once the conflict set for $$T$$ has been resolved, all signers not in $$RT$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$RT$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
+Once the conflict set for $$T$$ has been resolved, all signers not in $$R_T$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$R_T$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
 
 Once each member of $$R_T$$ has aggregated ⅔ signature weight, they stop aggregating additional signatures for the purpose of rewards. This means that for any given conflict set rewards will only go to Signers whose signature was aggregated into at least one honest member of the Rewards Committee for that conflict set. This rewards cutoff has two useful properties:
 
@@ -368,7 +368,7 @@ message RewardsReportTransaction {
 ```
 
 At the end of cycle $$C$$, rewards for cycle $$C-6$$ are calculated from the retained conflict sets for which the Signer participated as a Rewards Committee member. The signatures map has one entry for each of the Signer’s retained conflict sets, identified by the tip it extends.
-Whereas each Signer’s reported signatures for any given tip may differ, the union of their signature sets is used for the purpose of assessing rewards. This prevents a byzantine subset of $$RT$$ from excluding any honest signer from getting their reward. As long as the honest signer’s signature has been aggregated into at least one `REWARDS_REPORT` transaction, they will receive their reward.
+Whereas each Signer’s reported signatures for any given tip may differ, the union of their signature sets is used for the purpose of assessing rewards. This prevents a byzantine subset of $$R_T$$ from excluding any honest signer from getting their reward. As long as the honest signer’s signature has been aggregated into at least one `REWARDS_REPORT` transaction, they will receive their reward.
 
 #### Slashing
 
