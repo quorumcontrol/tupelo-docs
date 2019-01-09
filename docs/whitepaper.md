@@ -142,7 +142,7 @@ message ReceiveCoinTransaction {
 }
 ```
 
-A `RECEIVE_COIN` transaction is valid if the Tip including the `SEND_COIN` transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a $$send\_coin\_transaction\_id that does not appear in the Chain Tree previously (preventing “double receive”).
+A `RECEIVE_COIN` transaction is valid if the Tip including the `SEND_COIN` transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a `send_coin_transaction_id` that does not appear in the Chain Tree previously (preventing “double receive”).
 
 ### Cryptocurrency Discussion
 
@@ -189,13 +189,13 @@ The protocol operates efficiently by employing a Gosig-like gossip protocol in w
 An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle $$C$$ implies the epoch $$E$$ (e.g. if there are 60 cycles in an epoch, $$E\ =\ C\ //\ 60)$$, and thus defines the set and signing weights of all active Signers for $$C$$.
 
 ### Conflict Set Resolution
-The consensus process begins when a Chain Tree owner proposes a block by sending a signed $$PROPOSE(B,T,C)$$ message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The `PROPOSE` message components are:
+The consensus process begins when a Chain Tree owner proposes a block by sending a signed `PROPOSE(B,T,C)` message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The `PROPOSE` message components are:
 
 - $$B$$ - the block of transactions, new tip, any state required for validation
 - $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
 - $$C$$ - the current cycle, which determines both the set of active signers and their stake weights
 
-Upon receiving a $$PROPOSE(B,T,C)$$ message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 … C+4$$. The owner’s signature over $$(B,T,C)$$ is also validated against the public key stored in the chain tree.
+Upon receiving a `PROPOSE(B,T,C)` message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 … C+4$$. The owner’s signature over `(B,T,C)` is also validated against the public key stored in the chain tree.
 
 If the block is valid the Signer places it into a conflict set for $$T$$, transitions to the proposed state, and gossips a `PREPARE(B′,T,C,V,S)` message, where the components of the `PREPARE` message are:
 - $$B′$$ - the block the Signer is voting for in view $$V$$
@@ -204,23 +204,23 @@ If the block is valid the Signer places it into a conflict set for $$T$$, transi
 - $$V$$ - the current view in which the Signer is voting for $$B′$$, initially set to $$0$$
 - $$S$$ - the aggregated signatures of Signers voting for $$B′$$ in view $$V$$
 
-If this is the first (and thus only) block proposal the Signer has seen for $$T$$ then $$B′$$ is set to $$B$$ and Signer appends its signature over $$(B′,T,C,V)$$ to $$S$$ and gossips the `PREPARE`. Otherwise, the Signer just gossips the `PREPARE(B′,T,C,V,S)` it previously signed.
+If this is the first (and thus only) block proposal the Signer has seen for $$T$$ then $$B′$$ is set to $$B$$ and Signer appends its signature over `(B′,T,C,V)` to $$S$$ and gossips the `PREPARE`. Otherwise, the Signer just gossips the `PREPARE(B′,T,C,V,S)` it previously signed.
 
-Signers should discard all `PROPOSE(B,T,C)` and `PREPARE(B,T,C,V,S)` messages where $$C <$$ the current cycle as determined by the Signer’s $$clock\ -\ 4$$. This accounts for clock drift and allows $$PREPARES$$ at least one full epoch to accumulate signatures.
+Signers should discard all `PROPOSE(B,T,C)` and `PREPARE(B,T,C,V,S)` messages where $$C <$$ the current cycle as determined by the Signer’s $$clock\ -\ 4$$. This accounts for clock drift and allows `PREPARES` at least one full epoch to accumulate signatures.
 
-When a Signer adds its signature over $$(B′,T,C,V)$$ to $$S$$ it is effectively casting a vote for $$B′$$ as the canonical block extending previous tip $$T$$ in view $$V$$. The vote is weighted by the size of the Signer’s deposit. The weight of $$S$$ is the sum of the weights of the aggregated signatures.
+When a Signer adds its signature over `(B′,T,C,V)` to $$S$$ it is effectively casting a vote for $$B′$$ as the canonical block extending previous tip $$T$$ in view $$V$$. The vote is weighted by the size of the Signer’s deposit. The weight of $$S$$ is the sum of the weights of the aggregated signatures.
 
 A Signer receiving a `PREPARE(B,T,C,V,S)` message will perform the actions described for `PROPOSE` above and also aggregate into $$S$$ any signatures from other `PREPARE` messages for the same block $$B$$. The Signer then checks if the aggregated weight of $$S$$ is greater than ⅔ the sum of all deposits of active Signers in cycle $$C$$. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a `COMMIT(P,S)` message, where the components are:
   - $$P$$ - the `PREPARE(B,T,C,V,S)` message where the weight of $$S > ⅔$$ Signer deposits
   - $$S$$ - the aggregated signatures of Signers commiting to $$B$$ in view $$V$$
 
-For any $$PREPARE\ P$$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a `COMMIT(P,S)` message, even if the Signer previously sent a `PREPARE` voting for a different block or the block proposed in $$P$$ is not the Signer’s fork choice.
+For any PREPARE $$P$$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a `COMMIT(P,S)` message, even if the Signer previously sent a `PREPARE` voting for a different block or the block proposed in $$P$$ is not the Signer’s fork choice.
 
 A Signer receiving a `COMMIT(P,S)` message will validate $$P$$ and aggregate signatures as described above. If the aggregated weight of $$S\ >\ ⅔$$ Signer deposits, the Signer transitions to the committed state in which the block $$B$$ specified in $$P$$ becomes canonical for $$T$$. The Signer can immediately discard the entire conflict set for $$T$$ (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in $$B$$.
 
 ### Deadlock Detection and Fork Choice Rule
 
-The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to $$(T,V)$$.
+The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to `(T,V)`.
 
 Formally, deadlock is detected by signer $$i$$ if, for some Chain Tree Tip $$T$$, candidate blocks $$B_{0}..B_{n}$$ extending $$T$$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $$w_0..w_n$$, and total stake weight of all signers $$W$$, the following condition holds for all $$B_i$$
 
@@ -248,13 +248,13 @@ The protocol forbids sending the following conflicting messages:
 However, signers may send the following messages, which are not considered conflicting:
   * `PREPARE(B,T,C,V,S)` and `PREPARE(B′,T,C,V′,S)` where $$B ≠ B′$$ if $$V ≠ V′$$
   * `P=PREPARE(B,T,C,V,S)` and `COMMIT(P′,S)` where $$P ≠ P′$$
-The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $$P=PREPARE(B,T,C,V,S)$$, but then saw $$P′=PREPARE(B′,T,C,V,S)$$ with weight of $$S > ⅔$$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
+The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $$P = $$ `PREPARE(B,T,C,V,S)`, but then saw $$P′= $$ `PREPARE(B′,T,C,V,S)` with weight of $$S > ⅔$$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
 
 #### Unjustified View Change
 The protocol forbids sending a `PREPARE(B,T,C,V+1,S)` message without a view change justification or with a justification that does not sufficiently prove deadlock in view $$V$$.
 
 #### Unjustified Commit
-The protocol forbids sending a `COMMIT(P,S)` message where $P$$’s signature weight is not $$> ⅔$$ Signer deposits.
+The protocol forbids sending a `COMMIT(P,S)` message where $$P$$’s signature weight is not $$> ⅔$$ Signer deposits.
 
 #### Invalid New Tip
 The protocol forbids sending `PREPARE(B,T,C,V,S)` or `COMMIT(P,S)` where the block $$B$$ being proposed contains invalid transactions, or the transactions are valid but the resulting state does not match $$T$$.
@@ -459,7 +459,7 @@ The fixed set of active Signers in any given epoch can be deterministically calc
 
 Since such a calculation would be time consuming and error prone, the computed set of active Signers for several recent and upcoming epochs is maintained in the state of the Notary Group Chain Tree. That way anyone with a notarized tip can read the active Signer Set for any past epoch directly from the state.
 
-At the end of epoch $$E$$, the active Signer set for $$E$$ notarizes a $$EPOCH\_END$$ transaction that summarizes all of the `ACTIVATE_SIGNER` and `DEACTIVATE_SIGNER` transactions that occurred during $$E$$ (see Updating Membership below) and updates.
+At the end of epoch $$E$$, the active Signer set for $$E$$ notarizes a `EPOCH_END` transaction that summarizes all of the `ACTIVATE_SIGNER` and `DEACTIVATE_SIGNER` transactions that occurred during $$E$$ (see Updating Membership below) and updates.
 
 ```
 EPOCH_END
@@ -478,7 +478,7 @@ AS(E+2) = AS(E)+signersJoining \\
 $$
 
 This transaction also finalizes and shuffles the active signer set for $$E+1$$ just in time for epoch $$E+1$$ to begin. The transaction also serves as a demarcation point between epochs $$E$$ and $$E+1$$.
-This allows any actor in the system to quickly, reliably, and trustlessly get the list of active signers for the current epoch (and some number of previous epochs). The actor only needs to check that the $$EPOCH\_END$$ transaction closing $$E$$ has been included in the latest notarized tip of the Notary Group Chain Tree to know the state is correct and contains the final active Signer set for epoch $$E+1$$.
+This allows any actor in the system to quickly, reliably, and trustlessly get the list of active signers for the current epoch (and some number of previous epochs). The actor only needs to check that the `EPOCH_END` transaction closing $$E$$ has been included in the latest notarized tip of the Notary Group Chain Tree to know the state is correct and contains the final active Signer set for epoch $$E+1$$.
 
 Once a Signer leaves the Notary Group, that Signer’s public key is forever forbidden from rejoining the Notary Group. The Signer can rejoin using the same network address with a different signing key, thus creating a unique $$(K,A)$$ pair.
 
