@@ -74,19 +74,19 @@ In Figure 2, there are two separate transactions taking place on the Chain Tree 
 
 ## Actors
 
-Every actor in the system (both identities and assets) may have one or many Chain Tree(s). Actors create a new, global, Chain Tree by creating a new public/private secp256k1 key-pair. The Chain Tree’s ID is a DID derived from the ethereum-style address of the public key (created the same way that Ethereum creates addresses based on public keys). An example Chain Tree DID is: `did:tupelo:0xDD4f79D433FC132dc22e662F25B5D46fADFfa16`. Before any transactions have been played on the Chain Tree, the Chain Tree is in the genesis state. The owner of a genesis Chain Tree is the holder of the private key that corresponds to the address in the Chain Id.
+Every actor in the system (both identities and assets) may have one or many Chain Tree(s). Actors create a new, global, Chain Tree by creating a new public/private secp256k1 key-pair. The Chain Tree’s ID is a DID derived from the ethereum-style address of the public key (created the same way that Ethereum creates addresses based on public keys). An example Chain Tree DID is `did:tupelo:0xDD4f79D433FC132dc22e662F25B5D46fADFfa16`. Before any transactions have been played on the Chain Tree, the Chain Tree is in the genesis state. The owner of a genesis Chain Tree is the holder of the private key that corresponds to the address in the Chain Id.
 
-Ownership of a Chain Tree may be changed by adding public keys to a system-defined path in the tree. In the case of this system the path /\_tupelo/authorizations should contain a set of links to public keys. If /\_tupelo/authorizations is defined on the Chain Tree then this ownership overrides the keypair used to create the Chain Tree.
+Ownership of a Chain Tree may be changed by adding public keys to a system-defined path in the tree. In the case of this system the path `/_tupelo/authorizations` should contain a set of links to public keys. If `/_tupelo/authorizations` is defined on the Chain Tree then this ownership overrides the keypair used to create the Chain Tree.
 
 Only the owner(s) of a Chain Tree may create new transactions on a Chain Tree. The tip of a Chain Tree refers to the hash of the root node of the current state of a Chain Tree (a Chain Tree with all transactions applied).
 
 Transactions are arbitrary mutations of state. The client and Notary Group must agree on the process of mutating state through named transactions. The initial release will include the following transactions\:
-  * SET_DATA
-  * SET_OWNERSHIP
-  * ESTABLISH_COIN
-  * MINT_COIN
-  * SEND_COIN
-  * RECEIVE_COIN
+  * `SET_DATA`
+  * `SET_OWNERSHIP`
+  * `ESTABLISH_COIN`
+  * `MINT_COIN`
+  * `SEND_COIN`
+  * `RECEIVE_COIN`
 
 Later, we will discuss how user-defined transactions can be used to expand the system in a manner similar to smart-contracts on other DLT systems.
 
@@ -343,7 +343,7 @@ Calculating and assessing rewards and penalties is done in a distributed fashion
 For each conflict set of proposals extending some tip $T_{old}$ to a new tip $T$, a random subset of all Signers for the epoch, $R_T$, is selected to be responsible for reporting rewards on $T$. Anyone can compute $R_T$ as a function of $T$. For example, given an array of $N$ signers for the epoch, the signer at index $T \bmod N$ is primary, $T+1 \bmod N$ secondary and so on. Formally,
 
 $$
-R_T[i]\= Signers[(T+i) \bmod N]
+R_T[i] \= Signers[(T+i) \bmod N]
 $$
 
 Once the conflict set for $T$ has been resolved, all signers not in $R_T$ can immediately delete all conflict set data regarding $T$ and ignore any further messages referencing $T$. Signers who are members of $R_T$ must retain their conflict sets for $T$ until the end of cycle in which rewards and penalties on $T$ are assessed (4 cycles).
@@ -543,7 +543,7 @@ Like Casper, TCA provides accountable safety and plausible liveness under some m
 
 The Notary Group Chain Tree is a special Chain Tree whose owners change implicitly at the end of each epoch. Specifically, the `<CurrentActiveSigners>` property stored in the Notary Group Chain Tree state defines the owners who have permission to write transactions to it.
 
-At the end of epoch $E$, i.e. the end of cycle $C$ where $C \bmod 60 == 0$ an active Signer writes a transaction to the Notary Group Chain Tree that officially starts a new cycle $C+1$ and epoch $E+1$, and activates the new active Signer set for $E+1$.
+At the end of epoch $E$, i.e. the end of cycle $C$ where $C \bmod 60 \equiv 0$ an active Signer writes a transaction to the Notary Group Chain Tree that officially starts a new cycle $C+1$ and epoch $E+1$, and activates the new active Signer set for $E+1$.
 
 The `<MaxChurn>` limit ensures that some minimum subset of active Signers from epoch $E$ remain active in epoch $E+1$. New Signers arriving in epoch $E+1$ can get the latest state and tip of the Notary Group Chain Tree from any Signers who were active during epoch $E$. Notarization is required for all updates to the Notary Group Chain Tree. This ensures that all active Signers always have the same latest tip.
 
