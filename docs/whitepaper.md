@@ -195,7 +195,7 @@ The consensus process begins when a Chain Tree owner proposes a block by sending
 - $$T$$ - the previous tip being extended expressed as a (Chain Tree id, state hash) pair
 - $$C$$ - the current cycle, which determines both the set of active signers and their stake weights
 
-Upon receiving a `PROPOSE(B,T,C)` message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 … C+4$$. The owner’s signature over `(B,T,C)` is also validated against the public key stored in the chain tree.
+Upon receiving a `PROPOSE(B,T,C)` message the Signer validates the block by applying the transactions and checking that the resulting state matches the proposed new tip. The block will only be valid if the previous tip $$T$$ is equal to the canonical (last notarized) tip of the Chain Tree the current cycle as determined by the Signer’s clock is in in the range $$C*-1 \ldots C+4$$. The owner’s signature over `(B,T,C)` is also validated against the public key stored in the chain tree.
 
 If the block is valid the Signer places it into a conflict set for $$T$$, transitions to the proposed state, and gossips a `PREPARE(B′,T,C,V,S)` message, where the components of the `PREPARE` message are:
 - $$B′$$ - the block the Signer is voting for in view $$V$$
@@ -449,10 +449,10 @@ Fortunately, Signers do not require a globally consistent view of the currently 
 
 #### Determining the Active Signer Set for Epoch $$E$$
 
-The fixed set of active signers for epoch $$E is defined as an ordered set of registered (K,A) pairs, where $$K$$ is the public key used to authenticate the Signers protocol messages and $$A$$ is the Signer’s network address. For a set of n Signers, the active set for epoch $$E$$ is:
+The fixed set of active signers for epoch $E$ is an ordered set of registered $(K,A)$ pairs, where $K$ is the public key used to authenticate the Signers protocol messages and $A$ is the Signer’s network address. For a set of $n$ Signers, the active set for epoch $E$ is:
 
 $$
-AS(E) = (K,A)_0, … (K,A)_i, … (K,A)_{n-1},
+AS(E) = (K,A)_0, \ldots (K,A)_i, \ldots (K,A)_{n-1},
 $$
 
 The fixed set of active Signers in any given epoch can be deterministically calculated from the notarized history of `ACTIVATE_SIGNER` and `DEACTIVATE_SIGNER` transactions on the on the Notary Group Chain Tree.
@@ -504,7 +504,7 @@ Signer deposits remain locked for a period of time ($$t$$ epochs, on the order o
 
 #### Sending Proposals
 
-Chain Tree owners sending `PROPOSE` messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4\ …\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
+Chain Tree owners sending `PROPOSE` messages need to make a best effort to decide which $$Signer(s)$$ to send a proposal to in order to maximize the chance of their proposal being notarized. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can be used to make assumptions of values that will succeed. Since Signers in cycle $$C$$ will accept and notarize proposals in cycle $$C-4\ \ldots\ C+1$$, this is a practically useful scheme that will rarely result in Chain Tree owners having to resend their transactions.
 
 #### Edge Cases
 One edge case that occurs around epoch boundaries is when multiple proposals extending the same tip specify different cycles that imply different epochs, for example $$E$$ and $$E+1$$. Since the proposal’s cycle defines active Signer sets, these proposals may be gossipped to different Notary Groups. The `CurrentCycle`, `CurrentEpoch`, and `CurrentActiveSigners` properties stored in the Notary Group Chain Tree state can reduce the likelihood of this situation. However, Chain Tree owners can specify arbitrary cycles in their proposals so the protocol must be designed to prevent two transactions extending the same tip from being notarized.
@@ -575,8 +575,8 @@ VW creates a public/private key pair for a new Chain Tree. The Chain Tree will b
 ```
 ChainId: did:qc:<hex-encoded-genesis-public-key>
 Transactions: [
-	{Type: ADD_DATA
-	 Payload: <hash_of_VIN_number>}
+    {Type: ADD_DATA
+     Payload: <hash_of_VIN_number>}
 ]
 Signatures: [<secp256k1 by generated key>]
 ```
@@ -589,8 +589,8 @@ Alice buys the car and requests ownership from VW. Off-chain Alice gives VW a pu
 ```
 ChainId: did:qc:<hex-encoded-genesis-public-key>
 Transactions: [
-	{Type: SET_OWNERSHIP
-	 Payload: {Authentication: [<alice public key>]}}
+    {Type: SET_OWNERSHIP
+     Payload: {Authentication: [<alice public key>]}}
 ]
 Signatures: [<secp256k1 by generated key>]
 ```
@@ -601,12 +601,12 @@ VW repeats the broadcast/wait above and then (off-chain) gives Alice a copy of t
 ChainId: did:qc:<hex-encoded-genesis-public-key>
 Sequence: 1
 Transactions: [
-	{Type: UPDATE_OWNERSHIP
-	 Payload: {Authentication: [<alice public key>]}}
+    {Type: UPDATE_OWNERSHIP
+     Payload: {Authentication: [<alice public key>]}}
 ]
 PreviousHash: <hash of last block>
 Signature: [<secp256k1 by generated key>
-		 <BLS multisig by notary group>]
+         <BLS multisig by notary group>]
 ```
 
 Alice now owns that Chain Tree (and hence the vehicle). She does not need to be online to verify that ownership as she will have an off-line list of the Notary Group public keys.
