@@ -222,7 +222,11 @@ A Signer receiving a `COMMIT$(P,S)$` message will validate $P$ and aggregate sig
 
 The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to $(T,V)$.
 
+<<<<<<< HEAD
 Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0 \ldots B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE$(B_{i},T,C,V,S)$` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
+=======
+Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0, \ldots, B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
+>>>>>>> 9e6fbbebad7ac9eeb1c3a6a58019d9936a4415f7
 
 
 $$
@@ -230,7 +234,11 @@ w_i + (W - \sum_{j=0}^n w_j) \le \frac{2}{3}W
 $$
 
 
+<<<<<<< HEAD
 If a Signer detects a deadlock condition in view $V$ it applies the fork choice rule to select the best block $B$ and gossips a new `PREPARE$(B,T,C,V+1,S)$` message. This `PREPARE` message also includes the minimal set of `PREPARE` messages that prove deadlock in $V$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $V$ (or lower) and receives such a `PREPARE` message then it can use the view justification to transition to the deadlocked state for view $V$ and start ignoring any messages for $T$ with $V \lt V+1$.  The Signer then applies the fork choice rule to select the best block for view $V+1$ and if it matches the one in the received `PREPARE` just appends its signature and gossips the `PREPARE`. Otherwise it creates, signs, and gossips a new `PREPARE` message with the chosen block.
+=======
+If a Signer detects a deadlock condition in view $V$ it applies the fork choice rule to select the best block $B$ and gossips a new `PREPARE(B,T,C,V+1,S)` message. This `PREPARE` message also includes the minimal set of `PREPARE` messages that prove deadlock in $V$ and justify the view change. If a Signer is currently in the prepared or proposed states for view $V$ (or lower) and receives such a `PREPARE` message then it can use the view justification to transition to the deadlocked state for view $V$ and start ignoring any messages for $T$ with view $V' \lt V+1$.  The Signer then applies the fork choice rule to select the best block for view $V+1$ and if it matches the one in the received `PREPARE` just appends its signature and gossips the `PREPARE`. Otherwise it creates, signs, and gossips a new `PREPARE` message with the chosen block.
+>>>>>>> 9e6fbbebad7ac9eeb1c3a6a58019d9936a4415f7
 
 The fork choice rule is:
 > *Given the set of all known proposals for extending tip T (i.e. all `PREPARE$(B,T,C,V,S)$` messages received), choose the one where hash(B) has the lowest value.*
