@@ -37,7 +37,7 @@ Tupelo builds upon the work of others including:
   * [Secure Scuttlebutt](https://github.com/ssbc/)
   * [Nano](https://nano.org/en)
   * [Holochain](https://holochain.org/)
-  * [Gosig](https://www.semanticscholar.org/paper/Gosig%3A-Scalable-Byzantine-Consensus-on-Adversarial-Li-Wang/e62df2883a75f11ca9d288450ece4f61e077a3e4)
+  * [Gosig](https://arxiv.org/pdf/1802.01315.pdf)
   * [Casper FFG](https://arxiv.org/abs/1710.09437)
   * [IPLD](https://ipld.io/)
 
