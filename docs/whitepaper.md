@@ -449,10 +449,10 @@ Fortunately, Signers do not require a globally consistent view of the currently 
 
 #### Determining the Active Signer Set for Epoch $E$
 
-The fixed set of active signers for epoch $E$ is an ordered set of registered $(K,A)$ pairs, where $K$ is the public key used to authenticate the Signers protocol messages and $A$ is the Signer’s network address. For a set of $n$ Signers, the active set for epoch $E$ is:
+The fixed set of active signers for epoch $E$ is an ordered set $S_a(E)$ of registered $(K_i, A_i)$ pairs, where $K_i$ is the public key used to authenticate protocol messages from signer $i$, and $A_i$ is the network address of signer $i$. For a set of $n$ Signers, the active set for epoch $E$ is
 
 $$
-AS(E) = (K,A)_0, \ldots (K,A)_i, \ldots (K,A)_{n-1},
+S_a(E) = (K_0, A_0), \ldots, (K_{n-1}, A_{n-1})
 $$
 
 The fixed set of active Signers in any given epoch can be deterministically calculated from the notarized history of `ACTIVATE_SIGNER` and `DEACTIVATE_SIGNER` transactions on the on the Notary Group Chain Tree.
@@ -473,8 +473,8 @@ message EpochEnd {
 
 This causes a recalculation of the active signer sets for epoch $E+1$ and $E+2$.
 $$
-AS(E+1) = AS(E)-signersLeaving \\
-AS(E+2) = AS(E)+signersJoining \\
+S_a(E+1) = S_a(E)-signersLeaving \\
+S_a(E+2) = S_a(E)+signersJoining \\
 $$
 
 This transaction also finalizes and shuffles the active signer set for $E+1$ just in time for epoch $E+1$ to begin. The transaction also serves as a demarcation point between epochs $E$ and $E+1$.
