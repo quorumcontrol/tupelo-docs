@@ -177,9 +177,9 @@ Figure 4 below shows the states, messages and transitions for the consensus prot
 --
 
 A block $B$ extending Chain Tree tip $T$ in view $V$, during cycle $C$ is:
-  * *proposed* by Signer $i$ if Signer $i$ has at least one `PROPOSE(B,T,C)` or `PREPARE(B,T,C,V,S)` but no `PREPARE`s where the weight of $S \gt ⅔$ Signer deposits
-  * *prepared* by Signer $i$ if Signer $i$ has a `PREPARE(B,T,C,V,S)` where the weight of $S \gt ⅔$ Signer deposits
-  * *committed* by Signer $i$ if Signer $i$ has a `COMMIT(B,T,C,V,S)` where the weight of $S \gt ⅔$ Signer deposits
+  * *proposed* by Signer $i$ if Signer $i$ has at least one `PROPOSE(B,T,C)` or `PREPARE(B,T,C,V,S)` but no `PREPARE` messages where the weight of $S \gt \frac{2}{3}$ Signer deposits
+  * *prepared* by Signer $i$ if Signer $i$ has a `PREPARE(B,T,C,V,S)` where the weight of $S \gt \frac{2}{3}$ Signer deposits
+  * *committed* by Signer $i$ if Signer $i$ has a `COMMIT(B,T,C,V,S)` where the weight of $S \gt \frac{2}{3}$ Signer deposits
   * *deadlocked* by Signer $i$ if Signer $i$ has a set of messages demonstrating that no proposed block can achieve more than ⅔ Signer deposits in view $V$
 
 In the common case there are no conflicting proposals and consensus is reached quickly. However, if the protocol becomes *deadlocked* each Signer will move to view to $V+1$ and apply the fork choice rule to select the best block $B$ to gossip. All Signers apply the same fork choice rule, which gravitates execution toward the happy path on the right.
@@ -199,7 +199,7 @@ Upon receiving a `PROPOSE(B,T,C)` message the Signer validates the block by appl
 
 If the block is valid the Signer places it into a conflict set for $T$, transitions to the proposed state, and gossips a `PREPARE(B′,T,C,V,S)` message, where the components of the `PREPARE` message are:
 - $B′$ - the block the Signer is voting for in view $V$
-- $T$ - previous tip as $T$ specified in the PROPOSE message
+- $T$ - previous tip as $T$ specified in the `PROPOSE` message
 - $C$ - the target cycle, always equal to $C$ specified in the `PROPOSE` message
 - $V$ - the current view in which the Signer is voting for $B′$, initially set to $0$
 - $S$ - the aggregated signatures of Signers voting for $B′$ in view $V$
@@ -210,23 +210,23 @@ Signers should discard all `PROPOSE(B,T,C)` and `PREPARE(B,T,C,V,S)` messages wh
 
 When a Signer adds its signature over `(B′,T,C,V)` to $S$ it is effectively casting a vote for $B′$ as the canonical block extending previous tip $T$ in view $V$. The vote is weighted by the size of the Signer’s deposit. The weight of $S$ is the sum of the weights of the aggregated signatures.
 
-A Signer receiving a `PREPARE(B,T,C,V,S)` message will perform the actions described for `PROPOSE` above and also aggregate into $S$ any signatures from other `PREPARE` messages for the same block $B$. The Signer then checks if the aggregated weight of $S$ is greater than ⅔ the sum of all deposits of active Signers in cycle $C$. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a `COMMIT(P,S)` message, where the components are:
-  - $P$ - the `PREPARE(B,T,C,V,S)` message where the weight of $S \gt ⅔$ Signer deposits
+A Signer receiving a `PREPARE(B,T,C,V,S)` message will perform the actions described for `PROPOSE` above and also aggregate into $S$ any signatures from other `PREPARE` messages for the same block $B$. The Signer then checks if the aggregated weight of $S$ is greater than \frac{2}{3} the sum of all deposits of active Signers in cycle $C$. If so, the Signer transitions to the prepared phase, and creates, signs, and gossips a `COMMIT(P,S)` message, where the components are:
+  - $P$ - the `PREPARE(B,T,C,V,S)` message where the weight of $S \gt \frac{2}{3}$ Signer deposits
   - $S$ - the aggregated signatures of Signers commiting to $B$ in view $V$
 
-For any PREPARE $P$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a `COMMIT(P,S)` message, even if the Signer previously sent a `PREPARE` voting for a different block or the block proposed in $P$ is not the Signer’s fork choice.
+For any `PREPARE` $P$ with signature weight > ⅔ Signer deposits, the Signer must always vote for it and gossip a `COMMIT(P,S)` message, even if the Signer previously sent a `PREPARE` voting for a different block or the block proposed in $P$ is not the Signer’s fork choice.
 
-A Signer receiving a `COMMIT(P,S)` message will validate $P$ and aggregate signatures as described above. If the aggregated weight of $S \gt ⅔$ Signer deposits, the Signer transitions to the committed state in which the block $B$ specified in $P$ becomes canonical for $T$. The Signer can immediately discard the entire conflict set for $T$ (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in $B$.
+A Signer receiving a `COMMIT(P,S)` message will validate $P$ and aggregate signatures as described above. If the aggregated weight of $S \gt \frac{2}{3}$ Signer deposits, the Signer transitions to the committed state in which the block $B$ specified in $P$ becomes canonical for $T$. The Signer can immediately discard the entire conflict set for $T$ (unless it participates in rewards as described below) and begin validating based on the new canonical tip specified in $B$.
 
 ### Deadlock Detection and Fork Choice Rule
 
-The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to `(T,V)`.
+The consensus process can deadlock when the remaining unsigned stake weight is not enough to get any block proposal past the ⅔ threshold. A signer that detects this condition becomes deadlocked with respect to $(T,V)$.
 
 Formally, deadlock is detected by signer $i$ if, for some Chain Tree Tip $T$, candidate blocks $B_0 \ldots B_n$ extending $T$, corresponding signature stake weights seen in the latest `PREPARE(B_{i},T,C,V,S)` messages $w_0 \ldots w_n$, and total stake weight of all signers $W$, the following condition holds for all $B_i$
 
 
 $$
-w_i + (W - \sum_{j=0}^n w_j) \le ⅔W
+w_i + (W - \sum_{j=0}^n w_j) \le \frac{2}{3}W
 $$
 
 
@@ -246,15 +246,15 @@ The protocol forbids sending the following conflicting messages:
   * `COMMIT(P,S)` and `COMMIT(P′,S)` where $P \neq P′$
 
 However, signers may send the following messages, which are not considered conflicting:
-  * `PREPARE(B,T,C,V,S)` and `PREPARE(B′,T,C,V′,S)` where $B ≠ B′$ if $V ≠ V′$
-  * `P=PREPARE(B,T,C,V,S)` and `COMMIT(P′,S)` where $P ≠ P′$
-The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $P \= $ `PREPARE(B,T,C,V,S)`, but then saw $P′ \= $ `PREPARE(B′,T,C,V,S)` with weight of $S \gt ⅔$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
+  * `PREPARE(B,T,C,V,S)` and `PREPARE(B′,T,C,V′,S)` where $B \neq B′$ if $V \neq V′$
+  * `P=PREPARE(B,T,C,V,S)` and `COMMIT(P′,S)` where $P \neq P′$
+The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $P \= $ `PREPARE(B,T,C,V,S)`, but then saw $P′ \= $ `PREPARE(B′,T,C,V,S)` with weight of $S \gt \frac{2}{3}$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
 
 #### Unjustified View Change
 The protocol forbids sending a `PREPARE(B,T,C,V+1,S)` message without a view change justification or with a justification that does not sufficiently prove deadlock in view $V$.
 
 #### Unjustified Commit
-The protocol forbids sending a `COMMIT(P,S)` message where $P$’s signature weight is not $> ⅔$ Signer deposits.
+The protocol forbids sending a `COMMIT(P,S)` message where $P$’s signature weight is not $> \frac{2}{3}$ Signer deposits.
 
 #### Invalid New Tip
 The protocol forbids sending `PREPARE(B,T,C,V,S)` or `COMMIT(P,S)` where the block $B$ being proposed contains invalid transactions, or the transactions are valid but the resulting state does not match $T$.
@@ -343,7 +343,7 @@ Calculating and assessing rewards and penalties is done in a distributed fashion
 For each conflict set of proposals extending some tip $T_{old}$ to a new tip $T$, a random subset of all Signers for the epoch, $R_T$, is selected to be responsible for reporting rewards on $T$. Anyone can compute $R_T$ as a function of $T$. For example, given an array of $N$ signers for the epoch, the signer at index $T \bmod N$ is primary, $T+1 \bmod N$ secondary and so on. Formally,
 
 $$
-R_T[i] \= Signers[(T+i) \bmod N]
+R_T[i] = Signers[(T+i) \bmod N]
 $$
 
 Once the conflict set for $T$ has been resolved, all signers not in $R_T$ can immediately delete all conflict set data regarding $T$ and ignore any further messages referencing $T$. Signers who are members of $R_T$ must retain their conflict sets for $T$ until the end of cycle in which rewards and penalties on $T$ are assessed (4 cycles).
@@ -390,9 +390,9 @@ The cycle specifies the cycle associated with the conflict set (lowest cycle pro
 
 In the event that ⅓ of voting stake goes offline (e.g. due to crash, network partition, DDoS attack) it will be impossible for the remaining Signers to reach consensus on any block proposal.
 
-This situation can be addressed in most cases using a Casper-like “inactivity leak” that slowly drains the deposits of Signers that do not sign valid `COMMIT`S. This results in the deposits of online honest Signers gaining a larger relative share of voting power so that they are able to continue to notarize transactions.
+This situation can be addressed in most cases using a Casper-like “inactivity leak” that slowly drains the deposits of Signers that do not sign valid `COMMIT` messages. This results in the deposits of online honest Signers gaining a larger relative share of voting power so that they are able to continue to notarize transactions.
 
-We implement this by subtracting a fixed percentage (i.e. PENALTY_RATE) of their total deposit for each offense. A higher PENALTY_RATE provides a greater capability to recover from crashes etc. but with the downside of disincentivizing would-be Signers who do not wish to incur these penalties.
+We implement this by subtracting a fixed percentage (i.e. `PENALTY_RATE`) of their total deposit for each offense. A higher `PENALTY_RATE` provides a greater capability to recover from crashes etc. but with the downside of disincentivizing would-be Signers who do not wish to incur these penalties.
 
 #### Agreement on Signer Balances
 
