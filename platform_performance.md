@@ -7,7 +7,8 @@ nav_order: 5
 
 # Latest Tupelo Performance Data
 
-The engineering team focusing on Tupelo take performance extremely seriously.  
+We take performance seriously.  
+
 The best way we can live that is by transparently sharing what has been
 measured, how the Test-Net has performed and what changes are driving
 performance improvements.
