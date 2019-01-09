@@ -248,7 +248,7 @@ The protocol forbids sending the following conflicting messages:
 However, signers may send the following messages, which are not considered conflicting:
   * `PREPARE(B,T,C,V,S)` and `PREPARE(B′,T,C,V′,S)` where $B ≠ B′$ if $V ≠ V′$
   * `P=PREPARE(B,T,C,V,S)` and `COMMIT(P′,S)` where $P ≠ P′$
-The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $P \= $ `PREPARE(B,T,C,V,S)`, but then saw $P′= $ `PREPARE(B′,T,C,V,S)` with weight of $S \gt ⅔$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
+The first case allows signers to change the block they vote for in different views based on the fork choice rule applied to the latest set of messages they possess. The second case allows an honest signer who sent $P \= $ `PREPARE(B,T,C,V,S)`, but then saw $P′ \= $ `PREPARE(B′,T,C,V,S)` with weight of $S \gt ⅔$ stake, to send `COMMIT(P′,S)` as dictated by the protocol.
 
 #### Unjustified View Change
 The protocol forbids sending a `PREPARE(B,T,C,V+1,S)` message without a view change justification or with a justification that does not sufficiently prove deadlock in view $V$.
@@ -422,17 +422,18 @@ Using a historical balance like this implies that a slashable offense occurring 
 
 #### Choosing $R_T$
 
-The size of $R_T$ relative to the total number of signers for the epoch represents a tradeoff between safety and efficiency. A smaller $R_T$ improves efficiency by reducing the number of messages that need to be sent when signers commit and conflict sets that need to be retained until rewards are calculated. A larger $R_T$ improves safety by minimizing the probability that all members of $R_T$ are byzantine. Below are probabilities of $R_T$ being completely byzantine for different $R_T$ sizes in a signer set of 100 nodes with 33 byzantine (assuming $T$ is random, the order of signers is random, and using a Hypergeometric distribution calculation)
+The size of $R_T$ relative to the total number of signers for the epoch represents a tradeoff between safety and efficiency. A smaller $R_T$ improves efficiency by reducing the number of messages that need to be sent when signers commit and conflict sets that need to be retained until rewards are calculated. A larger $R_T$ improves safety by minimizing the probability that all members of $R_T$ are byzantine. Below are probabilities of $R_T$ being completely byzantine for different $R_T$ sizes in a signer set of 100 nodes with 33 node subset $\beta$ of Byzantine nodes (assuming $T$ is random, the order of signers is random, and using a Hypergeometric distribution calculation)
 
-| $R_T$ size        | $P[all byzantine]$  |
-| ---------- | ---------- |
-| 1 | 0.33000000 |
-| 5 | 0.00315239 |
-| 10 | 0.000005347 |
-| 15 | 4.093963 e-09 |
-| 20 | 1.069374 e-12 |
+| $\|R_T\|$  | $\Pr(R_T \subset \beta)$ |
+| ---------- | ------------------------ |
+| 1          | 0.33000000               |
+| 5          | 0.00315239               |
+| 10         | 0.000005347              |
+| 15         | 4.093963 e-09            |
+| 20         | 1.069374 e-12            |
 
-Thus with an $R_T$ size of 10, a cartel of 33 byzantine nodes will get to corrupt the rewards process about 5 times out of a million.
+Thus when $|R_T| \= 10$, a cartel $\beta$ of 33 Byzantine nodes will get to
+corrupt the rewards process about 5 times out of a million.
 
 ### Signer Rotation
 
@@ -443,7 +444,7 @@ Our mechanism is loosely based on Casper FFG, but without a singleton chain whos
 #### Epochs
 
 Epochs are periods of time (on the order of 1 hour) during which Notary Group membership does not change. All Notary Group membership changes take effect at the beginning of an epoch.
-Epoch boundaries are determined by local clocks, which are not synchronized. Thus, the set of active signers at any given point in time is subjective. In particular, the notion of the current epoch is not deterministic in Tupelo. Signers and Chain Tree owners must decide this based on their local clocks. The epoch duration is set long enough such that all Signers in practice will agree most of the time on what the current epoch is, though they are expected to become inconsistent around epoch boundaries.
+Epoch boundaries are determined by local clocks, which are not synchronized. Thus, the set of active signers at any given time is subjective. In particular, the notion of the current epoch is not deterministic in Tupelo. Signers and Chain Tree owners must decide this based on their local clocks. The epoch duration is set long enough such that all Signers in practice will agree most of the time on what the current epoch is, though they are expected to become inconsistent around epoch boundaries.
 
 Fortunately, Signers do not require a globally consistent view of the currently active Signer set; they only need to agree on the set of active Signers with respect to a single conflict set, because each conflict set is resolved by a separate, independent consensus process. The next sections describe how the set of active signers for a given epoch and for a given conflict set can be calculated deterministically.
 
