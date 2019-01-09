@@ -31,8 +31,8 @@ Adding additional in-memory state.
 | 21      | 200 tx/sec   | 1814 ms  | 2367 ms |
 | 100     | 200 tx/sec   | 4612 ms  | 6104 ms |
 
-AWS Regions: 8
-AWS Instance Types: c5.xlarge (4cpu 8gb ram)
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
 
 ***
 
@@ -46,8 +46,8 @@ Parallelized signature checking.
 | 21      | 50 tx/sec   | 1218 ms  | 1791 ms |
 | 100     | 25 tx/sec   | 3662 ms  | 4525 ms |
 
-AWS Regions: 8
-AWS Instance Types: c5.xlarge (4cpu 8gb ram)
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
 
 ***
 
@@ -61,5 +61,5 @@ between signer nodes.
 | 21      | 50 tx/sec   | 1147 ms  | 2320 ms |
 | 100     | 25 tx/sec   | 12143 ms  | 19434 ms |
 
-AWS Regions: 3
-AWS Instance Types: c5.xlarge (4cpu 8gb ram)
+AWS Regions: 3  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
