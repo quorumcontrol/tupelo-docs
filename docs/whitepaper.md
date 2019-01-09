@@ -186,7 +186,7 @@ In the common case there are no conflicting proposals and consensus is reached q
 
 The protocol operates efficiently by employing a Gosig-like gossip protocol in which a Signer, upon receiving a protocol message, performs some validations and signature aggregation, updates its state, and (in most cases) gossips a message to a randomly selected subset of other active Signers in the Notary Group during cycle $$C$$.
 
-An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle $$C$$ implies the epoch $$E$$ (e.g. if there are 60 cycles in an epoch, $$E\ =\ C\ //\ 60)$$, and thus defines the set and signing weights of all active Signers for $$C$$.
+An epoch is the period during which the set of active Signers remains constant (see Signer Rotation below). A cycle is the period of time (about 1 minute) in which all Signer signature weights remain constant (see Incentives below). Any given cycle $$C$$ implies the epoch $$E$$ (e.g. if there are 60 cycles in an epoch, $$E\= C\ //\ 60)$$, and thus defines the set and signing weights of all active Signers for $$C$$.
 
 ### Conflict Set Resolution
 The consensus process begins when a Chain Tree owner proposes a block by sending a signed `PROPOSE(B,T,C)` message to one or more active Signers for the given cycle $$C$$ (see Signer Rotation below). The `PROPOSE` message components are:
@@ -235,7 +235,7 @@ If a Signer detects a deadlock condition in view $$V$$ it applies the fork choic
 The fork choice rule is:
 > *Given the set of all known proposals for extending tip T (i.e. all `PREPARE(B,T,C,V,S)` messages received), choose the one where hash(B) has the lowest value.*
 
-The fork choice rule is only applied for views $$>\ 0$$, i.e. when the view changes due to a deadlock condition. For $$view\ =\ 0$$, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
+The fork choice rule is only applied for views $$>\ 0$$, i.e. when the view changes due to a deadlock condition. For $$view\= 0$$, the Signer always votes for the first block proposal it sees, which, in the common case, does not have any conflicting proposals and is committed without any view changes.
 
 ### Protocol Violations
 This section defines some protocol rules that can have economic penalties when violated. Since all messages are digitally signed with the sender’s private key, the signed message is proof that the Signer who sent it violated the rule.
@@ -343,7 +343,7 @@ Calculating and assessing rewards and penalties is done in a distributed fashion
 For each conflict set of proposals extending some tip $$T_{old}$$ to a new tip $$T$$, a random subset of all Signers for the epoch, $$R_T$$, is selected to be responsible for reporting rewards on $$T$$. Anyone can compute $$R_T$$ as a function of $$T$$. For example, given an array of $$N$$ signers for the epoch, the signer at index $$T \bmod N$$ is primary, $$T+1 \bmod N$$ secondary and so on. Formally,
 
 $$
-R_T[i]\ =\ Signers[(T+i) \bmod N]
+R_T[i]\= Signers[(T+i) \bmod N]
 $$
 
 Once the conflict set for $$T$$ has been resolved, all signers not in $$R_T$$ can immediately delete all conflict set data regarding $$T$$ and ignore any further messages referencing $$T$$. Signers who are members of $$R_T$$ must retain their conflict sets for $$T$$ until the end of cycle in which rewards and penalties on $$T$$ are assessed (4 cycles).
@@ -486,7 +486,7 @@ The signersRefunded member is used to refund the set of deactivated signers whos
 
 #### Updating Membership
 
-At the end of epoch $$E$$, the active Signers collectively construct and notarize a $$EPOCH\_END transaction with $$closingEpoch\ =\ E$$. They determine the $$signersJoining$$ and $$signersLeaving$$ arrays based on staking transactions that occurred during epoch $$E$$.
+At the end of epoch $E$, the active Signers collectively construct and notarize a `EPOCH_END`` transaction with $closingEpoch \= E$. They determine the $$signersJoining$$ and $$signersLeaving$$ arrays based on staking transactions that occurred during epoch $$E$$.
 
 Recall that nodes wishing to register as Signers deposit their bonds by appending to their own Chain Trees a `DEPOSIT_STAKE` transaction that triggers a corresponding `ACTIVATE_SIGNER` transaction on the Notary Group Chain Tree. Since every notarized transaction is associated with a specific epoch, the set of `ACTIVATE_SIGNER` transactions on the Notary Group Chain Tree for epoch $$E$$ can be mapped to $$(K,A)$$ pairs to create the $$signersJoining$$ for epoch $$E+2$$. Similarly, the signersLeaving array for epoch $$E+1$$ can be computed by mapping the set of $$DEACTIVATE\_SIGNER transactions notarized in epoch $$E$$.
 
@@ -500,7 +500,7 @@ In order to preserve the state of the Notary Group Chain Tree and ensure safety 
 
 #### Processing Withdrawals
 
-Signer deposits remain locked for a period of time ($$t$$ epochs, on the order of 4 months) after the Signer is inactivated by a `DEACTIVATE_SIGNER` transaction. If the `DEACTIVATE_SIGNER` was posted in epoch $$E$$ then an when an `EPOCH_END` is written at epoch $$E+t$$ its `signersRefunded` member functions like a `SEND_COIN` that effectively refunds the balance of all Signers listed. Once that transaction appears on the Notary Group Chain Tree, the Signer can issue a `RECEIVE_COIN` on their own Chain Tree to transfer their balance and allow them to spend it.
+Signer deposits remain locked for a period of time ($t$ epochs, on the order of 4 months) after the Signer is inactivated by a `DEACTIVATE_SIGNER` transaction. If the `DEACTIVATE_SIGNER` was posted in epoch $E$ then an when an `EPOCH_END` is written at epoch $E+t$ its `signersRefunded` member functions like a `SEND_COIN` that effectively refunds the balance of all Signers listed. Once that transaction appears on the Notary Group Chain Tree, the Signer can issue a `RECEIVE_COIN` on their own Chain Tree to transfer their balance and allow them to spend it.
 
 #### Sending Proposals
 
