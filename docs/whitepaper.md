@@ -31,15 +31,15 @@ The current state of the art in cryptocurrency systems is referred to as “dist
 Additionally, these systems are not suited for real-world asset ownership. Distributed ledgers were designed to model currency and similar concepts such as stocks and bonds, but there are few systems where transferring ownership of items like real estate or cars (or door locks, routers, etc) is ideal. Developers have used existing systems as timestamp generators, but the systems themselves aren’t designed for individual objects.
 
 Tupelo builds upon the work of others including:
-  * Cosi/Cothority
-  * BLS Multisignature
-  * W3C DID spec
-  * Secure Scuttlebutt
-  * Nano
-  * Holochain
-  * Gosig
-  * Casper FFG
-  * IPLD
+  * [Cosi/Cothority](https://github.com/dedis/cothority/tree/master/cosi)
+  * [BLS Multisignature](https://crypto.stanford.edu/~dabo/abstracts/aggreg.html)
+  * [W3C DID spec](https://w3c-ccg.github.io/did-spec/)
+  * [Secure Scuttlebutt](https://github.com/ssbc/)
+  * [Nano](https://nano.org/en)
+  * [Holochain](https://holochain.org/)
+  * [Gosig](https://www.semanticscholar.org/paper/Gosig%3A-Scalable-Byzantine-Consensus-on-Adversarial-Li-Wang/e62df2883a75f11ca9d288450ece4f61e077a3e4)
+  * [Casper FFG](https://arxiv.org/abs/1710.09437)
+  * [IPLD](https://ipld.io/)
 
 ## Overview
 We model asset ownership with a new data structure called a Chain Tree.  Every asset and actor in the system has their own Chain Tree. A Chain Tree is the combination of a merklized DAG and an individual ordered log of transactions. This structure can be thought of as a single-branch git for data.
