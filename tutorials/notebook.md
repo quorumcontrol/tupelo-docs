@@ -34,37 +34,18 @@ npm init -y
 
 This gives us a new directory with a `package.json` skeleton to start with.
 
-## Running the Tupelo RPC server
-The Node.js client cannot directly manage chain trees or connect to the notary
-group, so node applications must instead proxy through an RPC server to work
-with Tupelo.
+## The Tupelo RPC Server
+We will use the Tupelo RPC server to connect our application to the notary
+group, so we need to make sure it's installed and running first. Please follow
+the [RPC server installation instructions](./rpc_server.md) before continuing
+through this tutorial.
 
-To install the server, first contact us to get a Tupelo binary for your platform
-and save it within your command `PATH` variable. If you do not wish to save the
-binary in your `PATH`, you can still execute it with the fully qualified or
-relative path to your chosen location for the binary.
-
-After successfully installing the binary, you can run the RPC server by invoking
-`tupelo` (or the path to your chosen install location) along with the necessary
-options. Production applications will usually connect to an independent notary
-group, but you can also choose to run and connect to a local notary group to
-make working in development easier.
-
-### Connecting the RPC Server to a Local Notary Group
-To start the RPC server and notary group for local development, run:
-```bash
-tupelo rpc-server
-```
-
-This invocation will start a 3 signer local notary group after first generating
-random keypairs for the group to use. After that, it will start the RPC server,
-bind it to the local notary group, and the server will be listening on port
-50051.
-
-## Installing the Tupelo Client API
-Before we build anything, we need to add the Tupelo client to our application's
-dependency set. Edit the new `package.json` file in your favorite editor and add
-a new dependency set containing only the `tupelo-client` library:
+## The Tupelo Client API
+Now that the RPC server is up and running, we can start building our notebook
+application. Before we build anything though, we need to add the Tupelo client
+to our application's dependency set. Edit the new `package.json` file in your
+favorite editor and add a new dependency set containing only the `tupelo-client`
+library:
 
 In file `notebook/package.json`:
 ```json
