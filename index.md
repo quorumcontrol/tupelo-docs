@@ -9,7 +9,7 @@ permalink: /
 <img style="float: right; width:415px;height:231px;" src="assets/images/code_sample.png">
 
 Most Blockchain and Distributed Ledger Technology projects are hard to use.
-**Tupelo is easy**.  
+**Tupelo is easy**.
 {: .fs-5 .fw-300 }
 Come for the flexible and simple API and stay for the fast, cheap, public signing network.
 {: .fs-5 .fw-300 }
@@ -27,9 +27,9 @@ You can have your first signed and immutable transaction in just a few minutes.
 
 **Tupelo is ideal for modeling real world things** be they physical or digital.
 {: .fs-5 .fw-300 }
-The reason is Tupelo has a very different underlying datastructure.
+The reason is Tupelo has a different underlying datastructure.
 {: .fs-5 .fw-300 }
-Rather than one central chain each "object" being modeled has its own structure called a ChainTree.  
+Rather than one central chain each "object" modeled in Tupelo has its own structure called a ChainTree.
 {: .fs-5 .fw-300 }
 ChainTrees are flexible, transferrable and highly efficient.
 {: .fs-5 .fw-300 }
@@ -42,9 +42,7 @@ ChainTrees are flexible, transferrable and highly efficient.
 {: .fs-8 }
 <img style="float: right;" src="https://static1.squarespace.com/static/5b2bb0b9f8370a1e48fe3fac/t/5b51a6960e2e7239c2cc3f5e/1540953865755/Tupelo_Working3.png?format=150w">
 
-Through our simple API and using tools you are already familiar with we will create a datastructure called a Chain Tree, add our "Hello World" message and get it signed.
-{: .fs-5 .fw-300 }
-Lorem Ibsum Dracula.
+We will create a Chain Tree, add messages and get them signed using our simple API and tools you are already familiar with.
 {: .fs-5 .fw-300 }
 
 [Get started now](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
