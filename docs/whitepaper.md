@@ -16,7 +16,7 @@ nav_order: 2
 
 ## Abstract
 
-Digital asset ownership systems can achieve faster processing time, more decentralization, and less overhead by adopting a client-lead consensus algorithm and removing global transaction ordering. Introducing an individual append-only log (blockchain) combined with a notarized merkle-DAG (directed acyclic graph) per actor allows for a variety of protocols to be built on top of a byzantine fault tolerant global layer of trust while scaling to hundreds of thousands of transactions per second. We call this combination of blockchain and merkle-DAG a Chain Tree. The combination of a Chain Tree and a public Notary Group is a system we are calling Tupelo.
+Distributed ledgers enabling digital asset ownership can achieve faster processing time, more decentralization, and less overhead by adopting a client-lead consensus algorithm and removing global transaction ordering. Introducing an individual append-only log (blockchain) combined with a notarized merkle-DAG (directed acyclic graph) per actor allows a byzantine fault tolerant global layer of trust to underpin a variety of protocols while scaling to hundreds of thousands of transactions per second. We call this combination of blockchain and merkle-DAG a Chain Tree. Tupelo is the combination of Chain Trees and a public Notary Group.
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -26,7 +26,7 @@ Digital asset ownership systems can achieve faster processing time, more decentr
 
 ## Background
 
-The current state of the art in cryptocurrency systems is referred to as “distributed ledger technology (DLT).” Most DLT systems model asset ownership/transfer as quantities sent between accounts within atomic transactions. If Alice wants to send Bob 5 tokens, she creates a transaction on the ledger which debits her account 5 tokens and increases Bob’s account 5 tokens. In order to prevent Alice from double spending, Bob has to wait until the ledger has come to a consensus that Alice’s transaction is valid. The distributed ledger needs to keep a global ordered transaction log to make sure that Alice has the 5 tokens to spend. Global ordering is one of the reasons many distributed ledgers can only process tens of transactions per second globally.
+Most distributed ledgers model asset ownership/transfer as quantities sent between accounts within atomic transactions. If Alice wants to send Bob 5 tokens, she creates a transaction on the ledger which debits her account 5 tokens and increases Bob’s account 5 tokens. In order to prevent Alice from double spending, Bob has to wait until the ledger has come to a consensus that Alice’s transaction is valid. The distributed ledger needs to keep a global ordered transaction log to make sure that Alice has the 5 tokens to spend. Global ordering is one of the reasons many distributed ledgers can only process tens of transactions per second globally.
 
 Additionally, these systems are not suited for real-world asset ownership. Distributed ledgers were designed to model currency and similar concepts such as stocks and bonds, but there are few systems where transferring ownership of items like real estate or cars (or door locks, routers, etc) is ideal. Developers have used existing systems as timestamp generators, but the systems themselves aren’t designed for individual objects.
 
