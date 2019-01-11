@@ -2,7 +2,7 @@
 layout: default
 title: Tupelo Platform Overview
 parent: Platform Documentation
-nav_order: 2
+nav_order: 1
 ---
 
 # Tupelo Overview
@@ -122,16 +122,23 @@ Information security is the original problem that spurred all of the innovations
 To reiterate, Tupelo maintains the speed of private DLT solutions which can support high transaction volumes and speed requirements, but it accomplishes this not through compromising the key DLT premise of decentralized control but through a fundamentally different, streamlined structure.
 
 ---
-<form action="https://getsimpleform.com/messages?form_api_token=a55db729774e6ece19b3844d530fb2f2" method="post">
+### Interested in building on Tupelo, have comments or want to learn more?  
+Please get in touch and a human will review your question or request and get
+back to you shortly.  We are building Tupelo for **use** and know that to
+succeed we will need to support the community building on the platform.  Give
+us a chance to put those values into action.  Please contact us!
+
+<form action="https://getsimpleform.com/messages?form_api_token=e5c297254e437ec5b14c8207d9a15e08" method="post">
   <!-- the redirect_to is optional, the form will redirect to the referrer on submission -->
   <!-- <input type='hidden' name='redirect_to' value='http://quorumcontrol.com' />
   <!-- all your input fields here.... -->
-  Namerel2 <br/>
-  <input type='text' name='Name' /><br/>
-  Email <br/>
-  <input type='text' name='Email' /><br/>
-  Organization <br/>  
-  <input type='text' name='Organization' style='color:blue;'/><br/>
-  <style> {: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 } </style>
-  <input type='submit' value='Submit' />
-</form>
+  <h4 id="example" style="padding: .5em 4em .5em;">Name
+  <!-- input type='text' name='Name' size="50" required style='color:blue;'/> -->
+  <input type="text" name="fname" size="30" style='color:blue;' class="field-divided" /> <input type="text" name="lname" size="30" class="field-divided" style='color:blue;'/>
+  <h4 id="example" style="padding: .5em 4em;">Email
+  <input type='email' name='Email' size="62" required style='color:blue;'/>
+  <h4 id="example" style="padding: .5em 4em;" >Organization
+  <input type='text' name='Organization' size="52" style='color:blue;'/>
+  <h4 id="example" style="padding: .5em 4em;">Request or Comment <br> <br>
+  <textarea name="comment" cols="69" rows="5" style='color:blue;'></textarea> <br> <br>
+  <input type='submit' value='Submit Request or Question' class="btn btn-green fs-5 mb-4 mb-md-0 mr-2" />

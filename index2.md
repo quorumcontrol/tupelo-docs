@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Home2
-nav_order:
+nav_order: 10
 permalink:
 ---
 # We Are Distributed Ledger Done Differently
