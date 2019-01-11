@@ -1,3 +1,10 @@
+---
+layout: default
+title: index.js
+parent: Notebook
+nav_order: 2
+---
+
 ```javascript
 const tupelo = require('tupelo-client');
 const fs = require('fs');

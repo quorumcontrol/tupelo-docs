@@ -1,3 +1,10 @@
+---
+layout: default
+title: index.js
+parent: Notebook
+nav_order: 1
+---
+
 ```javascript
 {
   "name": "notebook",

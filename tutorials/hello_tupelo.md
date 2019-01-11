@@ -9,7 +9,7 @@ nav_order: 1
 {: .fs-9 }
 
 ## Prerequisites
-1. [Start the Tupelo RPC server](./rpc_server.md).
+1. [Start the Tupelo RPC server](/tutorials/rpc-server).
 2. Run `mkdir tupelo && cd tupelo` at a shell prompt.
 3. Install the client with `npm install tupelo-client`
 4. Launch a Node.js repl with `node`.
@@ -42,4 +42,4 @@ client.setData(chainId, keyAddr, testPath, "Hello World!").then((result) => { co
 client.resolve(chainId, testPath).then((result) => { console.log("--- success!"); console.log(result.data.toString()) }, (err) => { console.log("--- error: "+err) });
 ```
 
-Please take a look at the [Tupelo JavaScript API Documentation](https://quorumcontrol.github.io/tupelo.js/) for more information on what you can do with the API. If you'd like to build an app on Tupelo, then take a look at our [Notebook tutorial](/tutorials/hello_world).
+Please take a look at the [Tupelo JavaScript API Documentation](https://quorumcontrol.github.io/tupelo.js/) for more information on what you can do with the API. If you'd like to build an app on Tupelo, then take a look at our [Notebook tutorial](/tutorials/notebook).
