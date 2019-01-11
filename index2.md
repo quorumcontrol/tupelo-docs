@@ -6,7 +6,7 @@ permalink:
 ---
 # We Are Distributed Ledger Done Differently
 {: .fs-8 }
-<img style="float: right; width:450px;height:384px;" src="assets/images/howistupelodifferent.png">
+<img style="float: right; width:375px;height:320px; padding: 15px;" src="assets/images/howistupelodifferent.png">
 
 Put simply, **Tupelo is purpose-built for the things you’re building.**
 ChainTrees, our unique data structure, is a completely different foundation
@@ -28,7 +28,7 @@ Tupelo is built for building. Come see for yourself.
 
 # A Better Developer Experience
 {: .fs-8 }
-<img style="float: right; width:400;height:235px;" src="https://quorumcontrol.github.io/tupelo-docs/assets/images/litepaper-illustration4.png">
+<img style="float: right; width:375;height:235px;" src="https://quorumcontrol.github.io/tupelo-docs/assets/images/litepaper-illustration4.png">
 
 Traditional DLT platforms are often complicated to use because they aren’t built
 for what you need. You’re spending too much time trying to compromise with
