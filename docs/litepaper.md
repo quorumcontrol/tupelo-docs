@@ -2,7 +2,7 @@
 layout: default
 title: Tupelo Platform Overview
 parent: Platform Documentation
-nav_order: 2
+nav_order: 1
 ---
 
 # Tupelo Overview
@@ -122,16 +122,5 @@ Information security is the original problem that spurred all of the innovations
 To reiterate, Tupelo maintains the speed of private DLT solutions which can support high transaction volumes and speed requirements, but it accomplishes this not through compromising the key DLT premise of decentralized control but through a fundamentally different, streamlined structure.
 
 ---
-<form action="https://getsimpleform.com/messages?form_api_token=a55db729774e6ece19b3844d530fb2f2" method="post">
-  <!-- the redirect_to is optional, the form will redirect to the referrer on submission -->
-  <!-- <input type='hidden' name='redirect_to' value='http://quorumcontrol.com' />
-  <!-- all your input fields here.... -->
-  Namerel2 <br/>
-  <input type='text' name='Name' /><br/>
-  Email <br/>
-  <input type='text' name='Email' /><br/>
-  Organization <br/>  
-  <input type='text' name='Organization' style='color:blue;'/><br/>
-  <style> {: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 } </style>
-  <input type='submit' value='Submit' />
-</form>
+
+{% include feedback.html %}
