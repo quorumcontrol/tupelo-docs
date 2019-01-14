@@ -1,6 +1,6 @@
 ---
 layout: default
-title: index.js
+title: package.json
 parent: Notebook
 nav_order: 1
 ---
