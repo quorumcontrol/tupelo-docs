@@ -9,7 +9,7 @@ permalink: /
 <img style="float: right; width:415px;height:231px;" src="assets/images/code_sample.png">
 
 Most Blockchain and Distributed Ledger Technology projects are hard to use.
-**Tupelo is easy**.  
+**Tupelo is easy**.
 {: .fs-5 .fw-300 }
 Come for the flexible and simple API and stay for the fast, cheap, public signing network.
 {: .fs-5 .fw-300 }
@@ -29,7 +29,7 @@ You can have your first signed and immutable transaction in just a few minutes.
 {: .fs-5 .fw-300 }
 The reason is Tupelo has a very different underlying datastructure.
 {: .fs-5 .fw-300 }
-Rather than one central chain each "object" being modeled has its own structure called a ChainTree.  
+Rather than one central chain each "object" being modeled has its own structure called a ChainTree.
 {: .fs-5 .fw-300 }
 ChainTrees are flexible, transferrable and highly efficient.
 {: .fs-5 .fw-300 }
