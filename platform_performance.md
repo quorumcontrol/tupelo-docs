@@ -14,7 +14,7 @@ measured, how the Test-Net has performed and what changes are driving
 performance improvements.
 
 We are currently testing on 21 and 100 signing node clusters.
-We have been expanding the number of AWS regions to better model latency.  
+We have been expanding the number of AWS regions to better model latency. 
 The number of regions and instance type are noted with the results below.
 
 We will continue to share these numbers as they become available.
