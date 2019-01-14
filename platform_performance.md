@@ -7,47 +7,59 @@ nav_order: 5
 
 # Latest Tupelo Performance Data
 
-The engineering team focusing on Tupelo take performance extremely seriously.  The best way we can live that is by sharing, as transparently as possible, what has been measured, how the Test-Net has performed and what tests we are planning.
+We take performance seriously.  
 
-Reliable performance information on most blockchain and DLT projects is extremely hard to come by.  Incredibly optimistic scenarios are built, whole section of the infrastructure are "skipped" or "estimated", and unsubstantiated claims are made.  On the flip side currently running networks have real numbers but they are nearly all underwhelming.
+The best way we can live that is by transparently sharing what has been
+measured, how the Test-Net has performed and what changes are driving
+performance improvements.
 
-The best we can do is be as transparent with all of the performance data we have available.  Sometimes this will be good, others attempted improvements will be a step in the wrong direction.  Below you will find a latest and we welcome questions and suggestions in our Telegram room if you have ideas on how we can improve.
+Our current tests are being done with 21 and 100 signing nodes.
+We have been expanding the number of AWS regions to better model latency as our
+testing processes have been getting more robust.  The number of regions and
+instance type are noted with the results below.
+
+We will continue to share these numbers as they become available.
+
+***
+
+## January 6th - Latest update
+The workflow was refactored to use actor model [ProtoActor](http://proto.actor).
+More of the state was moved to be held in-memory.
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 200 tx/sec   | 1814 ms  | 2367 ms |
+| 100     | 200 tx/sec   | 4612 ms  | 6104 ms |
+
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
 
 ***
 
-## December 18th - Latest update
-TLDR: Key changes were made to optimize the inverse bloom filters and it showed significant improvements across the board.
-
-| Signers | Throughput  | Finality (75%)  |
-| ------- |:-----------:|:---------:|
-| 20      | 85 tx/sec   | 1.22 s    |
-| 50      | 74 tx/sec   | 2.35 s    |
-| 100     | 25 tx/sec   | 2.85 s    |
-
-[For more details about this test](/platform_performance)
-
-***
 ## December 11th Performance Test
-TLDR: Integrated a high-performance WASM BLS signatures library which resulted in some improvements in both throughput and time to finality.
 
-| Signers | Throughput  | Finality (75%)  |
-| ------- |:-----------:|:---------:|
-| 20      | 91 tx/sec   | 1.02 s    |
-| 50      | 84 tx/sec   | 2.15 s    |
-| 100     | 18 tx/sec   | 2.95 s    |
+Message ingress was moved to an in memory queue (from disk).
+Signature checking was parallelized.
 
-[For more details about this test](/platform_performance)
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 50 tx/sec   | 1218 ms  | 1791 ms |
+| 100     | 25 tx/sec   | 3662 ms  | 4525 ms |
 
-***
-## November 29th - Turkey Day Surprise
-TLDR: Updated test methodologies to improve the simulation of a variety of heavier-weight transactions made things a little worse but more realistic.
-
-| Signers | Throughput  | Finality (75%)  |
-| ------- |:-----------:|:---------:|
-| 20      | 91 tx/sec   | 1.02 s    |
-| 50      | 84 tx/sec   | 2.15 s    |
-| 100     | 18 tx/sec   | 2.95 s    |
-
-[For more details about this test](/platform_performance)
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
 
 ***
+
+## December 4th Performance Test
+
+Transaction/state syncing between nodes was changed to an IBF
+(Invertible Bloom Filter).
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 50 tx/sec   | 1147 ms  | 2320 ms |
+| 100     | 25 tx/sec   | 12143 ms  | 19434 ms |
+
+AWS Regions: 3  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  

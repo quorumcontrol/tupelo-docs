@@ -2,7 +2,7 @@
 layout: default
 title: Tupelo Platform Overview
 parent: Platform Documentation
-nav_order: 2
+nav_order: 1
 ---
 
 # Tupelo Overview
@@ -120,3 +120,7 @@ Information security is the original problem that spurred all of the innovations
 ## Conclusion
 
 To reiterate, Tupelo maintains the speed of private DLT solutions which can support high transaction volumes and speed requirements, but it accomplishes this not through compromising the key DLT premise of decentralized control but through a fundamentally different, streamlined structure.
+
+---
+
+{% include feedback.html %}

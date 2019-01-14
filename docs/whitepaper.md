@@ -58,12 +58,17 @@ This whitepaper won’t go into the details of IPLD, but, at a high level, IPLD 
 
 To illustrate this data structure, we will take a look at a couple of transactions, starting very simply, then moving to slightly more complex.
 
+<img src="../assets/images/actor-dag-simpletransaction.png">
 
 ##### Figure 1 - A simple transition ####
+--
 
 In Figure 1, We can see that there was an empty tree, we played the $$SET\_DATA$$ transaction on the tree and ended up with a new tip for the tree and a new entry in our chain. This is the simplest possible scenario, where the “tree” is actually just a single node and we are just setting data on the root node. The result is a data structure of the combination of a 1 node chain and a 1 node tree.
 
+<img src="../assets/images/actor-dag-addauthentication.png">
+
 ##### Figure 2 - Two new transaction types ####
+--
 
 In Figure 2, there are two separate transactions taking place on the Chain Tree created in Figure 1. The State Machine acting on this Chain Tree knows how to handle an $$ADD\_AUTHENTICATION$$ and it does so by adding a link to the Authentications on the root node to a list of authentications and appending this entry to that list (in this case: an empty set). Next, we play a $$RM\_AUTHENTICATION$$ transaction on the Chain Tree which removes the node created by the $$ADD\_AUTHENTICATION$$. Playing the chain on the right will always result in the same tree created on the left. The tip of the Chain Tree is created by hashing the root node. This allows for a content-addressable tree of unlimited size to be signed by a single hash value.
 
@@ -75,13 +80,13 @@ Ownership of a Chain Tree may be changed by adding public keys to a system-defin
 
 Only the owner(s) of a Chain Tree may create new transactions on a Chain Tree. The tip of a Chain Tree refers to the hash of the root node of the current state of a Chain Tree (a Chain Tree with all transactions applied).
 
-Transactions are arbitrary mutations of state. The client and Notary Group must agree on the process of mutating state through named transactions. The initial release will include the following transactions:
-  * $$SET\_DATA$$
-  * $$SET\_OWNERSHIP$$
-  * $$ESTABLISH\_COIN$$
-  * $$MINT\_COIN$$
-  * $$SEND\_COIN$$
-  * $$RECEIVE\_COIN$$
+Transactions are arbitrary mutations of state. The client and Notary Group must agree on the process of mutating state through named transactions. The initial release will include the following transactions\:
+  * SET_DATA
+  * SET_OWNERSHIP
+  * ESTABLISH_COIN
+  * MINT_COIN
+  * SEND_COIN
+  * RECEIVE_COIN
 
 Later, we will discuss how user-defined transactions can be used to expand the system in a manner similar to smart-contracts on other DLT systems.
 
@@ -91,7 +96,9 @@ Initial implementations include a protocol to transfer quantities of a token. Co
 
 Currency exchange introduces 4 transaction types: $$ESTABLISH\_COIN$$, $$MINT\_COIN$$, $$SEND\_COIN$$, $$RECEIVE\_COIN$$. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
 
+<img src="../assets/images/actor-dag.png">
 ##### Figure 4 - Cryptocurrency branch of a Chain Tree
+--
 
 ```
 ESTABLISH_COIN
@@ -111,7 +118,7 @@ message MintCoinTransaction {
 }
 ```
 
-Any actor may mint their own coins once they have been established within that chaintree via an $$ESTABLISH\_COIN$$ transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a $$MINT\_COIN$$ transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_coin` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and `cat_coin` is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the coin was established.
+Any actor may mint their own coins once they have been established within that chaintree via an $$ESTABLISH\_COIN$$ transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a $$MINT\_COIN$$ transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_coin` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and \'cat_coin\' is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the coin was established.
 
 ```
 SEND_COIN
@@ -162,9 +169,12 @@ The main coin of the system is called a Tuple. Tuples are used for rewards, stak
 
 Conflict set resolution is achieved by a two-phased, $$PREPARE$$, and $$COMMIT$$ process in which Signers converge on the canonical block by voting (with their signature) using a simple fork choice rule. For the purposes of establishing quorum, signer votes are weighted by the size of their deposits. For simplicity the description of the protocol below presumes all Signers deposits are equal.
 
-Figure 1 below shows the states, messages and transitions for the consensus protocol
+Figure 4 below shows the states, messages and transitions for the consensus protocol
 
-#### Figure 1. State transitions of Tupelo Consensus Protocol
+<img src="../assets/images/tupelo-state-diagram.png">
+
+#### Figure 4. State transitions of Tupelo Consensus Protocol
+--
 
 A block B extending Chain Tree tip T in view V, during cycle C is considered:
   * *proposed* by Signer $$i$$ if Signer $$i$$ has at least one $$PROPOSE(B,T,C)$$ or $$PREPARE(B,T,C,V,S)$$ but no $$PREPARE$$s where the weight of $$S\ >\ ⅔$$ Signer deposits
@@ -600,3 +610,7 @@ Signature: [<secp256k1 by generated key>
 ```
 
 Alice now owns that Chain Tree (and hence the vehicle). She does not need to be online to verify that ownership as she will have an off-line list of the Notary Group public keys.
+
+---
+
+{% include feedback.html %}
