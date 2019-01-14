@@ -17,25 +17,25 @@ next few months.
 
 ***
 
-## Javascript API
+### Javascript API
 
-### [OVERVIEW](https://quorumcontrol.github.io/tupelo.js/)
-### [SOURCE](https://github.com/quorumControl/tupelo.js)
-
-***
-
-## GO API
-
-COMING NEXT
+#### [OVERVIEW](https://quorumcontrol.github.io/tupelo.js/)
+#### [SOURCE](https://github.com/quorumControl/tupelo.js)
 
 ***
 
-## RUST API
+### GO API
 
-COMING SOON
+#### COMING NEXT
 
 ***
 
-## PYTHON API
+### RUST API
 
-COMING SOON
+#### COMING SOON
+
+***
+
+### PYTHON API
+
+#### COMING SOON
