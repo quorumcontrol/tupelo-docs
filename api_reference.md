@@ -1,7 +1,7 @@
 ---
 layout: default
 title: API Reference
-has_children: true
+has_children: false
 nav_order: 3
 ---
 
@@ -17,25 +17,25 @@ next few months.
 
 ***
 
-### Javascript API
+## Javascript API
 
-#### [OVERVIEW](https://quorumcontrol.github.io/tupelo.js/)
-#### [SOURCE](https://github.com/quorumControl/tupelo.js)
-
-***
-
-### GO API
-
-Next
+### [OVERVIEW](https://quorumcontrol.github.io/tupelo.js/)
+### [SOURCE](https://github.com/quorumControl/tupelo.js)
 
 ***
 
-### RUST API
+## GO API
 
-Coming Soon
+COMING NEXT
 
 ***
 
-### PYTHON API
+## RUST API
 
-Coming Soon
+COMING SOON
+
+***
+
+## PYTHON API
+
+COMING SOON
