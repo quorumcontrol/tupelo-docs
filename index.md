@@ -23,7 +23,7 @@ You can have your first signed and immutable transaction in just a few minutes.
 
 # How Is Tupelo Different?
 {: .fs-8 }
-<img style="float: right; width:400;height:235px;" src="https://quorumcontrol.github.io/tupelo-docs/assets/images/litepaper-illustration4.png">
+<img style="float: right; width:375;height:320px; padding:10;" src="assets/images/howistupelodifferent.png">
 
 **Tupelo is ideal for modeling real world things** be they physical or digital.
 {: .fs-5 .fw-300 }
@@ -40,11 +40,13 @@ ChainTrees are flexible, transferrable and highly efficient.
 
 # Hello Decentralized World
 {: .fs-8 }
-<img style="float: right;" src="https://static1.squarespace.com/static/5b2bb0b9f8370a1e48fe3fac/t/5b51a6960e2e7239c2cc3f5e/1540953865755/Tupelo_Working3.png?format=150w">
 
-Through our simple API and using tools you are already familiar with we will create a datastructure called a Chain Tree, add our "Hello World" message and get it signed.
+Through our simple API and using tools you are already familiar with we will
+create a datastructure called a Chain Tree, add our "Hello World" message
+and get it signed.
 {: .fs-5 .fw-300 }
-Once you see how easy it is to get started applying the Tupelo layer of trust to your own application is straight foward and flexible.
+Once you see how easy it is to get started applying the Tupelo layer of trust,
+adding it to your own application is straight forward and flexible.
 {: .fs-5 .fw-300 }
 
 [Get started now](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
