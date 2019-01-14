@@ -12,11 +12,12 @@ permalink:
 **Start here!**
 {: .fs-5 .fw-300 }
 We want to show you just how easy it is to build on Tupelo.
-Get started now by adding our “Hello World” message and get it signed instantaneously.
+Start building now by adding a “Hello World” message and get it signed instantaneously.
 {: .fs-5 .fw-300 }
-We believe that your project will scale on the Tupelo platform.
+Need more information first?  
+Read below to see how we’re different or get access to important documentation.  
 {: .fs-5 .fw-300 }
-Keep us honest and try it out.
+**Your project will scale on the Tupelo platform.**  Keep us honest and try it out.
 {: .fs-5 .fw-300 }
 [Hello World](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
@@ -26,10 +27,9 @@ Keep us honest and try it out.
 {: .fs-8 }
 <img style="float: right; width:375px;height:320px; padding: 15px;" src="assets/images/howistupelodifferent.png">
 
-Put simply, **Tupelo is purpose-built for the things you’re building.**
-ChainTrees, our unique data structure, is a completely different foundation
-from traditional DLT platforms; opening the door for practical, real-world
-application development.
+**Tupelo is purpose-built for the things you’re building.**
+ChainTrees, our completely unique data structure, opens the door for practical,
+real-world application development.
 {: .fs-5 .fw-300 }
 
 With ChainTrees, each object or actor is modeled independently allowing for
@@ -46,7 +46,7 @@ Tupelo is built for building. Come see for yourself.
 
 # A Better Developer Experience
 {: .fs-8 }
-<img style="float: right; width:375;height:235px;" src="https://quorumcontrol.github.io/tupelo-docs/assets/images/litepaper-illustration4.png">
+<img style="float: right; width:430;height:253px; padding: 5;" src="assets/images/litepaper-illustration4.png">
 
 Traditional DLT platforms are often complicated to use because they aren’t built
 for what you need. You’re spending too much time trying to compromise with
