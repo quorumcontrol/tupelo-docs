@@ -610,3 +610,7 @@ Signature: [<secp256k1 by generated key>
 ```
 
 Alice now owns that Chain Tree (and hence the vehicle). She does not need to be online to verify that ownership as she will have an off-line list of the Notary Group public keys.
+
+---
+
+{% include feedback.html %}
