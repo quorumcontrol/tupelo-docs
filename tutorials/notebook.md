@@ -554,6 +554,6 @@ yargs.command('register [name] [passphrase]', 'Register a new notebook chain tre
 ## Finishing Up
 Now we've built a command line notebook that, when invoked with `node`, can
 record timestamped notes into a chain tree, print them out later, while the
-development notary group validates each note as it's saved. Our `package.json`
-file should look [like this](/tutorials/notebook/package-json) and our `index.js`
-file should look [like this](/tutorials/notebook/index-js).
+development notary group validates each note as we save them. Be sure to take a
+look at the final [`package.json` file](/tutorials/notebook/package-json) and
+the final [`index.js` file](/tutorials/notebook/index-js).
