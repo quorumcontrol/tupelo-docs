@@ -12,7 +12,7 @@ permalink:
 **Start here!**
 {: .fs-5 .fw-300 }
 We want to show you just how easy it is to build on Tupelo.
-Start building now by adding a “Hello World” message and get it signed instantaneously.
+Start building now by adding a “Hello World” message and get it signed in seconds.
 {: .fs-5 .fw-300 }
 Need more information first?  
 Read below to see how we’re different or get access to important documentation.  
