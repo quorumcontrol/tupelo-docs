@@ -2,6 +2,7 @@
 layout: default
 title: Hello Tupelo
 parent: Tutorials
+has_children: true
 nav_order: 1
 ---
 
