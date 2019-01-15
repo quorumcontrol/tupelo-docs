@@ -452,7 +452,6 @@ function showNotes(creds) {
 
   let identifiers = readIdentifierFile();
   let client = connect(creds);
-  let path = CHAIN_TREE_NOTE_PATH;
 
   client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
