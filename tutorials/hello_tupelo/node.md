@@ -2,7 +2,8 @@
 layout: default
 title: Hello from Node
 parent: Hello Tupelo
-nav_order: 1
+grand_parent: Tutorials
+nav_order: 2
 ---
 
 # Node.js
