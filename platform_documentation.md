@@ -2,6 +2,7 @@
 layout: default
 title: Platform Documentation
 has_children: true
+toc: true
 nav_order: 4
 ---
 
@@ -12,4 +13,4 @@ documents describing the platform covering both technical characteristics and
 potential applications of the technology.
 
 More will be added over time and we welcome feedback on these documents and
-in particular what open questions remain after reviewing them. 
+in particular what open questions remain after reviewing them.

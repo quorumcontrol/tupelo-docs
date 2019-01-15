@@ -34,30 +34,3 @@ That means they will be signed by the Tupelo network and that what
 was written and when can be proven at any time in the future.
 
 [Notebook App Tutorial](#getting-started){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
-
-***
-
-## Internet of Things Sensor Log
-
-One area that Tupelo excels at is interacting with IoT sensors.  
-This is because Tupelo models "things" and can easily record the data generated
-by those things.  The detectors in question can even even transferred from owner
-to owner as the item being monitored moves through a supply chain.  
-
-This is all accomplished **WITHOUT** a smart contract!  
-
-Coming Soon!
-
-***
-
-## Multi-Part Scooter Application
-
-This tutorial will cover multiple aspects of how Tupelo can be used to run an
-entire Scooter renting app enabling the exploration of different ways
-it can be used.  
-
-Part One will cover inventory and location  
-Part Two will cover user identity and payment  
-Part Three will cover interacting with the scooter (including when offline)  
-Part Four will cover limited views for regulators  
-Part Five will cover central company operations  

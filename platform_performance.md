@@ -9,14 +9,13 @@ nav_order: 5
 
 We take performance seriously.  
 
-The best way we can live that is by transparently sharing what has been
+The best way we can live that is by transparently sharing what we have
 measured, how the Test-Net has performed and what changes are driving
 performance improvements.
 
-Our current tests are being done with 21 and 100 signing nodes.
-We have been expanding the number of AWS regions to better model latency as our
-testing processes have been getting more robust.  The number of regions and
-instance type are noted with the results below.
+We are currently testing on 21 and 100 signing node clusters.
+We have been expanding the number of AWS regions to better model latency. 
+The number of regions and instance type are noted with the results below.
 
 We will continue to share these numbers as they become available.
 
