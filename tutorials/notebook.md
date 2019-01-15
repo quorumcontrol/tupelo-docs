@@ -135,6 +135,23 @@ function createNotebook(creds) {
 Upon success, we just print to the console that the action succeeded. In case an
 error happened, we print the error message text to the console as well.
 
+Now let's try out what we have so far. Start a node repl in your project
+directory with the `node` command. Then, from the node prompt run
+
+```javascript
+> .load index.js
+> var creds = { walletName: "test", passPhrase: "secret" };
+> createNotebook(creds);
+```
+
+This sequence of commands will first load our `index.js` file as if we'd typed
+each line into the repl, define credentials for a test notebook, and then
+exercise our `createNotebook()` function.
+
+As long as the RPC server is listening on `localhost:50051`, You should see a
+"Success!" message indicating that you've successfully created a new wallet. Now
+exit the node repl with the `.exit` command.
+
 ### Creating a New Key
 After registering a new wallet, we'll need to create a new key using the
 `generateKey()` client API method. Since that method, as all the other Tupelo
@@ -144,7 +161,12 @@ success case instead of printing to the console.
 If the `generateKey()` request is successful, then the server will return a
 response that contains the new key's public address under the `keyAddr` key.
 We'll need to keep track of this key address for later, so we'll also declare a
-variable to save it in.
+variable to save it in. Since we've already registered a wallet with the RPC
+server, we'll get an error if we try to register a wallet with the same name
+again, so we'll also check for that error explicitly and ignore it if it arises.
+This will allow us to incrementally test our `createNotebook()` function as we
+add to it. This specific error will have error code `6` for `AlreadyExists`, so
+that's what we'll check for.
 
 In file `notebook/index.js`:
 ```javascript
@@ -157,8 +179,13 @@ function createNotebook(creds) {
       return client.generateKey(); // <--- change previous log statement here to
                                    //      a generateKey() call
     }, function(err) {
-      console.log("Error registering wallet.");
-      console.log(err.details);
+      // Change here to check for and ignore an 'AlreadyExists' error.
+      if (err.code == 6) {
+        return client.generateKey();
+      } else {
+        console.log("Error registering wallet.");
+        console.log(err.details);
+      }
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr; // <--- save the key address here
     }, function(err) {
@@ -185,8 +212,12 @@ function createNotebook(creds) {
     .then(function(registerResult){
       return client.generateKey();
     }, function(err) {
-      console.log("Error registering wallet.");
-      console.log(err.details);
+      if (err.code == 6) {
+        return client.generateKey();
+      } else {
+        console.log("Error registering wallet.");
+        console.log(err.details);
+      }
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
       return client.createChainTree(keyAddr); // <--- add createChainTree()
@@ -261,12 +292,17 @@ function createNotebook(creds) {
 
   client.register()
     .then(function(registerResult){
-      return client.generateKey()
+      return client.generateKey();
     }, function(err) {
-      console.log("Error registering wallet.");
-      console.log(err.details);
+      if (err.code == 6) {
+        return client.generateKey();
+      } else {
+        console.log("Error registering wallet.");
+        console.log(err.details);
+      }
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
+      return client.createChainTree(keyAddr);
     }, function(err) {
       console.log("Error generating key.");
       console.log(err.details);
@@ -281,6 +317,22 @@ function createNotebook(creds) {
     });
 }
 ```
+
+Now's a good time to test our `createNotebook()` function again. Start another
+node repl session in the notebook directory with the `node` command, then run
+these next few commands:
+
+```javascript
+> .load index.js
+> var creds = { walletName: "test", passPhrase: "secret" };
+> createNotebook(creds);
+```
+
+Assuming everything worked, you should see a "Saving Registration" message at
+the node repl. Now terminate the node repl session with the `.exit` command.
+After that, verify that you have a `.notebook-identifiers` file in that
+directory which contains a JSON object with the key address and chain tree ID.
+
 ## Adding a Note
 Now that we can register a new wallet with the RPC server, create a key, and
 create a chain tree, we're ready to start recording notes. Let's build an
@@ -418,20 +470,34 @@ function addNote(creds, note) {
         noteWithTs = addTimestamp(note);
 
       if (notes instanceof Array) {
-        notes.push(noteWithTs)
+        notes.push(noteWithTs);
       } else {
-        notes = [noteWithTs]
+        notes = [noteWithTs];
       }
 
+      console.log(notes);
       return client.setData(identifiers.chainId,
                             identifiers.keyAddr,
                             CHAIN_TREE_NOTE_PATH,
                             notes);
   }, function(err) {
       console.log('Error reading notes: ' + err);
-  })
+  });
 }
 ```
+
+Now, let's check that everything works at the node repl. Start a new session
+with the `node` command and enter these commands at the repl:
+
+```javascript
+> .load index.js
+> var creds = { walletName: "test", passPhrase: "secret" };
+> addNote(creds, "this is a test")
+```
+
+If everything works correctly, you should see an array with a timestamp and the
+note you've just added printed to the repl. Now exit the repl with the `.exit`
+command.
 
 ## Viewing the Stored Notes
 Since we can save and sign notes to our chain tree, let's print out all the
@@ -470,6 +536,18 @@ function showNotes(creds) {
     });
 }
 ```
+
+Lets verify that our function works at the repl. Start a new repl session with
+the `node` command, then issue these commands at the repl:
+
+```javascript
+> .load index.js
+> var creds = { walletName: "test", passPhrase: "secret" };
+> showNotes(creds)
+```
+
+If everything works, then you should see "----Notes----" followed by a list
+consisting of our test note.
 
 ## Adding a Command Line Interface
 Now that we have all the background functions we need to manage notes with our
@@ -553,6 +631,13 @@ yargs.command('register [name] [passphrase]', 'Register a new notebook chain tre
 ## Finishing Up
 Now we've built a command line notebook that, when invoked with `node`, can
 record timestamped notes into a chain tree, print them out later, while the
-development notary group validates each note as we save them. Be sure to take a
-look at the final [`package.json` file](/tutorials/notebook/package_json) and
-the final [`index.js` file](/tutorials/notebook/index_js).
+development notary group validates each note as we save them.
+
+Now you can run `node ./index.js register <name> <passphrase>` to register a new
+wallet, `node ./index.js add-note <name> <passphrase> --note <note>` to save a
+note, and finally, `node ./index.js print-notes <name> <passphrase>` to print
+all the saved notes
+
+Be sure to take a look at the final
+[`package.json` file](/tutorials/notebook/package_json) and the final
+[`index.js` file](/tutorials/notebook/index_js).
