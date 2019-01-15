@@ -19,7 +19,7 @@ Read below to see how we’re different or get access to important documentation
 {: .fs-5 .fw-300 }
 **Your project will scale on the Tupelo platform.**  Keep us honest and try it out.
 {: .fs-5 .fw-300 }
-[Hello World](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Hello World Tutorial](/tutorials/hello_world){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 
