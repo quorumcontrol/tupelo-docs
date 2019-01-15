@@ -20,7 +20,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Ledger) focused on modeling "things" be they real world or virtual.
   The team is focused on practical applications of blockchain technology
   and providing a platform which provide developers joy.
-# baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "https://docs.quorumcontrol.com" # the subpath of your site, e.g. /blog
 # url: "http://www.quorumcontrol.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: icarusz
 github_username:  icarusz
