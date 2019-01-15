@@ -127,13 +127,13 @@ function createNotebook(creds) {
       console.log("Success!");
     }, function(err) {
       console.log("Error registering wallet.");
-      console.log(err);
+      console.log(err.details);
     });
 }
 ```
 
 Upon success, we just print to the console that the action succeeded. In case an
-error happened, we print the error to the console as well.
+error happened, we print the error message text to the console as well.
 
 ### Creating a New Key
 After registering a new wallet, we'll need to create a new key using the
@@ -158,12 +158,12 @@ function createNotebook(creds) {
                                    //      a generateKey() call
     }, function(err) {
       console.log("Error registering wallet.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr; // <--- save the key address here
     }, function(err) {
       console.log("Error generating key.");
-      console.log(err); // <--- log any generateKey() errors here
+      console.log(err.details); // <--- log any generateKey() errors here
     });
 }
 ```
@@ -186,19 +186,19 @@ function createNotebook(creds) {
       return client.generateKey();
     }, function(err) {
       console.log("Error registering wallet.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
       return client.createChainTree(keyAddr); // <--- add createChainTree()
                                               //      request
     }, function(err) {
       console.log("Error generating key.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(createChainResponse) {
       chainId = createChainResponse.chainId; // <--- save the chain id here
     }, function(err) {
       console.log("Error creating chain tree.");
-      console.log(err); // <--- log and createChainTree() errors here
+      console.log(err.details); // <--- log and createChainTree() errors here
     });
 }
 ```
@@ -241,7 +241,7 @@ function to actually save it
 
 In file `notebook/index.js`:
 ```javascript
-const LOCAL_ID_PATH = './.timestamper-identifiers';
+const LOCAL_ID_PATH = './.notebook-identifiers';
 ...
 function writeIdentifierFile(configObj) {
   let data = JSON.stringify(configObj);
@@ -264,12 +264,12 @@ function createNotebook(creds) {
       return client.generateKey()
     }, function(err) {
       console.log("Error registering wallet.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
     }, function(err) {
       console.log("Error generating key.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(createChainResponse) {
       chainId = createChainResponse.chainId;
       console.log("Saving registration.");       // <--- log a "save" message
@@ -277,7 +277,7 @@ function createNotebook(creds) {
       return writeIdentifierFile(obj);           // <--- write identifier file
     }, function(err) {
       console.log("Error creating chain tree.");
-      console.log(err);
+      console.log(err.details);
     });
 }
 ```

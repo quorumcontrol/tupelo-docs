@@ -10,7 +10,7 @@ const tupelo = require('tupelo-client');
 const fs = require('fs');
 const yargs = require('yargs');
 
-const LOCAL_ID_PATH = './.timestamper-identifiers';
+const LOCAL_ID_PATH = './.notebook-identifiers';
 const CHAIN_TREE_NOTE_PATH='notebook/notes';
 
 function connect(creds) {
@@ -47,13 +47,13 @@ function createNotebook(creds) {
       return client.generateKey();
     }, function(err) {
       console.log("Error registering wallet.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(generateKeyResult) {
       keyAddr = generateKeyResult.keyAddr;
       return client.createChainTree(keyAddr);
     }, function(err) {
       console.log("Error generating key.");
-      console.log(err);
+      console.log(err.details);
     }).then(function(createChainResponse) {
       chainId = createChainResponse.chainId;
       console.log("Saving registration.");
@@ -61,7 +61,7 @@ function createNotebook(creds) {
       return writeIdentifierFile(obj);
     }, function(err) {
       console.log("Error creating chain tree.");
-      console.log(err);
+      console.log(err.details);
     });
 }
 
