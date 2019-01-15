@@ -7,7 +7,7 @@ permalink:
 
 # Hello Decentralized World
 {: .fs-8 }
-<img style="float: right;" src="assets/images/code_sample.png">
+<img style="float: right; padding:10px;" src="assets/images/helloworldsquare.png">
 
 **Start here!**
 {: .fs-5 .fw-300 }
