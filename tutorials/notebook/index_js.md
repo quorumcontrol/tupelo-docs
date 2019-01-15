@@ -82,7 +82,7 @@ function addNote(creds, note) {
 
   client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
-          let notes = resp.data,
+    let notes = resp.data[0],
         noteWithTs = addTimestamp(note);
 
       if (notes instanceof Array) {
