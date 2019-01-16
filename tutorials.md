@@ -25,6 +25,7 @@ immutable proof that we said Hello to the Tupelo World on this day.
 [Hello Decentralized World Tutorial](tutorials/hello_tupelo){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
+
 ## Notebook App
 
 One of the use cases for blockchain is in recording information that is
@@ -33,4 +34,8 @@ Javascript app which allows the user to "stamp" notebook entries.
 That means they will be signed by the Tupelo network and that what
 was written and when can be proven at any time in the future.
 
-[Notebook App Tutorial](tutorials/notebook){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Notebook App Tutorial](#getting-started){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+
+***
+
+{% include feedback.html %}
