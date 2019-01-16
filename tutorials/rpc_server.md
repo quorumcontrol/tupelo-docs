@@ -12,7 +12,7 @@ with Tupelo.
 
 To install the server, first contact us to get a Tupelo binary for your platform
 and save it within your command `PATH` variable. You can download the latest
- [Tupelo v0.0.5 executable here](rpc_server/tupelo-v0.0.5.zip). 
+ [Tupelo v0.0.6 executable here](rpc_server/tupelo-v0.0.6.zip). 
 If you do not wish to save the
 binary to a directory in your `PATH`, you can still execute it with the fully
 qualified or relative path to your chosen location for the binary.

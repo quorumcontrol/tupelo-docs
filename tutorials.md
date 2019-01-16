@@ -34,7 +34,17 @@ Javascript app which allows the user to "stamp" notebook entries.
 That means they will be signed by the Tupelo network and that what
 was written and when can be proven at any time in the future.
 
-[Notebook App Tutorial](#getting-started){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Notebook App Tutorial](tutorials/notebook){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+
+***
+
+## RPC Server
+
+The Node.js client cannot directly manage chain trees or connect to the notary
+group, so node applications must instead proxy through an RPC server to work
+with Tupelo.  This brief tutorial explains how to get that setup.
+
+[RPC Server Tutorial](tutorials/rpc_server){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 
