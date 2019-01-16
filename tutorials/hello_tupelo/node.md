@@ -2,13 +2,12 @@
 layout: default
 title: Hello from Node
 parent: Hello Tupelo
-grand_parent: Tutorials
-nav_order: 2
+nav_order: 1
 ---
 
 # Node.js
 ## Prerequisites
-1. [Start the Tupelo RPC server](/tutorials/rpc-server).
+1. [Start the Tupelo RPC server](../rpc_server).
 2. Run `mkdir tupelo && cd tupelo` at a shell prompt.
 3. Install the client with `npm install tupelo-client`
 4. Launch a Node.js repl with `node`.
