@@ -14,8 +14,8 @@ permalink:
 We want to show you just how easy it is to build on Tupelo.
 Start building now by adding a “Hello World” message and get it signed in seconds.
 {: .fs-5 .fw-300 }
-Need more information first?  
-Read below to see how we’re different or get access to important documentation.  
+Need more information first?
+Read below to see how we’re different or get access to important documentation.
 {: .fs-5 .fw-300 }
 **Your project will scale on the Tupelo platform.**  Keep us honest and try it out.
 {: .fs-5 .fw-300 }
@@ -56,7 +56,7 @@ inherently inflexible code rather than building your application.
 {: .fs-5 .fw-300 }
 Through our simple API, growing list of familiar language libraries, and our
 fast, cheap, public signing network, you can have your project up-and-running
-in minutes.  
+in minutes.
 {: .fs-5 .fw-300 }
 Our comprehensive documentation and accessible engineering team will cover
 everything you need to know to build on the platform.
