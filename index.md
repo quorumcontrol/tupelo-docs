@@ -9,12 +9,10 @@ permalink:
 {: .fs-8 }
 <img style="float: right; padding:10px;" src="assets/images/helloworldsquare.png">
 
-**Start here!**
-{: .fs-5 .fw-300 }
-We want to show you just how easy it is to build on Tupelo.
+We want to show you how easy it is to build on Tupelo.
 Start building now by adding a “Hello World” message and get it signed in seconds.
 {: .fs-5 .fw-300 }
-Need more information first?
+Need more information first?  
 Read below to see how we’re different or get access to important documentation.
 {: .fs-5 .fw-300 }
 **Your project will scale on the Tupelo platform.**  Keep us honest and try it out.
