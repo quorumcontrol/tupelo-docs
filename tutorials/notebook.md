@@ -569,6 +569,8 @@ In file `notebook/package.json`:
 }
 ```
 
+Next run `npm install` to get yargs loaded.
+
 In file `notebook/index.js`:
 ```javascript
 const tupelo = require('tupelo-client');
