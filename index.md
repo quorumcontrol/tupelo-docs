@@ -26,7 +26,7 @@ Read below to see how we’re different or get access to important documentation
 <img style="float: right; width:375px;height:320px; padding: 15px;" src="assets/images/howistupelodifferent.png">
 
 **Tupelo is purpose-built for the things you’re building.**
-ChainTrees, our completely unique data structure, opens the door for practical,
+ChainTrees, our completely unique data structure, open the door for practical,
 real-world application development.
 {: .fs-5 .fw-300 }
 
