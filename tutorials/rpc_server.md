@@ -11,7 +11,7 @@ group, so node applications must instead proxy through an RPC server to work
 with Tupelo.
 
 To install the server you can download the latest
-[Tupelo v0.0.7 executable here](rpc_server/tupelo-v0.0.7.zip).  
+[Tupelo v0.0.8 executable here](rpc_server/tupelo-v0.0.8.zip).  
 Once you have selected the appropriate binary for your platform save it within
 your command `PATH` variable. If you do not wish to save the binary to a
 directory in your `PATH`, you can still execute it with the fully qualified
