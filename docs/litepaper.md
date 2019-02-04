@@ -123,4 +123,11 @@ To reiterate, Tupelo maintains the speed of private DLT solutions which can supp
 
 ---
 
+### Interested in building on Tupelo, have comments or want to learn more?
+
+As our community, your feedback, questions, and concerns are important to us.
+Want to start building or not sure you have enough information?
+Let us help you. Submit the form below and a human will promptly review
+it on the other end.
+
 {% include feedback.html %}
