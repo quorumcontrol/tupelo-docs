@@ -10,7 +10,7 @@ nav_order: 6
 We take performance seriously.  
 
 The best way we can live that is by transparently sharing what we have
-measured, how the Test-Net has performed and what changes are driving
+measured, how the test network has performed and what changes are driving
 performance improvements.
 
 We are currently testing on 21 and 100 signing node clusters.

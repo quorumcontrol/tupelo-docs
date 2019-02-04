@@ -8,7 +8,7 @@ nav_order: 4
 # Download Tupelo
 
 These binaries are all you need to get started signing chain-trees and running
-your own local test-net.
+your own local test net.
 
 The most recent release (0.0.8) includes several bug fixes including handling of
 leading '/' and some missing directories during initial installation.
@@ -32,7 +32,7 @@ You can find basic instructions for
 
 ***
 
-Looking to connect to the Test-Net rather than run locally?  
+Looking to connect to the test net rather than run locally?  
 
 Fill out the form below and just ask!    
 
