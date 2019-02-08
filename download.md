@@ -27,8 +27,8 @@ You can find basic instructions for
 
 ## OSX
 
-[Tupelo 0.0.10 - OSX](tutorials/download/tupelo-v0.0.10-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
-[Tupelo 0.0.10 - OSX - Checksum](tutorials/download/tupelo-v0.0.10-darwin-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo 0.0.10 - macOS](tutorials/download/tupelo-v0.0.10-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+[Tupelo 0.0.10 - macOS - Checksum](tutorials/download/tupelo-v0.0.10-darwin-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 
