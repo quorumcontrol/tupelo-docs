@@ -79,21 +79,22 @@ end
 And block would look like this:
 ```json
 {
-	"headers": {
-		"signatures": {
-			"owner": "asignature",
-		},
-	},
-	"block": {
-		"previousTip": "",
-		"transactions": [{
-		    "type": "SET_DATA",
-	        "payload": {
-			    "path": "/my/subtree/foo",
-		        "value": "bar"
-            }  
-		}]
-	}
+  "headers": {
+    "signatures": {
+      "owner": "asignature",
+    },  
+  },  
+  "block": {
+    "height": 0,
+    "previousTip": null,
+    "transactions": [{
+      "type": "SET_DATA",
+      "payload": {
+        "path": "/my/subtree/foo",
+	"value": "bar"
+      }   
+    }] 
+  }
 }
 ```
 
