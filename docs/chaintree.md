@@ -1,10 +1,11 @@
+
 # What's a ChainTree?
 
 ## Overview
 
-A ChainTree is a novel data structure used in Tupelo to represent objects (digital and physical).
+A ChainTree is a new data structure that represents both digital and physical objects in Tupelo.
 
-As the name implies, a ChainTree is a combination of a blockchain and a tree for the current state. That means that at any point, a ChainTree represents both its current state and the entire history of changes that took it to its current state.
+A ChainTree is a combination of a tree representing the current state, and a blockchain representing the previous states of an object. The blockchain part of a ChainTree is a linked list of blocks containing transactions. The tree is the current state of the ChainTree created by running the previous transactions. ChainTrees let you store arbitrary data in the leaf nodes of the tree using the  [IPLD standard](https://ipld.io/) .
 
 ```mermaid
 graph TD
@@ -27,28 +28,24 @@ gen["Genesis"] --> b2
 end
 ```
 
-A ChainTree is a [content addressable](https://en.wikipedia.org/wiki/Content-addressable_storage) data structure, meaning that the entire data structure can be represented by a single hash of the root. 
+A ChainTree is [content addressable](https://en.wikipedia.org/wiki/Content-addressable_storage), meaning that a single hash of the root uniquely represents the entire data structure. 
 
-ChainTrees use [IPLD](https://ipld.io/) for internal node linking. 
+[Tupelo's whitepaper](https://docs.quorumcontrol.com/docs/whitepaper.html) explains how ChainTrees use [IPLD](https://ipld.io/) internally. 
 
-From [Tupelo's whitepaper](https://docs.quorumcontrol.com/docs/whitepaper.html):
 > [...] at a high level, IPLD specifies how to link data structures using a content addressable system (hashing). Conceptually similar to JSON, Tupelo uses CBOR (Compact Binary Object Representation) to model the data inside a ChainTree. CBOR specifies a canonical way to create a binary given key/value pairs. An object can link to another object by specifying a CID as a value within one if its key/value pairs. A CID represents a hash of the object linked TO. In this way, a single tip (hash of the root object) can be used to verify that all children of the object have not been tampered with.
 
-This data structure is the super power behind Tupelo. It allows tupelo to reach consensus on a simple hash of the root object and only store the current root of individual objects. The relevant history and state can be passed back in during transactions and Tupelo can know this state is correct because it has the current hash of the root.
-
-To reiterate, the ChainTree root links (using a [CID](https://github.com/multiformats/cid), from IPLD) to a tree (which is the current state) and a chain, which is a blockchain of the transactions used to get the tree from genesis (blank) state to the current state. This allows you to store arbitrary data in your ChainTree and use the IPLD standard to navigate through the nodes of the Tree.
+ChainTrees are the super power behind Tupelo. Tupelo only needs to reach consensus on a simple hash instead of the full, complex structure. Furthermore, Tupelo only needs to store a hash of each object because it requires clients to supply the relevant history and state needed to validate  transactions. Tupelo nodes use the root hash validate both state transitions and that the history hasn't been altered.
 
 Modifying a ChainTree involves playing transactions against the current state to get to a new state. Those transactions happen in blocks and become part of the chain section of the ChainTree.
 
 For instance, given the following ChainTree:
 ```mermaid
 graph TD
-Root --> Tree
-Root --> Chain
-end
+root --> tree
+root --> chain
 ```
 
-I could run a "set data" transaction on the chaintree:
+I could run a "set data" transaction on the ChainTree:
 
 ```json
 {
@@ -65,16 +62,17 @@ That would result in the following chain tree:
 
 ```mermaid
 graph TD
-Root --> tree
-Root --> Chain
+root --> tree
+root --> chain
 subgraph Tree
   tree["<strong>tree</strong><br/><code>{
-  my: myCid}</code>"] --> subtree["<strong>subtree</strong><br/><code>{
+  my: myCid}</code>"] --> my["<strong>my</strong><br/><code>{
+  subtree: subtreeCid}</code>"]
+  my --> subtree["<strong>subtree</strong><br/><code>{
   foo: 'bar'}</code>"]
 end
 subgraph Chain
-Chain -- Latest --> b1["block"]
-Chain -- Genesis --> b1
+chain -- end --> b1["block"]
 end
 ```
 
@@ -89,17 +87,14 @@ And block would look like this:
 	"block": {
 		"previousTip": "",
 		"transactions": [{
-		  "type": "SET_DATA",
-	      "payload": {
-			"path": "/my/subtree/foo",
-		    "value": "bar"
-          }  
+		    "type": "SET_DATA",
+	        "payload": {
+			    "path": "/my/subtree/foo",
+		        "value": "bar"
+            }  
 		}]
 	}
 }
 ```
 
-Using the set data transactions, you can set data to any part of the tree and the history of those changes is preserved in the data structure.
-
-
-
+Using the set data transactions, you can set data to any part of the tree and the data structure preserves the history of those changes.
