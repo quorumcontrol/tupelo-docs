@@ -3,6 +3,8 @@
 <html lang="en-us">
 {% include head.html %}
 
+
+
   <div class="page-wrap">
     <div class="side-bar">
       <a href="{{ site.url }}{{ site.baseurl }}" class="site-title fs-8 lh-tight"><img src="https://quorumcontrol.github.io/tupelo-docs/assets/images/tupelo_logo.png" alt="Tupelo Logo" style="width:160px;height:41px;"> </a>
@@ -73,3 +75,7 @@
     </div>
   </div>
 </html>
+
+{% if page.has_mermaid == true  %}
+  {% include mermaid.html %}
+{% endif %}
