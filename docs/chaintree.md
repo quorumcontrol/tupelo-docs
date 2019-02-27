@@ -3,6 +3,7 @@ layout: default
 title: What is a ChainTree
 parent: Platform Documentation
 nav_order: 3
+has_mermaid: true
 ---
 # What's a ChainTree?
 
@@ -11,6 +12,7 @@ nav_order: 3
 A ChainTree is a new data structure that represents both digital and physical objects in Tupelo.
 
 A ChainTree is a combination of a tree representing the current state, and a blockchain representing the previous states of an object. The blockchain part of a ChainTree is a linked list of blocks containing transactions. The tree is the current state of the ChainTree created by running the previous transactions. ChainTrees let you store arbitrary data in the leaf nodes of the tree using the  [IPLD standard](https://ipld.io/) .
+
 
 ```mermaid
 graph TD
