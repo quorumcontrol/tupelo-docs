@@ -38,7 +38,7 @@ nav_order: 2
 > client.setData(chainId, keyAddr, testPath, "Hello World!").then((result) => { console.log("--- success!") }, (err) => { console.log("--- error: "+err) });
 
 // Read the data back
-> client.resolve(chainId, testPath).then((result) => { console.log("--- success!"); console.log(result.data.toString()) }, (err) => { console.log("--- error: "+err) });
+> client.resolveData(chainId, testPath).then((result) => { console.log("--- success!"); console.log(result.data.toString()) }, (err) => { console.log("--- error: "+err) });
 ```
 
 Please take a look at the [Tupelo JavaScript API Documentation](https://quorumcontrol.github.io/tupelo.js/) for more information on what you can do with the API. If you'd like to build an app on Tupelo, then take a look at our [Notebook tutorial](/tutorials/notebook).

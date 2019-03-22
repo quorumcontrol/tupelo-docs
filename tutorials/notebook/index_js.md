@@ -80,7 +80,7 @@ function addNote(creds, note) {
   let client = connect(creds),
       identifiers = readIdentifierFile();
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+  client.resolveData(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
     let notes = resp.data[0],
         noteWithTs = addTimestamp(note);
@@ -111,7 +111,7 @@ function showNotes(creds) {
   let client = connect(creds);
   let path = CHAIN_TREE_NOTE_PATH;
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+  client.resolveData(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
       let notes = resp.data;
 
