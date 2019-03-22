@@ -20,15 +20,15 @@ You can find basic instructions for
 
 ## Linux
 
-[Tupelo 0.0.10 - Linux](tutorials/download/tupelo-v0.1.0-linux-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
-[Tupelo 0.0.10 - Linux - Checksum](tutorials/download/tupelo-v0.1.0-linux-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo 0.1.0 - Linux](tutorials/download/tupelo-v0.1.0-linux-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+[Tupelo 0.1.0 - Linux - Checksum](tutorials/download/tupelo-v0.1.0-linux-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 
 ## OSX
 
-[Tupelo 0.0.10 - macOS](tutorials/download/tupelo-v0.1.0-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
-[Tupelo 0.0.10 - macOS - Checksum](tutorials/download/tupelo-v0.1.0-darwin-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo 0.1.0 - macOS](tutorials/download/tupelo-v0.1.0-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+[Tupelo 0.1.0 - macOS - Checksum](tutorials/download/tupelo-v0.1.0-darwin-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 
