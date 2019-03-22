@@ -406,7 +406,7 @@ In file `notebook/index.js`:
 const CHAIN_TREE_NOTE_PATH='notebook/notes';
 ```
 
-Next, we'll load the data currently at that path using the `resolve()` Tupelo
+Next, we'll load the data currently at that path using the `resolveData()` Tupelo
 API method.
 
 In file `notebook/index.js`:
@@ -421,7 +421,7 @@ function addNote(creds, note) {
   let client = connect(creds), // <--- connect the client
       identifiers = readIdentifierFile();
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+  client.resolveData(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
     // We'll fill this in later.
   }, function(err) {
@@ -464,7 +464,7 @@ function addNote(creds, note) {
   let identifiers = readIdentifierFile();
   let client = connect(creds);
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+  client.resolveData(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
     let notes = resp.data[0],
         noteWithTs = addTimestamp(note);
@@ -519,7 +519,7 @@ function showNotes(creds) {
   let identifiers = readIdentifierFile();
   let client = connect(creds);
 
-  client.resolve(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
+  client.resolveData(identifiers.chainId, CHAIN_TREE_NOTE_PATH)
     .then(function(resp) {
       let notes = resp.data;
 
@@ -563,7 +563,7 @@ In file `notebook/package.json`:
     "name": "notebook",
     ...
     "dependencies": {
-        "tupelo-client": "^0.0.2-alpha1",
+        "tupelo-client": "^0.1.0",
         "yargs": "^12.0.2"
     }
 }

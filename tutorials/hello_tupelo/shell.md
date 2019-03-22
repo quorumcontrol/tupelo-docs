@@ -18,7 +18,7 @@ $ ./tupelo shell -w billfold
 >>> create-key
 >>> create-chain <key address>
 >>> set-data <chain tree id> <key address> my/data/path "hello tupelo"
->>> resolve <chain tree id> my/data/path
+>>> resolve-data <chain tree id> my/data/path
 >>> stop-session
 ```
 
@@ -66,7 +66,7 @@ new tip: <tip hash>
 
 7. Read the data back
 ```
->>> resolve <chain tree id> my/data/path
+>>> resolve-data <chain tree id> my/data/path
 data: hello tupelo
 remaining path: []
 ```
