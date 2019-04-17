@@ -138,7 +138,7 @@ message ReceiveTokenTransaction {
    string send_token_transaction_id = 1;
    bytes tip = 2;
    signature signature = 3;
-   map<string>ChainTreeNode leaves = 4;
+   array<ChainTreeNode> leaves = 4;
 }
 ```
 
@@ -285,7 +285,7 @@ message ActivateSignerTransaction {
    string deposit_stake_transaction_id = 4;
    bytes tip = 5;
    signature signature = 6;
-   map<string>ChainTreeNode leaves = 7;
+   array<ChainTreeNode> leaves = 7;
 }
 ```
 
