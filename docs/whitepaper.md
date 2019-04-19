@@ -90,14 +90,14 @@ Transactions are arbitrary mutations of state. The client and Notary Group must 
 
 Later, we will discuss how user-defined transactions can be used to expand the system in a manner similar to smart-contracts on other DLT systems.
 
-## Payments Through Cryptocurrency
+## Payments Through Cryptocurrency / Tokens
 
 Initial implementations include a protocol to transfer quantities of a token. Conceptually this is the same as any other cryptocurrency token such as Ethereum or Bitcoin. Chain Trees and Notary Groups accomplish double-spend protection on top of the existing layer of trust described above and do not need a global ledger. This system allows for unlimited currencies on the same notarized system without the need for smart contracts.
 
-Currency exchange introduces 4 transaction types: `ESTABLISH_TOKEN`, `MINT_TOKEN`, `SEND_TOKEN`, `RECEIVE_TOKEN`. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
+Token exchange introduces 4 transaction types: `ESTABLISH_TOKEN`, `MINT_TOKEN`, `SEND_TOKEN`, `RECEIVE_TOKEN`. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
 
 <img src="../assets/images/actor-dag.png">
-##### Figure 3 - Cryptocurrency branch of a Chain Tree
+##### Figure 3 - Token branch of a Chain Tree
 --
 
 ```
@@ -118,7 +118,7 @@ message MintTokenTransaction {
 }
 ```
 
-Any actor may mint their own tokens once they have been established within that chaintree via an `ESTABLISH_TOKEN` transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a `MINT_TOKEN` transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_token` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and \'cat_token\' is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the token was established.
+Any actor may mint their own tokens once they have been established within that chaintree via an `ESTABLISH_TOKEN` transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a `MINT_TOKEN` transaction to be valid, the name of the token must be prefaced by their Chain Tree’s DID. An example token might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_token` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and \'cat_token\' is the name of the token. The only potential limitation a Chain Tree owner has on minting more of their own token is the Monetary Policy set in place when the token was established.
 
 ```
 SEND_TOKEN
