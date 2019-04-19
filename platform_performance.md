@@ -21,7 +21,21 @@ We will continue to share these numbers as they become available.
 
 ***
 
-## January 6th - Latest update
+## April 19th - Latest update
+Substantial performance improvements through consensus streamlining including
+optimizing subscriptions and improved bootstrapping.
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 200 tx/sec   | 947 ms  | 2415 ms |
+| 100     | 200 tx/sec   | 831 ms  | 1739 ms |
+
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
+
+***
+
+## January 6th
 The workflow was refactored to use actor model [ProtoActor](http://proto.actor).
 More of the state was moved to be held in-memory.
 
