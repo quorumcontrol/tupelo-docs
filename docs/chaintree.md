@@ -23,7 +23,7 @@ subgraph Tree
   Arb --> Anything
   Arb --> uw["user wants"]
   Tree --> _tupelo
-  _tupelo --> Coins
+  _tupelo --> Tokens
   _tupelo --> Ownership
   Ownership --> PublicKeys
 end

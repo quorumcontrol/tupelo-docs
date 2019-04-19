@@ -83,46 +83,46 @@ Only the owner(s) of a Chain Tree may create new transactions on a Chain Tree. T
 Transactions are arbitrary mutations of state. The client and Notary Group must agree on the process of mutating state through named transactions. The initial release will include the following transactions\:
   * `SET_DATA`
   * `SET_OWNERSHIP`
-  * `ESTABLISH_COIN`
-  * `MINT_COIN`
-  * `SEND_COIN`
-  * `RECEIVE_COIN`
+  * `ESTABLISH_TOKEN`
+  * `MINT_TOKEN`
+  * `SEND_TOKEN`
+  * `RECEIVE_TOKEN`
 
 Later, we will discuss how user-defined transactions can be used to expand the system in a manner similar to smart-contracts on other DLT systems.
 
-## Payments Through Cryptocurrency
+## Payments Through Cryptocurrency / Tokens
 
 Initial implementations include a protocol to transfer quantities of a token. Conceptually this is the same as any other cryptocurrency token such as Ethereum or Bitcoin. Chain Trees and Notary Groups accomplish double-spend protection on top of the existing layer of trust described above and do not need a global ledger. This system allows for unlimited currencies on the same notarized system without the need for smart contracts.
 
-Currency exchange introduces 4 transaction types: `ESTABLISH_COIN`, `MINT_COIN`, `SEND_COIN`, `RECEIVE_COIN`. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
+Token exchange introduces 4 transaction types: `ESTABLISH_TOKEN`, `MINT_TOKEN`, `SEND_TOKEN`, `RECEIVE_TOKEN`. The Chain Tree structure is modeled as in Figure 3. This layout allows for efficient double-spend checking by sending in all the receives. However, a future improvement to the protocol will use balance check pointing and a cryptographic accumulator (or zk-snark) to prove non-existence of the receive.
 
 <img src="../assets/images/actor-dag.png">
-##### Figure 3 - Cryptocurrency branch of a Chain Tree
+##### Figure 3 - Token branch of a Chain Tree
 --
 
 ```
-ESTABLISH_COIN
-message EstablishCoinTransaction {
+ESTABLISH_TOKEN
+message EstablishTokenTransaction {
     string name = 1;
     map<string>MonetaryPolicy maximum = 2;
 }
 ```
-Any actor may create one or more of their own coin types. A coin must be established before any coins can be minted, sent or received by any party. Monetary policy is optional but is intended for qualifiers such as hard caps on the number of coins to be issued.  These can not be altered once a coin has been established.  Additional monetary policy options and limiters will be added as the protocol matures.
+Any actor may create one or more of their own token types. A token must be established before any tokens can be minted, sent or received by any party. Monetary policy is optional but is intended for qualifiers such as hard caps on the number of tokens to be issued.  These can not be altered once a token has been established.  Additional monetary policy options and limiters will be added as the protocol matures.
 
 ```
-MINT_COIN
-message MintCoinTransaction {
+MINT_TOKEN
+message MintTokenTransaction {
     string name = 1;
     uint64 amount = 2;
     bytes memo = 3;
 }
 ```
 
-Any actor may mint their own coins once they have been established within that chaintree via an `ESTABLISH_COIN` transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a `MINT_COIN` transaction to be valid, the name of the currency must be prefaced by their Chain Tree’s DID. An example cryptocurrency might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_coin` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and \'cat_coin\' is the name of the currency. The only potential limitation a Chain Tree owner has on minting more of their own currency is the Monetary Policy set in place when the coin was established.
+Any actor may mint their own tokens once they have been established within that chaintree via an `ESTABLISH_TOKEN` transaction. They do so by creating a MINT transaction on their Chain Tree. In order for a `MINT_TOKEN` transaction to be valid, the name of the token must be prefaced by their Chain Tree’s DID. An example token might be named: `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700:cat_token` where `did:tupelo:0xF964A90A0be7aC039E415aed6b2DD97651316700` is the DID and \'cat_token\' is the name of the token. The only potential limitation a Chain Tree owner has on minting more of their own token is the Monetary Policy set in place when the token was established.
 
 ```
-SEND_COIN
-message SendCoinTransaction {
+SEND_TOKEN
+message SendTokenTransaction {
    string id = 1;
    string destination = 2;
    uint64 amount = 3;
@@ -130,25 +130,25 @@ message SendCoinTransaction {
 }
 ```
 
-A `SEND_COIN` transaction is valid if in the state of the Chain Tree there is enough of a balance of “name” coin. The balance is calculated by adding all mints and receives in the Chain Tree and subtracting the Sends. The Chain Tree owner sends the signed tip (and the path through the Chain Tree) that includes the sendcoin. The “balance” is immediately deducted from their Chain Tree in the sense that they cannot add another `SEND_COIN` transaction for more than their balance which includes this transaction. The destination should be the DID of the receiving ChainTree. A `SEND_COIN` transaction is similar to a cashiers check in that the amount is deducted from the senders ChainTree at the time of the `SEND_COIN` transaction. This allows a `RECEIVE_COIN` transaction (see next section) to not depend on any future state of the sender’s ChainTree. The senders’ and receivers’ chain trees are updated independently and therefore there is no multiple Chain Tree transaction needed at the signer level.
+A `SEND_TOKEN` transaction is valid if in the state of the Chain Tree there is enough of a balance of “name” token. The balance is calculated by adding all mints and receives in the Chain Tree and subtracting the Sends. The Chain Tree owner sends the signed tip (and the path through the Chain Tree) that includes the sendtoken. The “balance” is immediately deducted from their Chain Tree in the sense that they cannot add another `SEND_TOKEN` transaction for more than their balance which includes this transaction. The destination should be the DID of the receiving ChainTree. A `SEND_TOKEN` transaction is similar to a cashiers check in that the amount is deducted from the senders ChainTree at the time of the `SEND_TOKEN` transaction. This allows a `RECEIVE_TOKEN` transaction (see next section) to not depend on any future state of the sender’s ChainTree. The senders’ and receivers’ chain trees are updated independently and therefore there is no multiple Chain Tree transaction needed at the signer level.
 
 ```
-RECEIVE_COIN
-message ReceiveCoinTransaction {
-   string send_coin_transaction_id = 1;
+RECEIVE_TOKEN
+message ReceiveTokenTransaction {
+   string send_token_transaction_id = 1;
    bytes tip = 2;
    signature signature = 3;
-   map<string>ChainTreeNode leaves = 4;
+   array<ChainTreeNode> leaves = 4;
 }
 ```
 
-A `RECEIVE_COIN` transaction is valid if the Tip including the `SEND_COIN` transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a `send_coin_transaction_id` that does not appear in the Chain Tree previously (preventing “double receive”).
+A `RECEIVE_TOKEN` transaction is valid if the Tip including the `SEND_TOKEN` transaction has been signed by the Notary Group and that Tip includes the transaction, it has a destination that matches this Chain Tree, and it has a `send_token_transaction_id` that does not appear in the Chain Tree previously (preventing “double receive”).
 
 ### Cryptocurrency Discussion
 
-A Chain Tree owner can never double spend because the `SEND_COIN` transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends. A receiver cannot add more `RECEIVE_COIN` blocks without having valid (and unique) transaction ids (which are signed by ⅔ of the Notary Group).
+A Chain Tree owner can never double spend because the `SEND_TOKEN` transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends. A receiver cannot add more `RECEIVE_TOKEN` blocks without having valid (and unique) transaction ids (which are signed by ⅔ of the Notary Group).
 
-`SEND_COIN` can be included in every block as payment to the Signer if an incentification system is necessary for the Notary Group.
+`SEND_TOKEN` can be included in every block as payment to the Signer if an incentification system is necessary for the Notary Group.
 
 ## Notary Groups (consensus algorithm)
 A Notary Group is a registered, bonded set of validator nodes, called Signers, that collectively notarize the tip of every Chain Tree. When an actor adds a block of transactions to their Chain Tree, it sends the block and the new tip hash it creates to the Notary Group along with any state necessary to validate all the transactions in the block. Signers validate these blocks and, if valid, append their digital signatures and forward them to other Signers for more signatures. Once a block receives a supermajority of signatures, the new state, specifically the Merkleized tip of the actor’s Chain Tree, is effectively notarized and will be used as the canonical latest tip for validating the next block on that Chain Tree.
@@ -163,7 +163,7 @@ The Tupelo Consensus Algorithm (TCA) is a leaderless Byzantine Fault Tolerant (B
 
 ### Tuples: The Notary Group’s currency
 
-The main coin of the system is called a Tuple. Tuples are used for rewards, staking and general payments on the Tupelo system. Tuples are minted from the Notary Group itself and are required for creating transactions and participating in the Proof of Stake system.
+The main token of the system is called a Tuple. Tuples are used for rewards, staking and general payments on the Tupelo system. Tuples are minted from the Notary Group itself and are required for creating transactions and participating in the Proof of Stake system.
 
 ### Overview
 
@@ -274,7 +274,7 @@ message DepositStakeTransaction {
 }
 ```
 
-This special transaction functions like a `SEND_COIN` with a fixed destination of the Notary Group Chain Tree. Once the `DEPOSIT_STAKE` transaction has been notarized an active Signer appends a corresponding `ACTIVATE_SIGNER` transaction on the Notary Group Chain Tree.
+This special transaction functions like a `SEND_TOKEN` with a fixed destination of the Notary Group Chain Tree. Once the `DEPOSIT_STAKE` transaction has been notarized an active Signer appends a corresponding `ACTIVATE_SIGNER` transaction on the Notary Group Chain Tree.
 
 ```
 ACTIVATE_SIGNER
@@ -285,7 +285,7 @@ message ActivateSignerTransaction {
    string deposit_stake_transaction_id = 4;
    bytes tip = 5;
    signature signature = 6;
-   map<string>ChainTreeNode leaves = 7;
+   array<ChainTreeNode> leaves = 7;
 }
 ```
 
@@ -499,7 +499,7 @@ In order to preserve the state of the Notary Group Chain Tree and ensure safety 
 
 #### Processing Withdrawals
 
-Signer deposits remain locked for a period of time ($t$ epochs, on the order of 4 months) after the Signer is inactivated by a `DEACTIVATE_SIGNER` transaction. If the `DEACTIVATE_SIGNER` was posted in epoch $E$ then an when an `EPOCH_END` is written at epoch $E+t$ its `signersRefunded` member functions like a `SEND_COIN` that effectively refunds the balance of all Signers listed. Once that transaction appears on the Notary Group Chain Tree, the Signer can issue a `RECEIVE_COIN` on their own Chain Tree to transfer their balance and allow them to spend it.
+Signer deposits remain locked for a period of time ($t$ epochs, on the order of 4 months) after the Signer is inactivated by a `DEACTIVATE_SIGNER` transaction. If the `DEACTIVATE_SIGNER` was posted in epoch $E$ then an when an `EPOCH_END` is written at epoch $E+t$ its `signersRefunded` member functions like a `SEND_TOKEN` that effectively refunds the balance of all Signers listed. Once that transaction appears on the Notary Group Chain Tree, the Signer can issue a `RECEIVE_TOKEN` on their own Chain Tree to transfer their balance and allow them to spend it.
 
 #### Sending Proposals
 
@@ -524,9 +524,9 @@ To maintain safety across epoch boundaries, specifically to prevent two extensio
 
 In proof of stake blockchains an attacker purchasing enough retired validator keys can rewrite the entire chain's history including FFG checkpoints creating all kinds of double spend opportunities. A user who has been offline for a long period of time can't tell which history is correct. Such users need a trust point, such as a public website containing a list of recent checkpoints, or something hardcoded in the latest version of the software.
 
-In Tupelo such an attacker having purchased 2/3 retired signer keys could create a fork of one or more chain trees if they also had each chain tree owner's signing key. Double spending is not much of concern because a previous spend (`SEND_COIN`) is likely to be referenced in a `RECEIVE_COIN` in some other chain tree that the attacker doesn't have the key to (because they're trying to cheat that chain tree's owner). However, it is possible for an attacker who owns an asset to transfer ownership of that asset multiple times (creating a fork in the asset’s Chain Tree), once with real notarization and once with fake notarization of a past transfer of ownership using acquired keys. For this attack to succeed, the asset Chain Tree must not have been extended recently enough for any Signers to hold a copy of the new notarized tip.
+In Tupelo such an attacker having purchased 2/3 retired signer keys could create a fork of one or more chain trees if they also had each chain tree owner's signing key. Double spending is not much of concern because a previous spend (`SEND_TOKEN`) is likely to be referenced in a `RECEIVE_TOKEN` in some other chain tree that the attacker doesn't have the key to (because they're trying to cheat that chain tree's owner). However, it is possible for an attacker who owns an asset to transfer ownership of that asset multiple times (creating a fork in the asset’s Chain Tree), once with real notarization and once with fake notarization of a past transfer of ownership using acquired keys. For this attack to succeed, the asset Chain Tree must not have been extended recently enough for any Signers to hold a copy of the new notarized tip.
 
-Such attacks can be thwarted by requiring each Chain Tree tip to be extended once every period $T$, where $T$ < the waiting period between `DEACTIVATE_SIGNER` and `SEND_COIN`.
+Such attacks can be thwarted by requiring each Chain Tree tip to be extended once every period $T$, where $T$ < the waiting period between `DEACTIVATE_SIGNER` and `SEND_TOKEN`.
 
 #### Grinding Attacks
 
@@ -560,7 +560,7 @@ Because Chain Trees are independent and not part of a globally ordered history, 
 
 ### Anonymity and Transaction Blinding
 
-Because the Chain Trees are already pseudonymous and there is no global state, the system lends itself to private transactions. Additionally the use of the P2P broadcast network can protect IP addresses, etc from transaction origin. Zero-knowledge proofs could be employed in the `RECEIVE_COIN` and `SEND_COIN` transactions to make for a truly anonymous system.
+Because the Chain Trees are already pseudonymous and there is no global state, the system lends itself to private transactions. Additionally the use of the P2P broadcast network can protect IP addresses, etc from transaction origin. Zero-knowledge proofs could be employed in the `RECEIVE_TOKEN` and `SEND_TOKEN` transactions to make for a truly anonymous system.
 
 ### Sharding
 

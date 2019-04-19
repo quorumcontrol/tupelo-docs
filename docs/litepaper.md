@@ -20,7 +20,7 @@ nav_order: 1
 Tupelo is a new Distributed Ledger Technology (DLT) project that is fundamentally different. Rather than a single blockchain, Tupelo maintains a separate history for every object. The history is kept in a new data structure called a Chain Tree. This foundational change is ideal for a variety of applications that concern assets (both physical and digital) and supports crypto currency applications.
 
 ## Understanding Tupelo
-Most DLT systems are built around a detailed accounting of who has how many fungible (interchangeable) coins. Foundationally, Tupelo is built to model more complex, unique, real-world or digital things. Every object in Tupelo innately has one or more owners, a variety of attributes, and a unique history.
+Most DLT systems are built around a detailed accounting of who has how many fungible (interchangeable) tokens. Foundationally, Tupelo is built to model more complex, unique, real-world or digital things. Every object in Tupelo innately has one or more owners, a variety of attributes, and a unique history.
 
 For example, consider a car, a house, a digital collectible, a person’s identity, or a batch of coffee moving through a supply chain. Each of these objects has many unique instantiations with different features. Their attributes may change over time but they all represent a singular unique entity, have specified owners at any given time, and have a history that persists.
 
@@ -81,14 +81,14 @@ One of the core strengths of Tupelo is the simplicity of the interface (API) pro
 For illustration purposes the current API includes the following high level requests:
   * SET_DATA
   * SET_OWNERSHIP
-  * ESTABLISH_COIN
-  * MINT_COIN
-  * SEND_COIN
-  * RECEIVE_COIN
+  * ESTABLISH_TOKEN
+  * MINT_TOKEN
+  * SEND_TOKEN
+  * RECEIVE_TOKEN
 
-Tupelo is not focused on building a purely financial system but rather a utilitarian one. That however does not mean that it cannot mint or transfer coins. Other DLT systems have central universal storage and Chain Trees are distributed, but that does not mean Tupelo is in any way inferior at preventing double spends. Double spends occur when a single user trades their tokens away more than once, which is the core challenge of managing coins.
+Tupelo is not focused on building a purely financial system but rather a utilitarian one. That however does not mean that it cannot mint or transfer tokens. Other DLT systems have central universal storage and Chain Trees are distributed, but that does not mean Tupelo is in any way inferior at preventing double spends. Double spends occur when a single user trades their tokens away more than once, which is the core challenge of managing tokens.
 
-A Chain Tree owner can never double spend because the SEND_COIN transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends, and a receiver cannot add more RECEIVE_COIN blocks without having valid (and unique) transaction ids signed by the Notary Group. Request the Tupelo Whitepaper for more details on how Tupelo maintains coin integrity.
+A Chain Tree owner can never double spend because the SEND_TOKEN transaction will not be approved unless there is enough of a balance. The owner cannot fork their Chain Tree to add fraudulent spends, and a receiver cannot add more RECEIVE_TOKEN blocks without having valid (and unique) transaction ids signed by the Notary Group. Request the Tupelo Whitepaper for more details on how Tupelo maintains token integrity.
 
 Tupelo allows for unlimited currencies without smart contracts. It is important to note that these capabilities are particularly valuable for applications that involve fractional ownership or other shared ownership models.
 
@@ -99,7 +99,7 @@ Tupelo’s unique features make it good for modeling things, be they physical or
 
 ### Real world assets
 
-Real world assets such as real estate or cars are an excellent fit for Tupelo. Application developers can easily model these assets with the flexible data structure that automatically tracks their history. One or more people own the structures themselves, and those people can grant non-owners limited read or write capability. These features are all fundamentally derived from the Chain Tree itself directly modeling their existence not as a coin, but as a singular owned data structure.
+Real world assets such as real estate or cars are an excellent fit for Tupelo. Application developers can easily model these assets with the flexible data structure that automatically tracks their history. One or more people own the structures themselves, and those people can grant non-owners limited read or write capability. These features are all fundamentally derived from the Chain Tree itself directly modeling their existence not as a token, but as a singular owned data structure.
 
 ### Digital assets
 
