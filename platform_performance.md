@@ -27,7 +27,7 @@ optimizing subscriptions and improved bootstrapping.
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
-| 21      | 200 tx/sec   | 947 ms  | 2415 ms |
+| 21      | 200 tx/sec   | 839 ms  | 1381 ms |
 | 100     | 200 tx/sec   | 831 ms  | 1739 ms |
 
 AWS Regions: 8  
