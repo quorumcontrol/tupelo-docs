@@ -7,7 +7,7 @@ nav_order: 2
 
 # Building a Notebook
 We're going to build a command-line timestamped note-taking application using
-the [Tupelo.js](https://github.com/QuorumControl/tupelo.js "Tupelo.js") API.
+the [Tupelo Javascript SDK](https://quorumcontrol.github.io/tupelo-js-sdk "Tupelo Javascript SDK").
 When we're done, we'll be able to use this app to save small timestamped notes
 over time, and later display all the notes in order.
 
