@@ -22,8 +22,7 @@ We will continue to share these numbers as they become available.
 ***
 
 ## May 17th - Latest update
-Substantial performance improvements through upgrade libp2p pubsub containing
-fix for rapid subscriptions and improved testing methodology.
+Substantial performance improvements upgrading libp2p pubsub, fixing a problem with rapid subscriptions, and improving our benchmarking methodology.
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
