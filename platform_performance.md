@@ -21,7 +21,21 @@ We will continue to share these numbers as they become available.
 
 ***
 
-## April 19th - Latest update
+## May 17th - Latest update
+Substantial performance improvements upgrading libp2p pubsub, fixing a problem with rapid subscriptions, and improving our benchmarking methodology.
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 200 tx/sec   | 197 ms  | 290 ms |
+| 100     | 200 tx/sec   | 423 ms  | 664 ms |
+
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
+
+
+***
+
+## April 19th
 Substantial performance improvements through consensus streamlining including
 optimizing subscriptions and improved bootstrapping.
 
