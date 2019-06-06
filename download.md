@@ -28,7 +28,7 @@ You can find basic instructions for
 
 ## Linux
 
-[Tupelo 0.4.0 - Linux](https://qc-tupelo-downloads.s3.eu-central-1.amazonaws.com/tupelo-v0.4.0-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+[Tupelo 0.4.0 - Linux](https://qc-tupelo-downloads.s3.eu-central-1.amazonaws.com/tupelo-v0.4.0-linux-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
 Checksum: 8e8601db8516e0983a2d05c3a18a11db58cb5378574810df3133a75c99b99588
 
 ***
@@ -42,6 +42,6 @@ Checksum: 16db257177dbc5582e1ec7dea16717d6fed6d88612ff82faea2eb4fd48fdd0b2
 
 Having problems or do you have a question, fill out the form below or
 <a href="https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA">join us</a>
-on our developer Telegram channel and ask.
+on our Telegram channel and ask.
 
 {% include feedback.html %}
