@@ -53,7 +53,7 @@ In file `notebook/package.json`:
   "name": "notebook",
   ...
   "dependencies": {
-      "tupelo-client": "^0.2.0"
+      "tupelo-client": "^0.4.0"
   },
 }
 ```
@@ -563,7 +563,7 @@ In file `notebook/package.json`:
     "name": "notebook",
     ...
     "dependencies": {
-        "tupelo-client": "^0.2.0",
+        "tupelo-client": "^0.4.0",
         "yargs": "^12.0.2"
     }
 }

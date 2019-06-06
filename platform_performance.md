@@ -21,8 +21,25 @@ We will continue to share these numbers as they become available.
 
 ***
 
-## May 17th - Latest update
-Substantial performance improvements upgrading libp2p pubsub, fixing a problem with rapid subscriptions, and improving our benchmarking methodology.
+## June 6th - Latest update
+Improvements largely driven by the change of core Tupelo types to protocol
+buffer messages and the use of those across all platform-specific development
+kits.
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 200 tx/sec   | 160 ms  | 246 ms |
+| 100     | 200 tx/sec   | 297 ms  | 469 ms |
+
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
+Tupelo Version: 0.4.0
+
+***
+
+## May 17th
+Substantial performance improvements upgrading libp2p pubsub, fixing a problem
+with rapid subscriptions, and improving our benchmarking methodology.
 
 | Signers | Throughput  | Finality (mean)  | Finality (P95)  |
 | ------- |:-----------:|:---------:|:---------:|
@@ -31,7 +48,7 @@ Substantial performance improvements upgrading libp2p pubsub, fixing a problem w
 
 AWS Regions: 8  
 AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
-
+Tupelo Version: 0.2.3
 
 ***
 

@@ -15,7 +15,7 @@ nav_order: 1
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "tupelo-client": "^0.2.0",
+    "tupelo-client": "^0.4.0",
     "yargs": "^12.0.2"
   },
   "keywords": [],
