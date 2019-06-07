@@ -10,16 +10,16 @@ nav_order: 4
 These binaries are all you need to get started signing chain-trees and running
 your own local test net.
 
-The most recent release is 0.2.0 including the following updates:
+The most recent release is 0.4.0 including the following updates:
 
 ### Features
-* Completed all Token transactions
-* Switched to libp2p pubsub for commit and transaction gossiping
-* Switched client subscriptions to use libp2p pubsub
-* Added Play Transactions RPC handler
-### Bug fixes
-* Race condition in bridge fixed - go client PR #16
-* Fixed slowing transactions in wallet
+* Defines the core Tupelo types as protocol buffer messages and uses those
+across all platform-specific development kits.
+* Adds configuration options for notary groups.
+* Fixes panic on bad tip requests.
+* Fixes shell encoding for resolve-data.
+* Removed signer produced errors for transactions to prevent attack vector of
+malicious signers returning fake errors.
 
 You can find basic instructions for
 [setting up and using the platform here](tutorials/rpc_server).
@@ -28,20 +28,20 @@ You can find basic instructions for
 
 ## Linux
 
-[Tupelo 0.2.0 - Linux](tutorials/download/tupelo-v0.2.0-linux-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
-[Tupelo 0.2.0 - Linux - Checksum](tutorials/download/tupelo-v0.2.0-linux-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo 0.4.0 - Linux](https://qc-tupelo-downloads.s3.eu-central-1.amazonaws.com/tupelo-v0.4.0-linux-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+Checksum: 8e8601db8516e0983a2d05c3a18a11db58cb5378574810df3133a75c99b99588
 
 ***
 
 ## macOS
 
-[Tupelo 0.2.0 - macOS](tutorials/download/tupelo-v0.2.0-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
-[Tupelo 0.2.0 - macOS - Checksum](tutorials/download/tupelo-v0.2.0-darwin-amd64-checksum.txt){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo 0.4.0 - macOS](https://qc-tupelo-downloads.s3.eu-central-1.amazonaws.com/tupelo-v0.4.0-darwin-amd64){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+Checksum: 16db257177dbc5582e1ec7dea16717d6fed6d88612ff82faea2eb4fd48fdd0b2
 
 ***
 
-Looking to connect to the test net rather than run locally?  
-
-Fill out the form below and just ask!    
+Having problems or do you have a question, fill out the form below or
+<a href="https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA">join us</a>
+on our Telegram channel and ask.
 
 {% include feedback.html %}
