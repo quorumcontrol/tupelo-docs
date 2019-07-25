@@ -17,6 +17,13 @@ your command `PATH` variable. If you do not wish to save the binary to a
 directory in your `PATH`, you can still execute it with the fully qualified
 or relative path to your chosen location for the binary.
 
+Next rename whichever version you downloaded and confirm that the tupelo
+binary is executable.
+```bash
+mv tupelo-v0.4.0-darwin-amd64 tupelo
+chmod +x tupelo
+```
+
 You can run the network locally or connect to our TestNet.
 
 After successfully installing the binary, you can run the RPC server by invoking
