@@ -21,7 +21,23 @@ We will continue to share these numbers as they become available.
 
 ***
 
-## June 6th - Latest update
+## September 27th - Latest update
+
+Many updates have been made since the last performance update but most recently
+Tupelo has been updated to go 1.13.
+
+| Signers | Throughput  | Finality (mean)  | Finality (P95)  |
+| ------- |:-----------:|:---------:|:---------:|
+| 21      | 200 tx/sec   | 144 ms  | 188 ms |
+| 21      | 250 tx/sec   | 311 ms  | 496 ms |
+
+AWS Regions: 8  
+AWS Instance Types: c5.xlarge (4cpu 8gb ram)  
+Tupelo Version: 0.5.0
+
+***
+
+## June 6th
 Improvements largely driven by the change of core Tupelo types to protocol
 buffer messages and the use of those across all platform-specific development
 kits.
