@@ -10,16 +10,16 @@ permalink:
 <img style="float: right; padding:10px;" src="assets/images/helloworldsquare.png">
 
 We want to show you how easy it is to build on Tupelo.
-Start building now by adding a “Hello World” message and get it signed in seconds.
+{: .fs-5 .fw-300 }
+
+Start building now by adding a [“Hello World” message](tutorials) and get it signed in seconds.
 {: .fs-5 .fw-300 }
 Need more information first?  
 Read below to see how we’re different or get access to important documentation.
 {: .fs-5 .fw-300 }
-**Your project will scale on the Tupelo platform.**  Keep us honest and try it out.
+Want to jump right in and build?  Get started using your preferred web development framework and access
+Tupelo using the new **[Tupelo WASM SDK](https://www.quorumcontrol.com/blog/2019/8/22/new-wasm-based-sdk-for-tupelo) right from the browser.**
 {: .fs-5 .fw-300 }
-[Hello World Tutorial](tutorials/hello_tupelo){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
-
-***
 
 # We Are Distributed Ledger Done Differently
 {: .fs-8 }
