@@ -17,7 +17,8 @@ Start building now by adding a [“Hello World” message](tutorials) and get it
 Need more information first?  
 Read below to see how we’re different or get access to important documentation.
 {: .fs-5 .fw-300 }
-Want to jump right in and build?  Get started using your preferred web development framework and access
+
+Want to jump right in and build?  Start accessing
 Tupelo using the new **[Tupelo WASM SDK](https://www.tupelo.org/blog/2019/8/22/new-wasm-based-sdk-for-tupelo) right from the browser.**
 {: .fs-5 .fw-300 }
 
