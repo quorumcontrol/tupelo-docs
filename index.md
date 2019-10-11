@@ -18,7 +18,7 @@ Need more information first?
 Read below to see how we’re different or get access to important documentation.
 {: .fs-5 .fw-300 }
 Want to jump right in and build?  Get started using your preferred web development framework and access
-Tupelo using the new **[Tupelo WASM SDK](https://www.quorumcontrol.com/blog/2019/8/22/new-wasm-based-sdk-for-tupelo) right from the browser.**
+Tupelo using the new **[Tupelo WASM SDK](https://www.tupelo.org/blog/2019/8/22/new-wasm-based-sdk-for-tupelo) right from the browser.**
 {: .fs-5 .fw-300 }
 
 # We Are Distributed Ledger Done Differently
