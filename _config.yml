@@ -32,7 +32,7 @@ markdown: kramdown
 aux_links:
   "Main Tupelo Website":
     - "http://www.quorumcontrol.com"
-remote_theme: pmarsceill/just-the-docs
+# remote_theme: pmarsceill/just-the-docs
 theme: just-the-docs # this works locally but not when pushed
 plugins:
   - jekyll-feed
