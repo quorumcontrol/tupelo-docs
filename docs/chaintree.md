@@ -37,7 +37,7 @@ end
 
 A ChainTree is [content addressable](https://en.wikipedia.org/wiki/Content-addressable_storage), meaning that a single hash of the root uniquely represents the entire data structure.
 
-[Tupelo's whitepaper](https://docs.quorumcontrol.com/docs/whitepaper.html) explains how ChainTrees use [IPLD](https://ipld.io/) internally.
+[Tupelo's whitepaper](https://docs.tupelo.org/docs/whitepaper.html) explains how ChainTrees use [IPLD](https://ipld.io/) internally.
 
 > [...] at a high level, IPLD specifies how to link data structures using a content addressable system (hashing). Conceptually similar to JSON, Tupelo uses CBOR (Compact Binary Object Representation) to model the data inside a ChainTree. CBOR specifies a canonical way to create a binary given key/value pairs. An object can link to another object by specifying a CID as a value within one if its key/value pairs. A CID represents a hash of the object linked TO. In this way, a single tip (hash of the root object) can be used to verify that all children of the object have not been tampered with.
 
