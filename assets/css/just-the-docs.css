@@ -1248,8 +1248,7 @@ thead th {
 code {
   padding: 0.2em 0.15em;
   font-weight: 400;
-  background-color: #f5f6fa;
-  border: 1px solid #eeebee;
+
   border-radius: 4px; }
 
 pre.highlight,
