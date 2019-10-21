@@ -1,9 +1,7 @@
 ---
 layout: default
 title: Hello from Shell
-parent: Hello Tupelo
-grand_parent: Tutorials
-nav_order: 1
+nav_exclude: true
 ---
 
 # Hello from Shell
