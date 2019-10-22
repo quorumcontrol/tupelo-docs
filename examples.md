@@ -7,7 +7,7 @@ nav_order: 3
 
 # Example Projects
 
-## Tupelo Explorer and Wallet
+## [Tupelo Explorer and Wallet](/examples/decentracar)
 
 Tupelo Explorer is a WASM, react-based app built on the Tupelo WASM SDK.  
 The explorer enables users to browse ChainTrees, the data-structure underlying
