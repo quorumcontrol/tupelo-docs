@@ -35,10 +35,6 @@ GEM
       jekyll (~> 3.3)
     jekyll-watch (2.1.2)
       listen (~> 3.0)
-    just-the-docs (0.2.7)
-      jekyll (~> 3.8.5)
-      jekyll-seo-tag (~> 2.0)
-      rake (~> 12.3.1)
     kramdown (1.17.0)
     liquid (4.0.1)
     listen (3.1.5)
@@ -72,7 +68,7 @@ PLATFORMS
 DEPENDENCIES
   jekyll (~> 3.8.5)
   jekyll-feed (~> 0.6)
-  just-the-docs (~> 0.2.7)
+
   minima (~> 2.0)
   tzinfo-data
 

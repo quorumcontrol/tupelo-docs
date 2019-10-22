@@ -36,7 +36,7 @@ aux_links:
   "Main Tupelo Website":
     - "http://www.tupelo.org"
 # remote_theme: pmarsceill/just-the-docs
-theme: just-the-docs # this works locally but not when pushed
+# theme: just-the-docs # this works locally but not when pushed
 plugins:
   - jekyll-feed
 

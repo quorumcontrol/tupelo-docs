@@ -38,9 +38,9 @@ flexible, and transferrable than the existing cumbersome, single chain systems.
 Our comprehensive documentation and accessible engineering team will cover
 everything you need to know to build on the platform.
 {: .fs-5 .fw-300 }
-[Tupelo Overview](docs/litepaper){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[Whitepaper v0.10](docs/whitepaper){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[Talk to the Team](https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Tupelo Overview](docs/litepaper){: .btn .btn-blue .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Whitepaper v0.10](docs/whitepaper){: .btn .btn-blue .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Talk to the Team](https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA){: .btn .btn-blue .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 

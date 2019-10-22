@@ -2,7 +2,7 @@
 layout: default
 title: Platform Performance
 has_children: false
-nav_order: 6
+nav_order: 7
 ---
 
 # Latest Tupelo Performance Data

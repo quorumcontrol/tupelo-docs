@@ -3,7 +3,7 @@ layout: default
 title: Platform Documentation
 has_children: true
 toc: true
-nav_order: 5
+nav_order: 6
 ---
 
 # Available Tupelo Platform Documentation
