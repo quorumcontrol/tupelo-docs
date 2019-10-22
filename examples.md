@@ -11,8 +11,7 @@ nav_order: 3
 
 Tupelo Explorer is a WASM, react-based app built on the Tupelo WASM SDK.  
 The explorer enables users to browse ChainTrees, the data-structure underlying
-Tupelo.  Tupelo Explorer can also be used as a wallet for Chaintrees (NFTs) you
-have created or been sent.  
+Tupelo.  Tupelo Explorer can also be used as a basic wallet.  
 
 Combining the power of WASM with the speed of accessing a DLT (Tupelo) from the
 browser opens up exciting new user facing applications.
