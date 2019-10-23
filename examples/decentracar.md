@@ -24,3 +24,12 @@ An article on the related topic of the difference between disintermediation
 and decentralization **[can be found here](https://www.tupelo.org/posts/dlt-isnt-disintermediation).**
 
 [Decentracar on Github](https://github.com/quorumcontrol/decentracar){: .btn .btn-blue .fs-5 .mb-4 .mb-md-0 .mr-2 }  
+
+&nbsp;  
+
+***
+
+Please reach out with any questions or comments you might have on the Decentracar project.  
+We would appreciate hearing from you.
+
+{% include feedback.html %}
