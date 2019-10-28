@@ -26,7 +26,7 @@ first transaction signed in minutes. That is a total of minutes to set up and su
 request, the Tupelo TestNet will sign your transaction in less than a second.
 {: .fs-3 .fw-300 }
 ***
-# We Are Distributed Ledger Done Differently
+# Tupelo Is Distributed Ledger Done Differently
 {: .fs-8 }
 <img style="float: right; width:472px;height:354px; padding: 15px;" src="assets/images/ChainTreeP.png">
 
