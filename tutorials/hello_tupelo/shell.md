@@ -7,7 +7,18 @@ nav_exclude: true
 # Hello from Shell
 
 ## Quickstart
-Follow these steps from a command shell to quickly write some data to a chain tree and read it back.
+First you will need to [download Tupelo](https://github.com/quorumcontrol/tupelo/releases).
+
+Unzip tupelo-v0.5.11.zip and from a terminal rename whichever version you need based on
+which OS you running.  Next, chmod it to make it executable.
+
+```
+mv tupelo-v0.5.11-darwin-amd64 tupelo
+chmod +x tupelo
+```
+
+Next follow these steps from a command shell (stepping past OS publisher checks if they appear)
+to quickly write some data to a chain tree and read it back.
 
 ```
 $ ./tupelo shell -w billfold
@@ -19,6 +30,9 @@ $ ./tupelo shell -w billfold
 >>> resolve-data <chain tree id> my/data/path
 >>> stop-session
 ```
+
+Congratulations!  
+You have successfully written to a ChainTree and your request was verified by the Tupelo network.
 
 ## Commentary
 Read below if you'd like an explanation of what each of the above steps does.
@@ -68,3 +82,5 @@ new tip: <tip hash>
 data: hello tupelo
 remaining path: []
 ```
+
+The next step in getting to know the Tupelo DLT is to try our [notebook tutorial](/tutorials/notebook).
