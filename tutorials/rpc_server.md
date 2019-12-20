@@ -10,25 +10,26 @@ The Node.js client cannot directly manage chain trees or connect to the notary
 group, so node applications must instead proxy through an RPC server to work
 with Tupelo.
 
-To install the server you can download the latest
-[Tupelo executable here](/download).  
-Once you have selected the appropriate binary for your platform save it within
+First you will need to [download Tupelo](https://github.com/quorumcontrol/tupelo/releases).
+Unzip tupelo-v0.5.11.zip and rename whichever version you need based on which OS you running.
+Next, chmod it to make it executable.
+
+```bash
+mv tupelo-v0.5.11-darwin-amd64 tupelo
+chmod +x tupelo
+```
+
+Once you have selected and renamed the appropriate binary for your platform save it within
 your command `PATH` variable. If you do not wish to save the binary to a
 directory in your `PATH`, you can still execute it with the fully qualified
 or relative path to your chosen location for the binary.
-
-Next rename whichever version you downloaded and confirm that the tupelo
-binary is executable.
-```bash
-mv tupelo-v0.4.0-darwin-amd64 tupelo
-chmod +x tupelo
-```
 
 You can run the network locally or connect to our TestNet.
 
 After successfully installing the binary, you can run the RPC server by invoking
 `tupelo` (or the full or relative path to your chosen install location if you
 did not install Tupelo in a `PATH` directory) along with the necessary options.
+
 Production applications will usually connect to an independent notary group, but
 you can also choose to run and connect to a local notary group to make working
 in development easier.
