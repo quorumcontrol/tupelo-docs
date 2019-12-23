@@ -10,7 +10,7 @@ nav_exclude: true
 First you will need to [download Tupelo](https://github.com/quorumcontrol/tupelo/releases).
 
 Unzip tupelo-v0.5.11.zip and from a terminal rename whichever version you need based on
-which OS you running.  Next, chmod it to make it executable.
+which OS you are running.  Next, chmod it to make it executable.
 
 ```
 mv tupelo-v0.5.11-darwin-amd64 tupelo
