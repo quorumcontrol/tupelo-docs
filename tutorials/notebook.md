@@ -208,7 +208,7 @@ const community = await sdk.Community.getDefault()
 ```
 
 We proceed to grab the "tip" of our ChainTree which represents the latest version
-of it from the community service.  We need to pass the chain ID from the identifier file
+of it from the community service.  We need to pass in the chain ID from the identifier file
 to grab the proper notebook.  We can only update a ChainTree we own. Once we have found
 the tree we load it up so we can use it locally.
 
@@ -282,12 +282,12 @@ async function readIdentifierFile() {
 
 ### Writing the note
 
-Now that we have a way to retrieve our notebook ChainTree and key we can proceed
+Now that we have a way to retrieve our key and notebook ChainTree we can proceed
 towards inserting notes.
 
 We will need to decide where in our ChainTree to put the data we are creating.
 For more complex applications we will want to use different paths to keep our data
-organized and potentially manage permissions but for a simple application like our
+organized and potentially manage permissions, but for a simple application like our
 notebook a single path will do.
 
 In file `notebook/index.js` we will add a constant to store that.
@@ -297,9 +297,9 @@ const CHAIN_TREE_NOTE_PATH = 'notebook/notes';
 ...
 ```
 
-To build the addNote function we will want to start by grabbing our identifiers and then
-whatever notes already exist. Because ChainTrees are so flexible this data can be of
-nearly any type.  We will store our notes in an array at that location.
+To build the addNote function we start by grabbing our identifiers and
+whatever notes already exist. Because ChainTrees are so flexible, this data can be of
+nearly any type.  We will store our notes in an array of strings at 'notebook/notes'.
 
 ``` javascript
 async function addNote(note) {
@@ -308,7 +308,7 @@ async function addNote(note) {
 
     const resp = await tree.resolveData(CHAIN_TREE_NOTE_PATH);
     let notes = resp.value,
-        noteWithTs = addTimestamp(note); // Add a time and date to our entry
+        noteWithTs = addTimestamp(note); // Add a time and date to our new entry
 
     if (notes instanceof Array) {
         notes.push(noteWithTs);
@@ -334,7 +334,9 @@ function addTimestamp(note) {
 ```
 
 The last step we need to take in our addNote function is to actually submit the
-information to be signed!  So to the end of addNote() we will do just that.
+information to be signed!  So we will add the SDK calls to the end of addNote()
+to do just that.  The playTransactions call takes the tree we are changing
+and the change we want to make to the data as arguments.
 
 ``` javascript
     ...
@@ -343,6 +345,8 @@ information to be signed!  So to the end of addNote() we will do just that.
     await c.playTransactions(tree, [sdk.setDataTransaction(CHAIN_TREE_NOTE_PATH, notes)])
 }
 ```
+
+We should have our new state confirmed in less than a second.
 
 ### Making sure the notebook exists before we write
 
@@ -361,10 +365,11 @@ there is no ID file we will warn the user and end there.
 if (!idFileExists()) {
     console.error("Error: you must register before you can record notes.");
     return;
+    ...
 }
 ```
 
-In the end this leave us with this [`index.js` file](/tutorials/notebook/index2_js).
+After these changes our index.js should look more or less like this [`index.js` file](/tutorials/notebook/index2_js).
 
 
 ### Testing our add note functionality
@@ -382,31 +387,28 @@ Assuming everything worked, you should see a "Saving Registration" message at
 the node repl after the createNotebook.
 
 In response to "addNote" you should get a confirmation
-"saving new notes: [ '1577129740043::Super Awesome Note of Consequence.' ]"
+`saving new notes: [ '1577129740043::Super Awesome Note of Consequence.' ]`
 The first time you save a note you should also get confirmation that "nothing was resolvable"
 because its the first time any data was placed there.  We can add additional notes
 and the array of notes will grow but we will not see that message again.
 
 Assuming everything worked terminate the node repl session with the `.exit` command.
 
-If you are encountering problems you can check your index.js file against this
-[`index.js` file](/tutorials/notebook/index2_js).
-
 ### Displaying our Notes
 
-Since we can save and sign notes to our chain tree, let's print out all the
+Since we can save and sign notes to our chain tree, let's add a way to print out all the
 notes we've recorded so far. We'll write a `showNotes()` function that fetches
-the saved notes using the functions we have already created and prints each one
-to the console. Just like our function to save notes, we will also make sure that
-the user has already created a wallet and saved some notes.
+the saved notes using existing functions and print each one to the console.
+Just like our function to save notes, we will also make sure that
+the user has already created a wallet and saved some notes up front.
 
 In many ways showing notes is a more straight version of adding notes since the
-first step to adding notes was retriving our existing ones.
+first step to adding notes was retrieving existing ones.
 
 First we want to make sure the user has registered.
-Then we populate our ChainTree of notes locally into the tree variable.
+Then we populate our ChainTree of notes locally.
 It is then a simple matter of resolving the data from our CHAIN_TREE_NOTE_PATH
-and finally cycling through each value in the array printing them to the console.
+and cycling through each value in the array printing them to the console.
 
 ```javascript
 async function showNotes() {
@@ -438,7 +440,6 @@ application, let's add a command line interface to tie everything together.
 We'll use the [Yargs](https://github.com/yargs/yargs "Yargs") library for the
 CLI, so let's add it as a dependency to our `package.json` and require it at the
 top of our `index.js` file.
-
 
 In file `notebook/package.json`:
 ```javascript
@@ -487,14 +488,21 @@ yargs.command('register', 'Register a new notebook chain tree', (yargs) => {
 
 ## Finishing Up
 
-Now we've built a command line notebook that, when invoked with `node`, can
-record timestamped notes into a chain tree, print them out later, while the
-development notary group validates each note as we save them.
+Together we've built a command line notebook that, when invoked with `node`, can
+record timestamped notes into a ChainTree, have the Tupelo TestNet sign each note
+as we save them and then print them out later for prosperity.
 
-Now you can run `node ./index.js register` to register a new notebook,
+You can run `node ./index.js register` to register a new notebook,
 `node ./index.js add-note -n <note>` to save a note, and finally,
 `node ./index.js print-notes` to print all the saved notes.
 
 Be sure to take a look at the final
 [`package.json` file](/tutorials/notebook/package_json) and the final
-[`index.js` file](/tutorials/notebook/index3_js).
+[`index.js` file](/tutorials/notebook/index3_js) for reference.
+
+This tutorial just scratches the surface of how Tupelo can be used as an trust
+building block in an application.  Check out further [examples](/examples) such as a
+[decentralized mobility application](/examples/decentracar) or hop into our
+[developer chat]((https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA))
+and we will be happy to answer any questions or discuss how Tupelo might help build
+the trust a DLT provides into your application.
