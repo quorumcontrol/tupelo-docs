@@ -9,7 +9,8 @@ nav_order: 2
 We're going to build a command-line timestamped note-taking application using
 the [Tupelo WASM SDK](https://quorumcontrol.github.io/tupelo-js-sdk "Tupelo Javascript SDK").
 When we're done, we'll be able to use this app to save small timestamped notes
-over time, and later display all the notes in order.
+over time. All of these notes will be signed and confirmed by the Tupelo TestNet as they
+are entered into our app.
 
 ## Getting Started
 Our notebook will be a [Node.js](https://nodejs.org/en/ "Node.js") application.
@@ -77,6 +78,10 @@ async function createNotebook() {
     let community = await sdk.Community.getDefault();
 }
 ```
+
+The _community_ the SDK is connecting to by default in this sample is the Tupelo TestNet.  
+It underlying code creates a p2p node and establishes the connections it needs to submit
+transactions and get back confirmations when the transaction is finalized.
 
 ### Generate Keys
 
@@ -171,12 +176,12 @@ async function addNote(note) {
 
 ### Retrieving our key and notebook
 
-Now before we write our new note we actually need to make sure we have the identifiers
+Now before we write our new note we need to make sure we have the identifiers
 we need.  Lets create a function to grab the information we stored in our Identifier
 file we created during notebook creation.  
 
 We start readIdentifierFile by opening the file at our LOCAL_ID_PATH
-and then grab and parse the key we stored there translating it into the appropriate form.
+and then grab and parse the key we stored, translating it into the appropriate form.
 
 ```javascript
 async function readIdentifierFile() {
@@ -269,9 +274,12 @@ async function readIdentifierFile() {
 ### Writing the note
 
 Now that we have a way to retrieve our notebook ChainTree and key we can proceed
-towards inserting our new note.
+towards inserting notes.
 
-We will need to decide where in our ChainTree to put the data we are creating.  
+We will need to decide where in our ChainTree to put the data we are creating.
+For more complex applications we will want to use different paths to keep our data
+organized and potentially manage permissions but for a simple application like our
+notebook a single path will do.
 
 In file `notebook/index.js` we will add a constant to store that.
 ```javascript
@@ -291,7 +299,7 @@ async function addNote(note) {
 
     const resp = await tree.resolveData(CHAIN_TREE_NOTE_PATH);
     let notes = resp.value,
-        noteWithTs = addTimestamp(note);
+        noteWithTs = addTimestamp(note); // Add a time and date to our entry
 
     if (notes instanceof Array) {
         notes.push(noteWithTs);
@@ -302,9 +310,10 @@ async function addNote(note) {
 }
 ```
 
-You will note that along with our text values we have decided to add a timestamp as well.  
+You will note that along with our text values we have decided to add a timestamp.  
 This will provide additional immutable information to our notebook to be signed by
-the Tupelo Network appending when our notes content was entered.
+the Tupelo Network.  Our application will append the current date and time when each of
+our notes was entered.
 
 We will need to add a simple function to support that timestamping.
 
