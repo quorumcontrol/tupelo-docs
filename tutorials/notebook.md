@@ -121,7 +121,7 @@ async function createNotebook() {
 
 ### Store Identifiers
 
-Now that we have generated keys and a ChainTree for our notebook we will need a way to
+Now that we have generated keys and a ChainTree for our notebook, we will need a way to
 persist the required information locally between invocations of the app.
 
 We could use a database for this in a full-fledged production app, but an external file
@@ -138,12 +138,12 @@ after our module declarations.
 const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
-const LOCAL_ID_PATH = './.notebook-identifiers';
+const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
 ...
 ```
 
 Then we will create two new functions. One to compose our identifier object and the other
-to write it to the file.
+to write it into the file we just specified.
 
 ```javascript
 async function identifierObj(key, chain) {
@@ -160,8 +160,9 @@ function writeIdentifierFile(configObj) {
 }
 ```
 
-Back in our createNotebook() function we will call those two new functions to compose
-our identifiers and write them into that file.
+Back in our createNotebook() function we will call those two new functions with our
+key and empty ChainTree to compose our identifiers and then write the identifiers
+into that file.
 
 ```javascript
 async function createNotebook() {
@@ -230,8 +231,9 @@ async function readIdentifierFile() {
 }
 ```
 
-Then we connect to the community service where we had used to create our notebook
-Chaintree:
+Then we connect to the same default community service we had used to create our notebook
+ChainTree.
+
 ```javascript
 ...
 const community = await tupelo.Community.getDefault()
@@ -262,6 +264,7 @@ We will want to catch an error and create a new empty ChainTree if we could not
 find our existing one for some reason.
 
 ``` javascript
+...
 } catch(e) {
     if (e === 'not found') {
         tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
@@ -279,7 +282,7 @@ Upon success, we return the notebook ChainTree and the key we have retrieved.
 }
 ```
 
-This results in the following full readIdentifierFile function:
+The above steps results in the following full readIdentifierFile() function:
 
 ``` javascript
 async function readIdentifierFile() {
@@ -313,8 +316,8 @@ async function readIdentifierFile() {
 
 ### Writing the note
 
-Now that we have a way to retrieve our key and notebook ChainTree we can proceed
-towards inserting notes.
+Now that we have retrieved our key and notebook ChainTree we can proceed
+towards inserting new notes.
 
 We will need to decide where in our ChainTree to put the data we are creating.
 For more complex applications we will want to use different paths to keep our data
@@ -352,7 +355,7 @@ async function addNote(note) {
 
 You will note that along with our text values we have decided to add a timestamp.  
 This will provide additional immutable information to our notebook to be signed by
-the Tupelo Network.  Our application will append the current date and time when each of
+the Tupelo TestNet.  Our application will append the current date and time when each of
 our notes was entered.
 
 We will need to add a simple function to support that timestamping.
@@ -382,14 +385,14 @@ We should have our new state confirmed in less than a second.
 ### Making sure the notebook exists before we write
 
 We want to make sure that everything is done in the right order so we will add a
-small function to confirm we have an id file created:
+small function to confirm we have an id file created.
 
 ``` javascript
 function idFileExists() {
     return fs.existsSync(LOCAL_ID_PATH);
 }
 ```
-Then we will want to call that at the very beginning of our addNote() function.  If
+We will want to call that check at the very beginning of our addNote() function.  If
 there is no ID file we will warn the user and end there.
 
 ``` javascript
@@ -431,11 +434,13 @@ Since we can save signed notes to our chain tree, let's add a way to print out a
 notes we've recorded so far. We'll write a `showNotes()` function that fetches
 the saved notes using existing functions and print each one to the console.
 
-In many ways showing notes is a more straight version of adding notes since the
+In many ways showing notes is not all that different from adding notes since the
 first step to adding notes was retrieving existing ones.
 
 First we want to make sure the user has registered.
+
 Then we populate our ChainTree of notes locally.
+
 It is then a simple matter of resolving the data from our CHAIN_TREE_NOTE_PATH
 and cycling through each value in the array printing them to the console.
 
@@ -467,9 +472,9 @@ If there are no notes we simply output that.
 ## Creating a command line Interface
 
 Now that we have all the background functions we need to manage notes with our
-application, let's add a command line interface to tie everything together.
+application, let's add a simple command line interface to tie everything together.
 We'll use the [Yargs](https://github.com/yargs/yargs "Yargs") library for the
-CLI, so let's add it as a dependency to our `package.json` and require it at the
+CLI, so let's add that as a dependency to our `package.json` and require it at the
 top of our `index.js` file.
 
 In file `notebook/package.json`:
@@ -521,7 +526,7 @@ yargs.command('register', 'Register a new notebook chain tree', (yargs) => {
 
 Together we've built a command line notebook that when invoked with `node`, can
 record timestamped notes into a ChainTree, have the Tupelo TestNet sign each note
-as we save them and print them out later for prosperity.
+as we save them, and print them out later for prosperity.
 
 You can run `node ./index.js register` to register a new notebook,
 `node ./index.js add-note -n <note>` to save a note, and finally,
@@ -531,8 +536,10 @@ Be sure to take a look at the final
 [`package.json` file](/tutorials/notebook/package_json) and the final
 [`index.js` file](/tutorials/notebook/index3_js) for reference.
 
-This tutorial just scratches the surface of how Tupelo can be used as an trust
-building block in an application.  Check out further [examples](/examples) such as a
+This tutorial just scratches the surface of how Tupelo can be used as a building block
+of trust.  
+
+Check out further [examples](/examples) such as a
 [decentralized mobility application](/examples/decentracar) or hop into our
 [developer chat]((https://t.me/joinchat/IhpojEWjbW9Y7_H81Y7rAA))
 and we will be happy to answer any questions or discuss how Tupelo might help build
