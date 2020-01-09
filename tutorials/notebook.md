@@ -65,12 +65,15 @@ const tupelo = require('tupelo-wasm-sdk');
 ```
 
 ## Creating a New Notebook
-Our application will organize notes in _notebooks_, and we'll store the data
+Our application will organize notes into _notebooks_, and we'll store the data
 associated with a particular notebook in its own, unique ChainTree.  You can read more
-about ChainTrees [here](/docs/chaintree).
+about ChainTrees [here](/docs/chaintree).  Chaintrees are the flexible datastructure that underlies
+Tupelo.  We can store any type of data we want in a ChainTree and organize it within
+a path structure.
 
-Before we can start saving notes, we need to connect to a service to sign and track our
-ChainTrees, create some keys and then create a new empty ChainTree to store our notes.
+Before we can start saving notes, we need to create some keys for the user, connect to a
+service to sign and track our ChainTrees, and then create a new empty ChainTree to store
+our notes.
 
 Let's build a `createNotebook()` function, step by step, to do those things.
 
@@ -78,18 +81,20 @@ First we will connect to the community service and the Tupelo TestNet, in `noteb
 ```javascript
 async function createNotebook() {
     console.log("creating notebook")
-    let community = await tupelo.Community.getDefault();
+    let community = await tupelo.Community.getDefault();  
 }
 ```
 
-The _community_ the SDK is connecting to by default in this sample is the Tupelo TestNet.  
+The _community_ the SDK is connecting to in this example is the Tupelo TestNet.  
 The underlying code creates a p2p node and establishes the connections it needs to submit
 transactions and get back confirmations when a transaction is finalized.  The Tupelo
-network is fast so the user can wait the few hundred milliseconds required.
+network is fast so the user can wait the few hundred milliseconds required to process
+requests in real time.  In this way the Tupelo WASM SDK is as easy to use as a standard
+database API.
 
 ### Generate Keys
 
-We will generate a new public/private keypair for the user of our wasm app in
+We will need to generate a new public/private keypair for the user of our wasm app in
 the `createNotebook()` function.
 
 In file `notebook/index.js`:
@@ -97,23 +102,48 @@ In file `notebook/index.js`:
 async function createNotebook() {
     console.log("creating notebook")
     let community = await tupelo.Community.getDefault();
-    const key = await tupelo.EcdsaKey.generate()
+    const key = await tupelo.EcdsaKey.generate()   // <--- Create a digital signature for the user
+}
+```
+
+After generating our new key we will use the Tupelo SDK to create a new empty
+ChainTree to write our notebook entires into.  We will pass in the new key and the _community_
+we are connected to (the Tupelo TestNet) as arguments.
+
+```javascript
+async function createNotebook() {
+    console.log("creating notebook")
+    let community = await tupelo.Community.getDefault();
+    const key = await tupelo.EcdsaKey.generate()   
+    const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
 }
 ```
 
 ### Store Identifiers
 
-We will need a way to store the required information locally so we can keep track of these
-identifiers between `createNotebook()` invocations.  We could use a database for this in a
-full-fledged production app, but an external file is enough to serve our purposes.
-The `fs` module handles file i/o in Node.js so we add a filesystem require for that:
+Now that we have generated keys and a ChainTree for our notebook we will need a way to
+persist the required information locally between invocations of the app.
+
+We could use a database for this in a full-fledged production app, but an external file
+is enough to serve our purposes.  The `fs` module handles file i/o in Node.js so we add
+a filesystem require for that:
 ```javascript
 const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 ```
 
-Then we will create functions to compose our identifier object and write it to the
-filesystem so it can be accessed later:
+We will also need a file and path to write the values to.  We will specify that right
+after our module declarations.
+```javascript
+const tupelo = require('tupelo-wasm-sdk');
+const fs = require('fs');
+
+const LOCAL_ID_PATH = './.notebook-identifiers';
+...
+```
+
+Then we will create two new functions. One to compose our identifier object and the other
+to write it to the file.
 
 ```javascript
 async function identifierObj(key, chain) {
@@ -130,10 +160,8 @@ function writeIdentifierFile(configObj) {
 }
 ```
 
-Finally, we finish our notebook creation by instantiating a new empty ChainTree
-and then saving it with our two new functions.
-One to compose and the other to store our key and the identifier for our notebook
-ChainTree.
+Back in our createNotebook() function we will call those two new functions to compose
+our identifiers and write them into that file.
 
 ```javascript
 async function createNotebook() {
@@ -460,7 +488,7 @@ Next run `npm install` to get yargs loaded.
 
 In file `notebook/index.js`:
 ```javascript
-const tupelo = require('tupelo-client');
+const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 const yargs = require('yargs');
 ...
