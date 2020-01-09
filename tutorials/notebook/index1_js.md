@@ -6,7 +6,7 @@ nav_order: 2
 ---
 
 ```javascript
-const sdk = require('tupelo-wasm-sdk');
+const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
 const LOCAL_ID_PATH = './.notebook-identifiers';
@@ -26,9 +26,9 @@ function writeIdentifierFile(configObj) {
 
 async function createNotebook() {
     console.log("creating notebook")
-    let community = await sdk.Community.getDefault();
-    const key = await sdk.EcdsaKey.generate()
-    const tree = await sdk.ChainTree.newEmptyTree(community.blockservice, key)
+    let community = await tupelo.Community.getDefault();
+    const key = await tupelo.EcdsaKey.generate()
+    const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }

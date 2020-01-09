@@ -7,7 +7,7 @@ nav_order: 2
 
 # Building a Notebook
 We're going to build a command-line timestamped note-taking application using
-the [Tupelo WASM SDK](https://quorumcontrol.github.io/tupelo-js-sdk "Tupelo Javascript SDK").
+the [Tupelo WASM SDK](https://github.com/quorumcontrol/tupelo-wasm-sdk).
 When complete, we'll be able to use this app to save small timestamped notes
 over time. All of these notes will be signed by the Tupelo TestNet as they
 are entered into our app adding a level of outside verification and trust to our simple
@@ -61,7 +61,7 @@ top of that file, require the Tupelo wasm sdk so we can use it later.
 
 In file `notebook/index.js`:
 ```javascript
-const sdk = require('tupelo-wasm-sdk');
+const tupelo = require('tupelo-wasm-sdk');
 ```
 
 ## Creating a New Notebook
@@ -78,7 +78,7 @@ First we will connect to the community service and the Tupelo TestNet, in `noteb
 ```javascript
 async function createNotebook() {
     console.log("creating notebook")
-    let community = await sdk.Community.getDefault();
+    let community = await tupelo.Community.getDefault();
 }
 ```
 
@@ -96,8 +96,8 @@ In file `notebook/index.js`:
 ```javascript
 async function createNotebook() {
     console.log("creating notebook")
-    let community = await sdk.Community.getDefault();
-    const key = await sdk.EcdsaKey.generate()
+    let community = await tupelo.Community.getDefault();
+    const key = await tupelo.EcdsaKey.generate()
 }
 ```
 
@@ -108,7 +108,7 @@ identifiers between `createNotebook()` invocations.  We could use a database for
 full-fledged production app, but an external file is enough to serve our purposes.
 The `fs` module handles file i/o in Node.js so we add a filesystem require for that:
 ```javascript
-const sdk = require('tupelo-wasm-sdk');
+const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 ```
 
@@ -138,9 +138,9 @@ ChainTree.
 ```javascript
 async function createNotebook() {
     console.log("creating notebook")
-    let community = await sdk.Community.getDefault();
-    const key = await sdk.EcdsaKey.generate()
-    const tree = await sdk.ChainTree.newEmptyTree(community.blockservice, key)
+    let community = await tupelo.Community.getDefault();
+    const key = await tupelo.EcdsaKey.generate()
+    const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }
@@ -198,7 +198,7 @@ async function readIdentifierFile() {
     let raw = fs.readFileSync(LOCAL_ID_PATH);
     const identifiers = JSON.parse(raw);
     const keyBits = Buffer.from(identifiers.unsafePrivateKey, 'base64')
-    const key = await sdk.EcdsaKey.fromBytes(keyBits)
+    const key = await tupelo.EcdsaKey.fromBytes(keyBits)
 }
 ```
 
@@ -206,7 +206,7 @@ Then we connect to the community service where we had used to create our noteboo
 Chaintree:
 ```javascript
 ...
-const community = await sdk.Community.getDefault()
+const community = await tupelo.Community.getDefault()
 ...
 ```
 
@@ -221,7 +221,7 @@ let tree
 try {
     const tip = await community.getTip(identifiers.chainId)
     console.log("found tree")
-    tree = new sdk.ChainTree({
+    tree = new tupelo.ChainTree({
         store: community.blockservice,
         tip: tip,
         key: key,
@@ -236,7 +236,7 @@ find our existing one for some reason.
 ``` javascript
 } catch(e) {
     if (e === 'not found') {
-        tree = await sdk.ChainTree.newEmptyTree(community.blockservice, key)
+        tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
     } else {
         throw e
     }
@@ -259,21 +259,21 @@ async function readIdentifierFile() {
     let raw = fs.readFileSync(LOCAL_ID_PATH);
     const identifiers = JSON.parse(raw);
     const keyBits = Buffer.from(identifiers.unsafePrivateKey, 'base64')
-    const key = await sdk.EcdsaKey.fromBytes(keyBits)
+    const key = await tupelo.EcdsaKey.fromBytes(keyBits)
 
-    const community = await sdk.Community.getDefault()
+    const community = await tupelo.Community.getDefault()
     let tree
     try {
         const tip = await community.getTip(identifiers.chainId)
         console.log("found tree")
-        tree = new sdk.ChainTree({
+        tree = new tupelo.ChainTree({
             store: community.blockservice,
             tip: tip,
             key: key,
         })
     } catch(e) {
         if (e === 'not found') {
-            tree = await sdk.ChainTree.newEmptyTree(community.blockservice, key)
+            tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
         } else {
             throw e
         }
@@ -344,8 +344,8 @@ and the change we want to make to the data as arguments.
 ``` javascript
     ...
     console.log("saving new notes: ", notes)
-    let c = await sdk.Community.getDefault()
-    await c.playTransactions(tree, [sdk.setDataTransaction(CHAIN_TREE_NOTE_PATH, notes)])
+    let c = await tupelo.Community.getDefault()
+    await c.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, notes)])
 }
 ```
 
