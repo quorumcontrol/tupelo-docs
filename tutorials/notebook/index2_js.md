@@ -4,12 +4,11 @@ title: index2.js
 parent: Notebook
 nav_order: 2
 ---
-
 ```javascript
 const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
-const LOCAL_ID_PATH = './.notebook-identifiers';
+const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
 const CHAIN_TREE_NOTE_PATH = 'notebook/notes';
 
 async function identifierObj(key, chain) {
@@ -25,13 +24,20 @@ function writeIdentifierFile(configObj) {
     fs.writeFileSync(LOCAL_ID_PATH, data);
 }
 
+async function createNotebook() {
+    console.log("creating notebook")
+    let community = await tupelo.Community.getDefault();
+    const key = await tupelo.EcdsaKey.generate()
+    const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    let obj = await identifierObj(key, tree);
+    return writeIdentifierFile(obj);
+}
+
 async function readIdentifierFile() {
-    console.log("reading identifiers")
     let raw = fs.readFileSync(LOCAL_ID_PATH);
     const identifiers = JSON.parse(raw);
     const keyBits = Buffer.from(identifiers.unsafePrivateKey, 'base64')
     const key = await tupelo.EcdsaKey.fromBytes(keyBits)
-
     const community = await tupelo.Community.getDefault()
     let tree
     try {
@@ -49,12 +55,7 @@ async function readIdentifierFile() {
             throw e
         }
     }
-
     return { tree: tree, key: key }
-}
-
-function idFileExists() {
-    return fs.existsSync(LOCAL_ID_PATH);
 }
 
 function addTimestamp(note) {
@@ -62,13 +63,8 @@ function addTimestamp(note) {
     return ts + '::' + note;
 }
 
-async function createNotebook() {
-    console.log("creating notebook")
-    let community = await tupelo.Community.getDefault();
-    const key = await tupelo.EcdsaKey.generate()
-    const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
-    let obj = await identifierObj(key, tree);
-    return writeIdentifierFile(obj);
+function idFileExists() {
+    return fs.existsSync(LOCAL_ID_PATH);
 }
 
 async function addNote(note) {
@@ -77,11 +73,11 @@ async function addNote(note) {
         return;
     }
 
-    let { tree } = await readIdentifierFile();
-    console.log("resolving data on tree")
+    let { tree } = await readIdentifierFile(); // Using our new function to retrieve
+
     const resp = await tree.resolveData(CHAIN_TREE_NOTE_PATH);
     let notes = resp.value,
-        noteWithTs = addTimestamp(note);
+        noteWithTs = addTimestamp(note); // Add a time and date to our new entry
 
     if (notes instanceof Array) {
         notes.push(noteWithTs);

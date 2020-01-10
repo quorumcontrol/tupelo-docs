@@ -8,15 +8,15 @@ nav_order: 2
 # Building a Notebook
 We're going to build a command-line timestamped note-taking application using
 the [Tupelo WASM SDK](https://github.com/quorumcontrol/tupelo-wasm-sdk).
-When complete, we'll be able to use this app to save small timestamped notes
-over time. All of these notes will be signed by the Tupelo TestNet as they
-are entered into our app adding a level of outside verification and trust to our simple
-app.
+When complete, we'll be able to use this app to save timestamped notes.
+All of these notes will be signed by the Tupelo TestNet as they
+are entered adding a level of outside verification and trust to our simple
+application.
 
 ## Getting Started
 Our notebook will be a [Node.js](https://nodejs.org/en/ "Node.js") application.
 We'll manage its dependencies with [NPM](https://www.npmjs.com/ "NPM"), so make
-sure you have already installed it before going further.
+sure you have NPM installed before going further.
 
 To start, we will create and enter the directory that will hold our notebook
 application's code. We will then initialize a new NPM application with `npm init`.
@@ -47,7 +47,8 @@ In file `notebook/package.json`:
   "name": "notebook",
   ...
   "dependencies": {
-      "tupelo-wasm-sdk": "latest"
+      "multicodec": "0.5.6", // To address a temporary ipfs dependency issue
+      "tupelo-wasm-sdk": "latest"      
   },
 }
 ```
@@ -55,8 +56,8 @@ In file `notebook/package.json`:
 Next, run `npm install` from the application directory to install the dependency
 to your local cache.
 
-After installing the `tupelo-wasm-sdk` dependency, make a new file called
-`index.js` with your favorite editor to hold all the application code. At the
+After installing `tupelo-wasm-sdk`, make a new file called
+`index.js` with your favorite editor to hold the application code. At the
 top of that file, require the Tupelo wasm sdk so we can use it later.
 
 In file `notebook/index.js`:
@@ -71,13 +72,13 @@ about ChainTrees [here](/docs/chaintree).  Chaintrees are the flexible datastruc
 Tupelo.  We can store any type of data we want in a ChainTree and organize it within
 a path structure.
 
-Before we can start saving notes, we need to create some keys for the user, connect to a
-service to sign and track our ChainTrees, and then create a new empty ChainTree to store
-our notes.
+Before we can start saving notes, we need to lay some groundwork.  We will need to be able
+to create keys for the user, connect to a service to sign and track our ChainTrees,
+and create a new empty ChainTree to store our notes.
 
 Let's build a `createNotebook()` function, step by step, to do those things.
 
-First we will connect to the community service and the Tupelo TestNet, in `notebook/index.js`:
+First we will connect to a service to act as our _community_, in `notebook/index.js`:
 ```javascript
 async function createNotebook() {
     console.log("creating notebook")
@@ -87,12 +88,12 @@ async function createNotebook() {
 
 The _community_ the SDK is connecting to in this example is the Tupelo TestNet.  
 The underlying code creates a p2p node and establishes the connections it needs to submit
-transactions and get back confirmations when a transaction is finalized.  The Tupelo
+transactions and get back confirmations when transactions are finalized.  The Tupelo
 network is fast so the user can wait the few hundred milliseconds required to process
 requests in real time.  In this way the Tupelo WASM SDK is as easy to use as a standard
 database API.
 
-### Generate Keys
+### Generating Keys
 
 We will need to generate a new public/private keypair for the user of our wasm app in
 the `createNotebook()` function.
@@ -119,7 +120,7 @@ async function createNotebook() {
 }
 ```
 
-### Store Identifiers
+### Storing Identifiers
 
 Now that we have generated keys and a ChainTree for our notebook, we will need a way to
 persist the required information locally between invocations of the app.
@@ -175,7 +176,7 @@ async function createNotebook() {
 }
 ```
 
-### Testing our Notebook creation
+### Testing Notebook Creation
 
 Let's test out our progress so far. Start a node repl in your project
 directory with the `node` command. Then, from the node prompt run
@@ -196,11 +197,11 @@ Back at the command line we can see a .notebook-identifiers file with our key an
 chainID in it.
 
 If your repl session is not responding as expected you can look for differences between
-your index.js and this one [`index1_js` file](/tutorials/notebook/index1_js).
+your index.js and this [`index` file](/tutorials/notebook/index1_js).
 
 ----------------------------
 
-## Adding a note to our Notebook
+## Adding a Note to the Notebook
 
 Now that we have a notebook it is time to start writing our notes into it.
 
@@ -213,7 +214,7 @@ async function addNote(note) {
 }
 ```
 
-### Retrieving our key and notebook
+### Retrieving the Key and Notebook
 
 Before we write our new note we need to make sure we have the identifiers
 we need.  We just created and stored those in .notebook-identifiers above so lets create
@@ -237,7 +238,7 @@ ChainTree.
 ```javascript
 ...
 const community = await tupelo.Community.getDefault()
-...
+}
 ```
 
 We proceed to grab the "tip" of our ChainTree which represents the latest version
@@ -314,7 +315,7 @@ async function readIdentifierFile() {
 }
 ```
 
-### Writing the note
+### Writing the Note
 
 Now that we have retrieved our key and notebook ChainTree we can proceed
 towards inserting new notes.
@@ -370,7 +371,7 @@ function addTimestamp(note) {
 The last step we need to take in our addNote function is to actually submit the
 information to be signed!  So we will add the SDK calls to the end of addNote()
 to do just that.  The playTransactions call takes the tree we are changing
-and the change we want to make to the data as arguments.
+and the change we want to make to the data as arguments.  
 
 ``` javascript
     ...
@@ -382,7 +383,7 @@ and the change we want to make to the data as arguments.
 
 We should have our new state confirmed in less than a second.
 
-### Making sure the notebook exists before we write
+### Making Sure the Notebook Exists
 
 We want to make sure that everything is done in the right order so we will add a
 small function to confirm we have an id file created.
@@ -396,17 +397,19 @@ We will want to call that check at the very beginning of our addNote() function.
 there is no ID file we will warn the user and end there.
 
 ``` javascript
-if (!idFileExists()) {
-    console.error("Error: you must register before you can record notes.");
-    return;
-    ...
+async function addNote(note) {
+    if (!idFileExists()) {
+        console.error("Error: you must register before you can record notes.");
+        return;
+    }
+...
 }
 ```
 
 After these changes our index.js should look more or less like this
 [`index.js` file](/tutorials/notebook/index2_js).
 
-### Testing our add note functionality
+### Testing Add Note
 
 Now's a good time to test our `addNote()` function. Start another node repl session in
 the notebook directory with the `node` command, then run these next few commands:
@@ -427,6 +430,8 @@ because its the first time any data was placed there.  We can add additional not
 and the array of notes will grow but we will not see that message again.
 
 Assuming everything worked terminate the node repl session with the `.exit` command.
+Our ChainTree has data in it and it was successfully updated, verified and signed off
+by the Tupelo TestNet.
 
 ### Displaying our Notes
 
@@ -434,11 +439,10 @@ Since we can save signed notes to our chain tree, let's add a way to print out a
 notes we've recorded so far. We'll write a `showNotes()` function that fetches
 the saved notes using existing functions and print each one to the console.
 
-In many ways showing notes is not all that different from adding notes since the
-first step to adding notes was retrieving existing ones.
+In many ways showing notes is not all that different from adding notes.  The first
+step for both is opening our identifier file and retrieving existing data.
 
 First we want to make sure the user has registered.
-
 Then we populate our ChainTree of notes locally.
 
 It is then a simple matter of resolving the data from our CHAIN_TREE_NOTE_PATH

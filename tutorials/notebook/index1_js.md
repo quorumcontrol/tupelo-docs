@@ -1,15 +1,14 @@
 ---
 layout: default
-title: index.js
+title: index1.js
 parent: Notebook
 nav_order: 2
 ---
-
 ```javascript
 const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
-const LOCAL_ID_PATH = './.notebook-identifiers';
+const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
 
 async function identifierObj(key, chain) {
     return {
