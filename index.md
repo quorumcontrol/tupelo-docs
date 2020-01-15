@@ -21,7 +21,7 @@ The WASM SDK enables you to easily leverage the power of trust that Tupelo
 makes possible right from a browser.
 {: .fs-3 .fw-300 }
 
-Another option is to run through our [“Hello World” tutorials](tutorials) and have your
+Another option is to run through our [“Hello World” tutorial](tutorials) and have your
 first transaction signed in minutes. That is a total of minutes to set up and submit the
 request, the Tupelo TestNet will sign your transaction in less than a second.
 {: .fs-3 .fw-300 }

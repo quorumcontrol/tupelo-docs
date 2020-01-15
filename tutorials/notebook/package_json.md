@@ -15,7 +15,8 @@ nav_order: 1
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "tupelo-client": "^0.4.0",
+    "multicodec": "0.5.6", // To address a temporary ipfs dependency issue
+    "tupelo-wasm-sdk": "latest",
     "yargs": "^12.0.2"
   },
   "keywords": [],

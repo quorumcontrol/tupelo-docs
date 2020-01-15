@@ -38,16 +38,6 @@ was written and when can be proven at any time in the future.
 
 ***
 
-## RPC Server
-
-The Node.js client cannot directly manage chain trees or connect to the notary
-group, so node applications must instead proxy through an RPC server to work
-with Tupelo.  This brief tutorial explains how to get that setup.
-
-[RPC Server Tutorial](tutorials/rpc_server){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
-
-***
-
 ### Interested in building on Tupelo, have comments or want to learn more?
 
 As our community, your feedback, questions, and concerns are important to us.
