@@ -18,7 +18,7 @@ next few months.
 ***
 
 ### Latest Release
-### WASM SDK - Tupelo DLT right from the browser with JS
+### WASM SDK - Tupelo DLT right from the browser with JavaScript
 
 #### [SOURCE](https://github.com/QuorumControl/tupelo-wasm-sdk)
 #### [GETTING STARTED GUIDE](https://www.tupelo.org/blog/2019/8/22/new-wasm-based-sdk-for-tupelo)

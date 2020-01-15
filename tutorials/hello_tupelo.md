@@ -22,8 +22,11 @@ confirmed valid and made immutable by the network. Tupelo makes DLTs easy.
 
 First you will need to [download Tupelo](https://github.com/quorumcontrol/tupelo/releases).
 
-Unzip tupelo-v0.5.11.zip and from a terminal rename whichever version you need based on
-which OS you are running.  Then, chmod it to make it executable.
+
+
+Unzip tupelo-v0.0.0.zip (where 0.0.0 is the actual version number you downloaded)
+and from a terminal rename whichever version you need based on which OS you are running.  
+Then, chmod it to make it executable.
 
 ```
 mv tupelo-v0.5.11-darwin-amd64 tupelo
