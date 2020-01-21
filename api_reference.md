@@ -17,7 +17,6 @@ next few months.
 
 ***
 
-### Latest Release
 ### WASM SDK - Tupelo DLT right from the browser with JavaScript
 
 #### [SOURCE](https://github.com/QuorumControl/tupelo-wasm-sdk)
@@ -27,7 +26,7 @@ next few months.
 
 ### GO API
 
-#### COMING NEXT
+#### [SOURCE](https://github.com/quorumcontrol/tupelo-go-sdk)
 
 ***
 
