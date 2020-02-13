@@ -7,7 +7,7 @@ permalink:
 
 # Hello Decentralized World
 {: .fs-8 }
-<img style="float:right; padding:6px; width:529px;" src="assets/images/wasm_sample_code.png">
+<img style="float:right; padding:6px; width:545px; height:253" src="assets/images/TupeloTerminal-crop.gif">
 
 Tupelo is easy.
 
@@ -15,15 +15,16 @@ The straightforward API and growing list of familiar language libraries make int
 the power of a distributed ledger into your application fast and simple.
 {: .fs-3 .fw-300 }
 
-You can read all about Tupelo below, or if you prefer to learn by doing, **jump in and try our
-new [Tupelo WASM SDK](https://www.tupelo.org/blog/2019/8/22/new-wasm-based-sdk-for-tupelo)**.
-The WASM SDK enables you to easily leverage the power of trust that Tupelo
-makes possible right from a browser.
+Please take a minute and **try our ["Hello World" tutorial](/tutorials/hello_tupelo/node)** in Node.  You will have your first transaction signed in no time.
 {: .fs-3 .fw-300 }
 
-Another option is to run through our [“Hello World” tutorial](tutorials) and have your
-first transaction signed in minutes. That is a total of minutes to set up and submit the
-request, the Tupelo TestNet will sign your transaction in less than a second.
+You can read all about Tupelo below, or if you prefer to learn by doing, **[jump in and build a small
+a small app](/tutorials/notebook)** for recording immutable notes on the Tupelo DLT.
+{: .fs-3 .fw-300 }
+
+Looking for samples to build off for your own work?  Check out examples leveraging the WASM SDK to do **[ownership transfer](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/ownership-transfer), [setting and getting data](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/set-and-get-data) or [issuing and transferring tokens](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/tokens)**.
+{: .fs-3 .fw-300 }
+
 {: .fs-3 .fw-300 }
 ***
 # Tupelo Is Distributed Ledger Done Differently
