@@ -553,7 +553,7 @@ Be sure to take a look at the final
 [`index.js` file](/tutorials/notebook/index3_js) for reference.
 
 This tutorial just scratches the surface of how Tupelo can be used as a building block
-of trust.  
+of trust.  You can see more examples leveraging the WASM SDK to do **[ownership transfers](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/ownership-transfer), [setting and getting data](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/set-and-get-data) or [issuing and transferring tokens](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/tokens)**.
 
 Check out further [examples](/examples) such as a
 [decentralized mobility application](/examples/decentracar) or hop into our
