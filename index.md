@@ -15,7 +15,7 @@ The straightforward API and growing list of familiar language libraries make int
 the power of a distributed ledger into your application fast and simple.
 {: .fs-3 .fw-300 }
 
-Please take a minute and **try our ["Hello World" tutorial](/tutorials/hello_tupelo/node)** in Node.  You will have your first transaction signed in no time.
+Please take a minute and **try our ["Hello World" tutorial](/tutorials/node)** in Node.  You will have your first transaction signed in no time.
 {: .fs-3 .fw-300 }
 
 You can read all about Tupelo below, or if you prefer to learn by doing, **[jump in and build

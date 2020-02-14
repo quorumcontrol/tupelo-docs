@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Hello from Node
-nav_exclude: true
+parent: Tutorials
+nav_order: 1
 ---
 
 # Hello Decentralized World -- from Node
