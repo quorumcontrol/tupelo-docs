@@ -108,8 +108,8 @@ async function createNotebook() {
 ```
 
 After generating our new key we will use the Tupelo SDK to create a new empty
-ChainTree to write our notebook entries into.  We will pass in the new key and the _community_
-we are connected to (the Tupelo TestNet) as arguments.
+ChainTree to write our notebook entries into.  Next we will write a setDataTransaction
+to that tree which will get signed by the Tupelo TestNet. 
 
 ```javascript
 async function createNotebook() {
@@ -117,6 +117,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()   
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
 }
 ```
 
@@ -174,7 +175,7 @@ function writeIdentifierFile(configObj) {
 ```
 
 Back in our createNotebook() function we will call those two new functions with our
-key and empty ChainTree to compose our identifiers and then write the identifiers
+key and ChainTree to compose our identifiers and then write the identifiers
 into that file.
 
 ```javascript
@@ -183,6 +184,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }

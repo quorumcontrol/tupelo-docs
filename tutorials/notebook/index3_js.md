@@ -35,20 +35,25 @@ async function readIdentifierFile() {
     const key = await tupelo.EcdsaKey.fromBytes(keyBits)
 
     const community = await tupelo.Community.getDefault()
-    let tree
+    let tip
     try {
         const tip = await community.getTip(identifiers.chainId)
-        console.log("found tree")
-        tree = new tupelo.ChainTree({
-            store: community.blockservice,
-            tip: tip,
-            key: key,
-        })
     } catch(e) {
         if (e === 'not found') {
             tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
         } else {
             throw e
+        }
+    }
+    
+    if (tip) {
+        tree = new tupelo.ChainTree({
+            store: community.blockservice,
+            tip: tip,
+            key: key,
+        }
+    } catch(e) {
+        throw e
         }
     }
 
@@ -69,6 +74,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }
