@@ -151,8 +151,8 @@ notebook a single path will do.
 In file `notebook/index.js` we will add a constant to store that.
 ```javascript
 ...
-const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
-const CHAIN_TREE_NOTE_PATH = 'notebook/notes';
+const LOCAL_ID_PATH = './.notebook-identifiers'; 
+const CHAIN_TREE_NOTE_PATH = 'notebook/notes'; // <--- Specify the path in the tree to save to
 ...
 ```
 
@@ -395,7 +395,7 @@ and the change we want to make to the data as arguments.
 }
 ```
 
-We should have our new state confirmed in less than a second.
+We should have our new state confirmed in a second or two.
 
 ### Making sure the notebook exists
 
