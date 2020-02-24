@@ -9,6 +9,7 @@ const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
 const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
+const CHAIN_TREE_NOTE_PATH = 'notebook/notes';
 
 async function identifierObj(key, chain) {
     return {
