@@ -55,12 +55,12 @@ Continuing from the session above lets fetch the data to check our value and the
 ## Commentary
 Read below if you'd like a (brief) explanation of what each of the above steps does.
 
-1. setup a connection to the default community and Tupelo TestNet
+1. Setup a connection to the default community and Tupelo TestNet
 ```
 > const community = await sdk.Community.getDefault() 
 ```
 
-2. Generate a new public/private keypair 
+1. Generate a new public/private keypair 
 ```
 > const key = await sdk.EcdsaKey.generate() 
 ```
@@ -72,7 +72,7 @@ Read below if you'd like a (brief) explanation of what each of the above steps d
 
 4. Play a transaction on the TestNet -- Essentially add data to your Chaintree and get it signed by the network.
 ```
-> let resp = await community.playTransactions(tree, [sdk.setDataTransaction("path", true)])
+> let resp = await community.playTransactions(tree, [sdk.setDataTransaction("path", "Hello Decentralized World!")])
 ```
 
 If you want to read more about each of these commands you can check out the [WASM SDK API](https://quorumcontrol.github.io/tupelo-wasm-sdk/docs/tupelo-wasm-sdk.html)
