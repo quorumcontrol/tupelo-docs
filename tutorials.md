@@ -22,7 +22,7 @@ saying "Hello" to this new decentralized "World."
 This should only take a few minutes and we will have a Chain-Tree that contains
 immutable proof that we said Hello to the Tupelo World on this day.
 
-[Hello Decentralized World Tutorial](tutorials/hello_tupelo){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
+ ["Hello World" tutorial](/tutorials/node){: .btn .btn-green .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ***
 

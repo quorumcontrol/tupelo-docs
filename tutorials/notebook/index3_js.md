@@ -33,10 +33,9 @@ async function readIdentifierFile() {
     const identifiers = JSON.parse(raw);
     const keyBits = Buffer.from(identifiers.unsafePrivateKey, 'base64')
     const key = await tupelo.EcdsaKey.fromBytes(keyBits)
-
     const community = await tupelo.Community.getDefault()
-    let tree
-    try {
+    let tip
+      try {
         const tip = await community.getTip(identifiers.chainId)
         console.log("found tree")
         tree = new tupelo.ChainTree({
@@ -51,7 +50,6 @@ async function readIdentifierFile() {
             throw e
         }
     }
-
     return { tree: tree, key: key }
 }
 
@@ -69,6 +67,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }

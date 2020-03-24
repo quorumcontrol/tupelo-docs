@@ -47,7 +47,6 @@ In file `notebook/package.json`:
   "name": "notebook",
   ...
   "dependencies": {
-      "multicodec": "0.5.6", // To address a temporary ipfs dependency issue
       "tupelo-wasm-sdk": "latest"      
   },
 }
@@ -108,8 +107,8 @@ async function createNotebook() {
 ```
 
 After generating our new key we will use the Tupelo SDK to create a new empty
-ChainTree to write our notebook entries into.  We will pass in the new key and the _community_
-we are connected to (the Tupelo TestNet) as arguments.
+ChainTree to write our notebook entries into.  Next we will write a setDataTransaction
+to that tree which will get signed by the Tupelo TestNet. 
 
 ```javascript
 async function createNotebook() {
@@ -117,6 +116,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()   
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
 }
 ```
 
@@ -140,6 +140,18 @@ const tupelo = require('tupelo-wasm-sdk');
 const fs = require('fs');
 
 const LOCAL_ID_PATH = './.notebook-identifiers'; // <--- Specify the file to save to
+...
+```
+While we are figuring out where to put things we should also specify where in our ChainTree
+we want to store our data.  For more complex applications we will want to use different paths 
+to keep our data organized and potentially manage permissions, but for a simple application like our
+notebook a single path will do.
+
+In file `notebook/index.js` we will add a constant to store that.
+```javascript
+...
+const LOCAL_ID_PATH = './.notebook-identifiers'; 
+const CHAIN_TREE_NOTE_PATH = 'notebook/notes'; // <--- Specify the path in the tree to save to
 ...
 ```
 
@@ -174,7 +186,7 @@ function writeIdentifierFile(configObj) {
 ```
 
 Back in our createNotebook() function we will call those two new functions with our
-key and empty ChainTree to compose our identifiers and then write the identifiers
+key and ChainTree to compose our identifiers and then write the identifiers
 into that file.
 
 ```javascript
@@ -183,6 +195,7 @@ async function createNotebook() {
     let community = await tupelo.Community.getDefault();
     const key = await tupelo.EcdsaKey.generate()
     const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
+    await community.playTransactions(tree, [tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, [])]);
     let obj = await identifierObj(key, tree);
     return writeIdentifierFile(obj);
 }
@@ -332,18 +345,6 @@ async function readIdentifierFile() {
 Now that we have retrieved our key and notebook ChainTree we can proceed
 towards inserting new notes.
 
-We will need to decide where in our ChainTree to put the data we are creating.
-For more complex applications we will want to use different paths to keep our data
-organized and potentially manage permissions, but for a simple application like our
-notebook a single path will do.
-
-In file `notebook/index.js` we will add a constant to store that.
-```javascript
-...
-const CHAIN_TREE_NOTE_PATH = 'notebook/notes';
-...
-```
-
 To build the actual addNote function, we start by grabbing our identifiers and
 whatever notes already exist. Because ChainTrees are so flexible, this data can be of
 nearly any type.  We will be storing our notes in an array of strings at 'notebook/notes'.
@@ -393,7 +394,7 @@ and the change we want to make to the data as arguments.
 }
 ```
 
-We should have our new state confirmed in less than a second.
+We should have our new state confirmed in a second or two.
 
 ### Making sure the notebook exists
 
@@ -498,11 +499,10 @@ In file `notebook/package.json`:
 {
     "name": "notebook",
     ...
-    "dependencies": {
-        "tupelo-client": "^0.4.0",
+    "dependencies": { 
+        "tupelo-wasm-sdk": "latest",
         "yargs": "^12.0.2"
-    }
-}
+    },
 ```
 
 Next run `npm install` to get yargs loaded.
@@ -553,7 +553,7 @@ Be sure to take a look at the final
 [`index.js` file](/tutorials/notebook/index3_js) for reference.
 
 This tutorial just scratches the surface of how Tupelo can be used as a building block
-of trust.  
+of trust.  You can see more examples leveraging the WASM SDK to do **[ownership transfers](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/ownership-transfer), [setting and getting data](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/set-and-get-data) or [issuing and transferring tokens](https://github.com/quorumcontrol/tupelo-wasm-sdk/tree/master/examples/tokens)**.
 
 Check out further [examples](/examples) such as a
 [decentralized mobility application](/examples/decentracar) or hop into our
