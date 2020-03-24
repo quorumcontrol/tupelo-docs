@@ -15,7 +15,6 @@ nav_order: 1
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "multicodec": "0.5.6", // To address a temporary ipfs dependency issue
     "tupelo-wasm-sdk": "latest",
     "yargs": "^12.0.2"
   },

@@ -16,8 +16,7 @@ We are going to accomplish this by using the Tupelo WASM SDK and a node repl ses
 First you will need to use [npm](https://www.npmjs.com/get-npm) to install two dependencies.
 
 ```
-npm install tupelo-wasm-sdk@0.6.0-rc3
-npm install multicodec@0.5.6
+npm install tupelo-wasm-sdk@latest
 ```
 
 Next we will hop into a [node](https://nodejs.org/en/download/) session (with a flag enabling promises to make our life easier).

@@ -47,7 +47,6 @@ In file `notebook/package.json`:
   "name": "notebook",
   ...
   "dependencies": {
-      "multicodec": "0.5.6", // To address a temporary ipfs dependency issue
       "tupelo-wasm-sdk": "latest"      
   },
 }
@@ -501,7 +500,6 @@ In file `notebook/package.json`:
     "name": "notebook",
     ...
     "dependencies": { 
-        "multicodec": "0.5.6",
         "tupelo-wasm-sdk": "latest",
         "yargs": "^12.0.2"
     },

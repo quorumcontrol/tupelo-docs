@@ -33,11 +33,16 @@ async function readIdentifierFile() {
     const identifiers = JSON.parse(raw);
     const keyBits = Buffer.from(identifiers.unsafePrivateKey, 'base64')
     const key = await tupelo.EcdsaKey.fromBytes(keyBits)
-
     const community = await tupelo.Community.getDefault()
     let tip
-    try {
+      try {
         const tip = await community.getTip(identifiers.chainId)
+        console.log("found tree")
+        tree = new tupelo.ChainTree({
+            store: community.blockservice,
+            tip: tip,
+            key: key,
+        })
     } catch(e) {
         if (e === 'not found') {
             tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
@@ -45,18 +50,6 @@ async function readIdentifierFile() {
             throw e
         }
     }
-    
-    if (tip) {
-        tree = new tupelo.ChainTree({
-            store: community.blockservice,
-            tip: tip,
-            key: key,
-        }
-    } catch(e) {
-        throw e
-        }
-    }
-
     return { tree: tree, key: key }
 }
 
